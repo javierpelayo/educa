@@ -1,0 +1,16 @@
+body {
+  font-family: 'Montserrat', sans-serif;
+  /* font-family: 'Open Sans', sans-serif; */
+}
+
+.nav-link {
+  color: #000000;
+}
+
+.navbar-brand {
+  color: #44AF69;
+}
+
+.navbar-brand:hover, .nav-link:hover {
+  color: #2B9EB3;
+}
