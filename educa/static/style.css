@@ -1,6 +1,15 @@
-body {
+html, body {
   /* font-family: 'Montserrat', sans-serif;
    font-family: 'Open Sans', sans-serif; */
+   height: 100%;
+}
+
+.nowrap-line {
+  white-space: nowrap;
+}
+
+.extra-margin {
+  margin-top: 10rem;
 }
 
 .nav-link {

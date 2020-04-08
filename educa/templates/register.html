@@ -1,0 +1,105 @@
+{% extends "layout.html" %}
+{% block content %}
+  <!-- Empty strings in action returns same url -->
+  <form class="needs-validation" method="POST" novalidate>
+    <!-- CSRF token protects against input attacks -->
+    {{ form.hidden_tag() }}
+    <div class="row justify-content-center my-3">
+      <h1 class="display-5">Register</h1>
+    </div>
+    <div class="form-group d-flex flex-column align-items-center">
+        <div class="col-8 col-md-6 col-lg-4 mb-3">
+          {% if form.first_name.errors %}
+            {{ form.first_name(class="form-control is-invalid", placeholder="First Name") }}
+            <div class="invalid-feedback">
+              {% for error in form.first_name.errors %}
+                <small>{{ error }}</small>
+              {% endfor %}
+            </div>
+          {% else %}
+            {{ form.first_name(class="form-control", placeholder="First Name") }}
+            <div class="valid-feedback">
+              <span>Looks Good!</span>
+            </div>
+          {% endif %}
+        </div>
+        <div class="col-8 col-md-6 col-lg-4 mb-3">
+          {% if form.last_name.errors %}
+            {{ form.last_name(class="form-control is-invalid", placeholder="Last Name") }}
+            <div class="invalid-feedback">
+              {% for error in form.last_name.errors %}
+                <small>{{ error }}</small>
+              {% endfor %}
+            </div>
+          {% else %}
+            {{ form.last_name(class="form-control", placeholder="Last Name") }}
+            <div class="valid-feedback">
+              <span>Looks Good!</span>
+            </div>
+          {% endif %}
+        </div>
+        <div class="col-8 col-md-6 col-lg-4 mb-3">
+          {% if form.email.errors %}
+            {{ form.email(class="form-control is-invalid", placeholder="Email") }}
+            <div class="invalid-feedback">
+              {% for error in form.email.errors %}
+                <small>{{ error }}</small>
+              {% endfor %}
+            </div>
+          {% else %}
+            {{ form.email(class="form-control", placeholder="Email") }}
+            <div class="valid-feedback">
+              <span>Looks Good!</span>
+            </div>
+          {% endif %}
+        </div>
+        <div class="col-8 col-md-6 col-lg-4 mb-3">
+          {% if form.password.errors %}
+            {{ form.password(class="form-control is-invalid", placeholder="Password") }}
+            <div class="invalid-feedback">
+              {% for error in form.password.errors %}
+                <small>{{ error }}</small>
+              {% endfor %}
+            </div>
+          {% else %}
+            {{ form.password(class="form-control", placeholder="Password") }}
+            <div class="valid-feedback">
+              <span>Looks Good!</span>
+            </div>
+          {% endif %}
+        </div>
+        <div class="col-8 col-md-6 col-lg-4 mb-2">
+          {% if form.confirm_password.errors %}
+            {{ form.confirm_password(class="form-control is-invalid", placeholder="Confirm Password") }}
+            <div class="invalid-feedback">
+              {% for error in form.confirm_password.errors %}
+                <small>{{ error }}</small>
+              {% endfor %}
+            </div>
+          {% else %}
+            {{ form.confirm_password(class="form-control", placeholder="Confirm Password") }}
+            <div class="valid-feedback">
+              <span>Looks Good!</span>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+      <div class="d-flex justify-content-center">
+        <div class="mr-3">
+          <span>I am a</span>
+        </div>
+          {% for subfield in form.profession %}
+            <div class="form-check mr-2">
+              {{ subfield }}
+              {{ subfield.label }}
+            </div>
+          {% endfor %}
+      </div>
+      <div class="d-flex justify-content-center my-4">
+        {{ form.submit(class="btn btn-primary") }}
+      </div>
+  </form>
+  <div class="border-top pt-3 row justify-content-center">
+    <small class="text-muted mb-5">Already Have An Account? <a href="{{ url_for('login') }}">Login</a></small>
+  </div>
+{% endblock content %}
