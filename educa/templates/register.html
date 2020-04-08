@@ -85,15 +85,36 @@
         </div>
       </div>
       <div class="d-flex justify-content-center">
-        <div class="mr-3">
-          <span>I am a</span>
-        </div>
+          {% if form.profession.errors %}
+            <div class="mr-3">
+              <span>I am a</span>
+            </div>
+            {% for subfield in form.profession %}
+              <div class="form-check mr-2">
+                {{ subfield }}
+                {{ subfield.label }}
+              </div>
+            {% endfor %}
+      </div>
+      <div class="d-flex justify-content-center">
+          <div class="text-danger">
+            {% for error in form.profession.errors %}
+              <small>Please choose an option.</small>
+            {% endfor %}
+          </div>
+      </div>
+      <div class="d-flex justify-content-center">
+        {% else %}
+          <div class="mr-3">
+            <span>I am a</span>
+          </div>
           {% for subfield in form.profession %}
             <div class="form-check mr-2">
               {{ subfield }}
               {{ subfield.label }}
             </div>
           {% endfor %}
+        {% endif %}
       </div>
       <div class="d-flex justify-content-center my-4">
         {{ form.submit(class="btn btn-primary") }}
