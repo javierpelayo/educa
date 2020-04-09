@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
+from flask_login import LoginManager
 import os
 
 # create flask app instance
@@ -17,8 +18,12 @@ else:
 # dont track SQLALCHEMY object mods
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 #DB wraps around our app instance
-bcrypt = Bcrypt(app)
 db = SQLAlchemy(app)
+bcrypt = Bcrypt(app)
+login_manager = LoginManager(app)
+# Tells the extension where our login route is located
+# redirects the user to the login route
+login_manager.login_view = 'login'
 
 from educa.filters import autoversion
 from . import routes
