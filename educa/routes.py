@@ -1,7 +1,7 @@
 from flask import (render_template,request,
                     redirect, url_for,
                     session, logging, current_app)
-from . import app, bcrypt
+from . import app, db, bcrypt
 from educa.forms import RegistrationForm, LoginForm
 from educa.filters import autoversion
 from educa.models import *
@@ -41,7 +41,7 @@ def register():
         db.session.add(user)
         db.session.commit()
         # User DB entry here
-        return redirect(url_for('home'))
+        return redirect(url_for('login'))
     else:
         return render_template("register.html", title="Register",
                                 form=form)
@@ -72,6 +72,7 @@ def logout():
 
 # DASHBOARD
 
+# MAIN ROUTE
 @app.route('/dashboard')
 @login_required
 def dashboard():
@@ -80,4 +81,8 @@ def dashboard():
 @app.route('/dashboard/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
-    return render_template('dashboard.html', title='Dashboard')
+    profile_image = url_for('static', filename="profile_images/default.png")
+    print(db)
+    return render_template('profile.html',
+                            title='Profile',
+                            profile_image=profile_image)

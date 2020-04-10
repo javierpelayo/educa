@@ -4,22 +4,21 @@ html, body {
    height: 100%;
 }
 
-.nowrap-line {
-  white-space: nowrap;
+.side-nav {
+  list-style-type: none;
+  padding: 0;
+}
+
+.side-nav-item {
+  padding-bottom: 2rem;
+  font-size: 2rem;
 }
 
 .extra-margin {
   margin-top: 10rem;
 }
 
-.nav-link {
-  /* color: #000000; */
-}
-
-.navbar-brand {
-  /* color: #44AF69; */
-}
-
-.navbar-brand:hover, .nav-link:hover {
-  /* color: #2B9EB3; */
+.profile-img {
+  height: 100px;
+  width: 100px;
 }
