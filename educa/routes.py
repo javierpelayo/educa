@@ -2,11 +2,14 @@ from flask import (render_template,request,
                     redirect, url_for,
                     session, logging, current_app)
 from . import app, db, bcrypt
-from educa.forms import RegistrationForm, LoginForm
-from educa.filters import autoversion
+from educa.forms import RegistrationForm, LoginForm, UpdateProfileForm
 from educa.models import *
 from flask_login import login_user, current_user, logout_user, login_required
 from functools import wraps
+from educa.filters import autoversion
+import secrets
+from PIL import Image
+import os
 
 # INTRODUCTION PAGES
 
@@ -61,9 +64,14 @@ def login():
             return redirect(next_page) if next_page else redirect(url_for('home'))
         else:
             error = "The email or password is incorrect."
-            return render_template("login.html", title="Login", form=form, error=error)
+            return render_template("login.html",
+                                    title="Login",
+                                    form=form,
+                                    error=error)
     else:
-        return render_template("login.html", title="Login", form=form)
+        return render_template("login.html",
+                                title="Login",
+                                form=form)
 
 @app.route('/logout')
 def logout():
@@ -76,13 +84,46 @@ def logout():
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    return render_template('dashboard.html', title='Dashboard')
+    return render_template('dashboard.html',
+                            title='Dashboard')
+
+
+# Profile Picture Functionality
+def save_picture(form_picture):
+    random_hex = secrets.token_hex(8)
+    _, f_ext = os.path.splitext(form_picture.filename)
+    picture_fn = random_hex + f_ext
+    picture_path = os.path.join(app.root_path,
+                                'static/profile_images',
+                                picture_fn)
+
+    # Resize image using PILLOW
+    output_size = (125,125)
+    i = Image.open(form_picture)
+    i.thumbnail(output_size)
+    i.save(picture_path)
+
+    return picture_fn
 
 @app.route('/dashboard/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
-    profile_image = url_for('static', filename="profile_images/default.png")
-    print(db)
+    form = UpdateProfileForm()
+    if request.method == 'POST' and form.validate_on_submit():
+        if form.picture.data:
+            picture_file = save_picture(form.picture.data)
+            current_user.profile_image = picture_file
+        current_user.first_name = form.first_name.data
+        current_user.last_name = form.last_name.data
+        current_user.email = form.email.data
+        db.session.commit()
+        return redirect(url_for('profile'))
+    elif request.method == 'GET':
+        form.first_name.data = current_user.first_name
+        form.last_name.data = current_user.last_name
+        form.email.data = current_user.email
+    profile_image = url_for('static', filename="profile_images/" + current_user.profile_image)
     return render_template('profile.html',
                             title='Profile',
-                            profile_image=profile_image)
+                            profile_image=profile_image,
+                            form=form)

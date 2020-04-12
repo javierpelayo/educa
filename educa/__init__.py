@@ -25,8 +25,8 @@ login_manager = LoginManager(app)
 # redirects the user to the login route
 login_manager.login_view = 'login'
 
-from educa.filters import autoversion
 from . import routes
+from educa.filters import autoversion
 
 #################
 # COLOR SCHEMES #

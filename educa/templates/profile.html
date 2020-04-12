@@ -1,25 +1,25 @@
 {% extends "dashboard.html" %}
 {% block content_dash %}
-  <div class="d-flex
-              align-items-center
-              justify-content-around
-              justify-content-md-start
-              my-5">
-    <img class="mx-md-5 rounded-circle profile-img" src="{{ profile_image }}" alt="">
-    <h2 class="display-5 m-0">{{ current_user.first_name }} {{ current_user.last_name }}</h2>
-  </div>
-  <div class="d-flex
-              align-items-center
-              justify-content-around
-              justify-content-md-start
-              my-5">
-    <h2 class="display-5 mx-md-5">Email:</h2>
-    <span>{{ current_user.email }}</span>
-  </div>
-  <div class="flex-column
-              align-items-around
-              align-content-md-start mx-5">
-    <h2 class="display-5">Biography:</h2>
-    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-  </div>
+
+    <!-- SECTION 1 -->
+  <section>
+    <div class="d-flex align-items-center justify-content-around justify-content-md-start my-5">
+      <img class="mx-md-5 rounded-circle profile-img" src="{{ profile_image }}" alt="">
+      <h2 class="display-5 m-0">{{ current_user.first_name }} {{ current_user.last_name }}</h2>
+    </div>
+  </section>
+  <!-- SECTION 2 -->
+  <section>
+    <div class="d-flex align-items-center justify-content-around justify-content-md-start my-5">
+      <h2 class="display-5 mx-md-5">Email:</h2>
+      <span>{{ current_user.email }}</span>
+    </div>
+  </section>
+   <!-- SECTION 3 -->
+   <section>
+     <div class="flex-column align-content-md-start mx-5">
+       <h2 class="display-5">Biography:</h2>
+       <p>{{ current_user.biography }}</p>
+     </div>
+   </section>
 {% endblock content_dash %}

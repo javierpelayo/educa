@@ -45,7 +45,8 @@ class User_Account(db.Model, UserMixin):
     last_name = db.Column(db.String(20), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     profession = db.Column(db.String(10), nullable=False)
-    profile_image = db.Column(db.String(20), nullable=False, default='default.jpg')
+    biography = db.Column(db.Text)
+    profile_image = db.Column(db.String(20), nullable=False, default='default.png')
     password = db.Column(db.String(60), nullable=False)
     messages = db.relationship('Message', backref='user')
     conversations = db.relationship('Conversation',
