@@ -9,7 +9,16 @@
         <div class="d-flex align-items-center justify-content-start my-5 mx-2 mx-md-5">
           <img class="rounded-circle profile-img" src="{{ profile_image }}" alt="">
           <div class="mx-5 col-8 col-md-4">
-            {{ form.fullname(class="form-control") }}
+            {% if form.fullname.errors %}
+              {{ form.fullname(class="form-control is-invalid") }}
+              <div class="invalid-feedback">
+                {% for error in form.fullname.errors %}
+                  <small>{{ error }}</small>
+                {% endfor %}
+              </div>
+            {% else %}
+              {{ form.fullname(class="form-control") }}
+            {% endif %}
           </div>
         </div>
       </section>
@@ -20,7 +29,16 @@
             <h2 class="email-profile">Email:</h2>
           </div>
           <div class="mx-5 col-8 col-md-4">
-            {{ form.email(class="form-control") }}
+            {% if form.email.errors %}
+              {{ form.email(class="form-control is-invalid") }}
+              <div class="invalid-feedback">
+                {% for error in form.email.errors %}
+                  <small>{{ error }}</small>
+                {% endfor %}
+              </div>
+            {% else %}
+              {{ form.email(class="form-control") }}
+            {% endif %}
           </div>
         </div>
       </section>
@@ -30,7 +48,16 @@
           <h2 class="display-5">Biography:</h2>
         </div>
         <div class="d-flex justify-content-start mx-2 mx-md-5">
-            {{ form.biography(class="form-control mt-3") }}
+            {% if form.biography.errors %}
+              {{ form.biography(class="form-control is-invalid mt-3") }}
+              <div class="invalid-feedback">
+                {% for error in form.biography.errors %}
+                  <small>{{ error }}</small>
+                {% endfor %}
+              </div>
+            {% else %}
+              {{ form.biography(class="form-control") }}
+            {% endif %}
         </div>
       </section>
       <!-- SECTION 4 FILE UPLOAD-->
