@@ -2,7 +2,7 @@ from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from wtforms import (StringField, PasswordField,
                     SubmitField, BooleanField,
-                    RadioField)
+                    RadioField, TextAreaField)
 from flask_login import current_user
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from educa.models import User_Account
@@ -12,10 +12,10 @@ from . import bcrypt
 class RegistrationForm(FlaskForm):
     first_name = StringField('First Name',
                         validators=[DataRequired(),
-                        Length(min=1, max=20)])
+                        Length(min=1, max=120)])
     last_name = StringField('Last Name',
                         validators=[DataRequired(),
-                        Length(min=1, max=20)])
+                        Length(min=1, max=120)])
     email = StringField('Email',
                         validators=[DataRequired(),
                         Email()])
@@ -57,17 +57,15 @@ class LoginForm(FlaskForm):
     #         raise ValidationError('This user does not exist.')
 
 class UpdateProfileForm(FlaskForm):
-    first_name = StringField('First Name',
+    fullname = StringField('Full Name',
                         validators=[DataRequired(),
-                        Length(min=1, max=20)])
-    last_name = StringField('Last Name',
-                        validators=[DataRequired(),
-                        Length(min=1, max=20)])
+                        Length(min=1, max=240)])
     email = StringField('Email',
                         validators=[DataRequired(),
                         Email()])
-    picture = FileField('Update Profile Picture',
-                        validators=[FileAllowed('jpg', 'png')])
+    biography = TextAreaField('Bio', validators=[Length(max=240)])
+    picture = FileField('Choose File',
+                        validators=[FileAllowed(['jpg', 'png'], "Only jpg or png file-types allowed.")])
     submit = SubmitField('Update')
 
     def validate_email(self, email):

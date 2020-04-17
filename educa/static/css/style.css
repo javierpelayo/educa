@@ -20,5 +20,14 @@ html, body {
 
 .profile-img {
   height: 100px;
+  min-width: 100px;
   width: 100px;
+}
+
+.email-profile {
+  width: 100px;
+}
+
+.file-upload {
+  border-top: 2px black;
 }

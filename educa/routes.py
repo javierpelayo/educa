@@ -98,7 +98,7 @@ def save_picture(form_picture):
                                 picture_fn)
 
     # Resize image using PILLOW
-    output_size = (125,125)
+    output_size = (100,100)
     i = Image.open(form_picture)
     i.thumbnail(output_size)
     i.save(picture_path)
@@ -109,21 +109,41 @@ def save_picture(form_picture):
 @login_required
 def profile():
     form = UpdateProfileForm()
-    if request.method == 'POST' and form.validate_on_submit():
+    edit = request.args.get('edit')
+    profile_image = url_for('static', filename="profile_images/" + current_user.profile_image)
+    if request.method == 'GET' and edit == "true":
+        print("test1")
+        fullname = current_user.first_name + " " + current_user.last_name
+        form.fullname.data = fullname
+        form.email.data = current_user.email
+        form.biography.data = current_user.biography
+        return render_template('profile.html',
+                                title='Profile',
+                                profile_image=profile_image,
+                                form=form,
+                                edit=edit)
+    # If request is a 'POST' & form.val...
+    elif form.validate_on_submit():
         if form.picture.data:
             picture_file = save_picture(form.picture.data)
             current_user.profile_image = picture_file
-        current_user.first_name = form.first_name.data
-        current_user.last_name = form.last_name.data
+        fullname = form.fullname.data.split(" ")
+        first_name = fullname[0]
+        last_name = " ".join(fullname[1:])
+        current_user.first_name = first_name
+        current_user.last_name = last_name
         current_user.email = form.email.data
+        current_user.biography = form.biography.data
         db.session.commit()
         return redirect(url_for('profile'))
-    elif request.method == 'GET':
-        form.first_name.data = current_user.first_name
-        form.last_name.data = current_user.last_name
-        form.email.data = current_user.email
-    profile_image = url_for('static', filename="profile_images/" + current_user.profile_image)
-    return render_template('profile.html',
-                            title='Profile',
-                            profile_image=profile_image,
-                            form=form)
+    elif form.errors:
+        return render_template('profile.html',
+                                title='Profile',
+                                profile_image=profile_image,
+                                form=form,
+                                edit="true")
+    # elif request.method != 'POST'
+    else:
+        return render_template('profile.html',
+                                title='Profile',
+                                profile_image=profile_image)
