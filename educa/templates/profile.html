@@ -126,9 +126,10 @@
     <!-- SECTION 4 EDIT -->
      <section>
        <div class="flex-column align-content-md-start mx-2 mx-md-5 my-2">
-         <form action="" method="GET">
-           <button class="btn btn-primary" type="submit" name="edit" value="true">Edit</button>
+         <form class="d-inline" action="" method="GET">
+           <button class="btn btn-light" type="submit" name="edit" value="true">Edit Profile</button>
          </form>
+          <a class="btn btn-light d-inline p-2 ml-2"href="{{ url_for('logout') }}">Logout</a>
        </div>
      </section>
   {% endif %}
