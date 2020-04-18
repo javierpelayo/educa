@@ -1,6 +1,6 @@
 html, body {
-  /* font-family: 'Montserrat', sans-serif;
-   font-family: 'Open Sans', sans-serif; */
+  /* font-family: 'Montserrat', sans-serif; */
+   /* font-family: 'Open Sans', sans-serif; */
    height: 100%;
 }
 
@@ -19,9 +19,10 @@ html, body {
 }
 
 .profile-img {
-  height: 100px;
+  min-height: 100px;
+  max-height: 100px;
   min-width: 100px;
-  width: 100px;
+  max-width: 100px;
 }
 
 .email-profile {
@@ -30,4 +31,9 @@ html, body {
 
 .file-upload {
   border-top: 2px black;
+}
+
+.bio-size {
+  width: 500px;
+  min-height: 150px;
 }

@@ -66,6 +66,7 @@ class UpdateProfileForm(FlaskForm):
     biography = TextAreaField('Bio', validators=[Length(max=240)])
     picture = FileField('Choose File',
                         validators=[FileAllowed(['jpg', 'png'], "Only jpg or png file-types allowed.")])
+    removepic = BooleanField('Remove Profile Picture')
     submit = SubmitField('Update')
 
     def validate_email(self, email):

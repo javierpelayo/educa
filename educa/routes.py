@@ -105,6 +105,14 @@ def save_picture(form_picture):
 
     return picture_fn
 
+def delete_picture():
+    pic = current_user.profile_image
+    if pic != "default.png":
+        picture_path = os.path.join(app.root_path,
+                                    'static/profile_images',
+                                    pic)
+        os.remove(picture_path)
+
 @app.route('/dashboard/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
@@ -124,9 +132,13 @@ def profile():
                                 edit=edit)
     # If request is a 'POST' & form.val...
     elif form.validate_on_submit():
-        if form.picture.data:
+        if form.removepic.data == False and form.picture.data:
+            delete_picture()
             picture_file = save_picture(form.picture.data)
             current_user.profile_image = picture_file
+        elif form.removepic.data == True:
+            delete_picture()
+            current_user.profile_image = "default.png"
         fullname = form.fullname.data.split(" ")
         first_name = fullname[0]
         last_name = " ".join(fullname[1:])
@@ -147,3 +159,8 @@ def profile():
         return render_template('profile.html',
                                 title='Profile',
                                 profile_image=profile_image)
+
+@app.route('/dashboard/courses', methods=['GET', 'POST'])
+@login_required
+def courses():
+    return render_template('courses.html')
