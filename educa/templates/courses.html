@@ -1,0 +1,36 @@
+{% extends "dashboard.html" %}
+{% block content_dash %}
+<!-- SECTION 1 - COURSES -->
+  <section>
+    <div class="container">
+      <div class="row mt-5">
+        {% for course in courses_list %}
+        <a class="card-click col-12 col-md-6 col-lg-4 d-flex justify-content-center" href="/dashboard/courses/{{ course.id }}">
+          <div class="card card-shadow card-size my-2">
+            <h5 class="card-title d-flex justify-content-center py-2 border-bottom">
+              {{ course.title }}
+            </h5>
+            <div class="card-body d-flex align-items-center justify-content-center">
+                <p class="card-text">
+                  {{ course.subject }}
+                </p>
+            </div>
+          </div>
+        </a>
+        {% endfor %}
+        {% if current_user.profession == 'Teacher' %}
+        <!-- SECTION 2 - CREATE COURSE LINK -->
+            <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center">
+              <div class="card card-size my-2 border-0">
+                <div class="card-body d-flex align-items-center justify-content-center">
+                    <form action="" method="GET">
+                      <button class="btn-link" type="submit" name="new" value="true"><i class="fas fa-plus"></i></button>
+                    </form>
+                </div>
+              </div>
+            </div>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+{% endblock content_dash %}

@@ -37,3 +37,28 @@ html, body {
   width: 500px;
   min-height: 150px;
 }
+
+.btn-link {
+  border: none;
+  outline: none;
+  background: none;
+  padding: 0;
+  font-size: 2rem;
+}
+
+.card-size {
+  width: 18rem;
+  height: 18rem;
+}
+
+.card-click:hover {
+  text-decoration: none;
+}
+
+.card-click:hover {
+  color: DodgerBlue;
+}
+
+.card-shadow:hover {
+  box-shadow:0 .125rem .25rem rgba(0,0,0,.075)
+}

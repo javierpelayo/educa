@@ -160,7 +160,31 @@ def profile():
                                 title='Profile',
                                 profile_image=profile_image)
 
+courses_list = [
+    {
+        'title': 'Math 106',
+        'subject': 'Math',
+        'teacher': 'Tang Bang'
+     },
+     {
+        'title': 'HIST B1',
+        'subject': 'Humanities',
+        'teacher': 'Jamal Wright'
+     },
+     {
+        'title': 'ADMJ C1',
+        'subject': 'Law',
+        'teacher': 'Jack Smith'
+     },
+     {
+        'title': 'COMP B11',
+        'subject': 'CS',
+        'teacher': 'Harvey Mendoza'
+     },
+]
+
 @app.route('/dashboard/courses', methods=['GET', 'POST'])
 @login_required
 def courses():
-    return render_template('courses.html')
+    return render_template('courses.html',
+                            courses_list=courses_list)
