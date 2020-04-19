@@ -1,8 +1,12 @@
 from flask import (render_template,request,
                     redirect, url_for,
-                    session, logging, current_app)
-from . import app, db, bcrypt
-from educa.forms import RegistrationForm, LoginForm, UpdateProfileForm
+                    session, logging, current_app, sessions)
+from . import app, db, bcrypt, limiter
+from educa.forms import (RegistrationForm,
+                        LoginForm,
+                        UpdateProfileForm,
+                        NewCourseForm,
+                        AddCourseForm)
 from educa.models import *
 from flask_login import login_user, current_user, logout_user, login_required
 from functools import wraps
@@ -10,6 +14,12 @@ from educa.filters import autoversion
 import secrets
 from PIL import Image
 import os
+
+# ERROR ROUTES
+
+@app.errorhandler(429)
+def too_many_requests(e):
+    return render_template("429.html"), 429
 
 # INTRODUCTION PAGES
 
@@ -186,5 +196,18 @@ courses_list = [
 @app.route('/dashboard/courses', methods=['GET', 'POST'])
 @login_required
 def courses():
-    return render_template('courses.html',
-                            courses_list=courses_list)
+    # if current_user.profession == "Student":
+    #     current_user.profession = "Teacher"
+    #     db.session.commit()
+    add_course = AddCourseForm()
+    new_course = NewCourseForm()
+
+    if new_course.validate_on_submit():
+        pass
+    elif add_course.validate_on_submit():
+        pass
+    else:
+        return render_template('courses.html',
+                                courses_list=courses_list,
+                                new_course=new_course,
+                                add_course=add_course)

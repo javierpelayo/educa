@@ -20,7 +20,7 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="h-100 row">
-      <div class="d-none d-md-flex flex-column justify-content-center align-items-center col-md-1 border-right">
+      <div class="h-100 d-none d-md-flex flex-column justify-content-center align-items-center col-md-1 border-right">
         <ul class="side-nav col-3">
           <li class="side-nav-item"><a href="{{ url_for('profile') }}"><i class="fas fa-user"></i></a></li>
           <li class="side-nav-item"><a href="{{ url_for('courses') }}"><i class="fas fa-pencil-alt"></i></a></li>
@@ -28,7 +28,7 @@
           <li class="side-nav-item"><a href="#"><i class="fas fa-inbox"></i></a></li>
         </ul>
       </div>
-      <div class="container col-11">
+      <div class="container col-12 col-md-11">
         {% block content_dash %}{% endblock %}
       </div>
     </div>

@@ -74,3 +74,17 @@ class UpdateProfileForm(FlaskForm):
             user = User_Account.query.filter_by(email=email.data).first()
             if user:
                 raise ValidationError('A user with that email already exists.')
+
+class NewCourseForm(FlaskForm):
+    title = StringField('Title',
+                        validators=[DataRequired()])
+    subject = StringField('Subject',
+                            validators=[DataRequired()])
+    points = StringField('Points',
+                        validators=[DataRequired()])
+    submit = SubmitField('Create')
+
+class AddCourseForm(FlaskForm):
+    link = StringField('Invite Link',
+                        validators=[DataRequired()])
+    submit = SubmitField('Add')

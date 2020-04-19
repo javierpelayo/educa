@@ -1,6 +1,64 @@
 {% extends "dashboard.html" %}
 {% block content_dash %}
-<!-- SECTION 1 - COURSES -->
+  <!-- MODAL NEW COURSE -->
+  <div id="new_modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="ml-3">Create New Course</h2>
+          <button type="button" class="close" data-dismiss="modal">
+            <span>&times;</span>
+          </button>
+        </div>
+        <form class="form-group mb-0" method="POST">
+          <div class="modal-body mt-0">
+            <div class="col mt-2">
+              {{ new_course.title(class="form-control", placeholder="Title") }}
+            </div>
+            <div class="col mt-2">
+              {{ new_course.subject(class="form-control", placeholder="Subject") }}
+            </div>
+            <div class="col my-2">
+              {{ new_course.points(class="form-control", placeholder="Max Points") }}
+            </div>
+          </div>
+          <div class="modal-footer">
+            {{ new_course.submit(class="btn btn-primary") }}
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL ADD COURSE -->
+  <div id="add_modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="ml-3">Add Course</h2>
+          <button type="button" class="close" data-dismiss="modal">
+            <span>&times;</span>
+          </button>
+        </div>
+        <form class="" action="index.html" method="post">
+          <div class="modal-body">
+              <div class="col">
+                <h5>Paste Your Course Invite Link</h5>
+              </div>
+              <div class="col">
+                {{ add_course.link(class="form-control", placeholder="Invite Link") }}
+                <small class="text-muted mt-1 ml-2">This should have been emailed to you by your professor.</small>
+              </div>
+          </div>
+          <div class="modal-footer">
+            {{ new_course.submit(class="btn btn-primary") }}
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 1 - COURSES -->
   <section>
     <div class="container">
       <div class="row mt-5">
@@ -18,18 +76,20 @@
           </div>
         </a>
         {% endfor %}
-        {% if current_user.profession == 'Teacher' %}
         <!-- SECTION 2 - CREATE COURSE LINK -->
-            <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center">
-              <div class="card card-size my-2 border-0">
-                <div class="card-body d-flex align-items-center justify-content-center">
-                    <form action="" method="GET">
-                      <button class="btn-link" type="submit" name="new" value="true"><i class="fas fa-plus"></i></button>
-                    </form>
-                </div>
-              </div>
+        <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center">
+          <div class="card card-size my-2 border-0">
+            <div class="card-body d-flex align-items-center justify-content-center">
+                <form action="" method="GET">
+                  {% if current_user.profession == 'Teacher' %}
+                    <button id="new" class="btn-link noSelect" type="button" data-toggle="modal" data-target="#new_modal"><i class="fas fa-plus"></i></button>
+                  {% else %}
+                    <button id="add" class="btn-link" type="button" data-toggle="modal" data-target="#add_modal"><i class="fas fa-plus"></i></button>
+                  {% endif %}
+                </form>
             </div>
-        {% endif %}
+          </div>
+        </div>
       </div>
     </div>
   </section>
