@@ -2,7 +2,8 @@ from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from wtforms import (StringField, PasswordField,
                     SubmitField, BooleanField,
-                    RadioField, TextAreaField)
+                    RadioField, TextAreaField,
+                    IntegerField)
 from flask_login import current_user
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from educa.models import User_Account
@@ -80,7 +81,7 @@ class NewCourseForm(FlaskForm):
                         validators=[DataRequired()])
     subject = StringField('Subject',
                             validators=[DataRequired()])
-    points = StringField('Points',
+    points = IntegerField('Points',
                         validators=[DataRequired()])
     submit = SubmitField('Create')
 

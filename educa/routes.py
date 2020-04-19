@@ -196,18 +196,36 @@ courses_list = [
 @app.route('/dashboard/courses', methods=['GET', 'POST'])
 @login_required
 def courses():
-    # if current_user.profession == "Student":
-    #     current_user.profession = "Teacher"
-    #     db.session.commit()
+    courses = Course.query.filter_by(teacher_id=current_user.id).all()
+    print(courses)
+    # For Students
     add_course = AddCourseForm()
+    # For Teachers
     new_course = NewCourseForm()
 
+    # POST
     if new_course.validate_on_submit():
-        pass
+        course = Course(teacher_id=current_user.id,
+                        title=new_course.title.data,
+                        subject=new_course.subject.data,
+                        points=new_course.points.data)
+        db.session.add(course)
+        db.session.commit()
+        return redirect(url_for('courses'))
     elif add_course.validate_on_submit():
-        pass
-    else:
+        return redirect(url_for('courses'))
+    elif request.method == "POST" and new_course.errors or add_course.errors:
+        return redirect(url_for('courses'))
+
+    if request.method == "GET":
         return render_template('courses.html',
-                                courses_list=courses_list,
+                                courses=courses,
                                 new_course=new_course,
                                 add_course=add_course)
+
+@app.route('/dashboard/courses/<int:course_id>', methods=['GET', 'POST'])
+@login_required
+def course(course_id):
+    course = Course.query.filter_by(id=course_id).first()
+    return render_template('course.html',
+                            course=course)

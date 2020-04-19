@@ -1,5 +1,5 @@
 from flask import Flask
-# from flask_debugtoolbar import DebugToolbarExtension
+from flask_debugtoolbar import DebugToolbarExtension
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_sqlalchemy import SQLAlchemy
@@ -13,7 +13,7 @@ limiter = Limiter(app,
                 key_func=get_remote_address,
                 default_limits=['200 per day', '50 per hour'])
 app.config['SECRET_KEY'] = os.environ['EDUCA_SECRET_KEY']
-# toolbar = DebugToolbarExtension(app)
+toolbar = DebugToolbarExtension(app)
 ENV = 'dev'
 # if our environ is in dev or production mode
 if ENV == 'dev':

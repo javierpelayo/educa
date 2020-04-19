@@ -1,35 +1,38 @@
 {% extends "dashboard.html" %}
 {% block content_dash %}
-  <!-- MODAL NEW COURSE -->
-  <div id="new_modal" class="modal fade" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h2 class="ml-3">Create New Course</h2>
-          <button type="button" class="close" data-dismiss="modal">
-            <span>&times;</span>
-          </button>
-        </div>
-        <form class="form-group mb-0" method="POST">
-          <div class="modal-body mt-0">
-            <div class="col mt-2">
-              {{ new_course.title(class="form-control", placeholder="Title") }}
-            </div>
-            <div class="col mt-2">
-              {{ new_course.subject(class="form-control", placeholder="Subject") }}
-            </div>
-            <div class="col my-2">
-              {{ new_course.points(class="form-control", placeholder="Max Points") }}
-            </div>
-          </div>
-          <div class="modal-footer">
-            {{ new_course.submit(class="btn btn-primary") }}
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
 
+  {% if current_user.profession == "Teacher" %}
+  <!-- MODAL NEW COURSE -->
+      <div id="new_modal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h2 class="ml-3">Create New Course</h2>
+              <button type="button" class="close" data-dismiss="modal">
+                <span>&times;</span>
+              </button>
+            </div>
+            <form class="needs-validation form-group mb-0" method="POST" novalidate>
+              {{ new_course.hidden_tag() }}
+              <div class="modal-body mt-0">
+                <div class="col mt-2">
+                  {{ new_course.title(class="form-control", placeholder="Title") }}
+                </div>
+                <div class="col mt-2">
+                  {{ new_course.subject(class="form-control", placeholder="Subject") }}
+                </div>
+                <div class="col my-2">
+                  {{ new_course.points(class="form-control", placeholder="Max Points") }}
+                </div>
+              </div>
+              <div class="modal-footer">
+                {{ new_course.submit(class="btn btn-primary") }}
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+  {% elif current_user.profession == "Student" %}
   <!-- MODAL ADD COURSE -->
   <div id="add_modal" class="modal fade" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -41,6 +44,7 @@
           </button>
         </div>
         <form class="" action="index.html" method="post">
+          {{ add_course.hidden_tag() }}
           <div class="modal-body">
               <div class="col">
                 <h5>Paste Your Course Invite Link</h5>
@@ -57,12 +61,12 @@
       </div>
     </div>
   </div>
-
+  {% endif %}
   <!-- SECTION 1 - COURSES -->
   <section>
     <div class="container">
       <div class="row mt-5">
-        {% for course in courses_list %}
+        {% for course in courses %}
         <a class="card-click col-12 col-md-6 col-lg-4 d-flex justify-content-center" href="/dashboard/courses/{{ course.id }}">
           <div class="card card-shadow card-size my-2">
             <h5 class="card-title d-flex justify-content-center py-2 border-bottom">
