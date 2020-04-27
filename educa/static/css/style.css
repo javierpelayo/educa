@@ -4,16 +4,6 @@ html, body {
    height: 100%;
 }
 
-.side-nav {
-  list-style-type: none;
-  padding: 0;
-}
-
-.side-nav-item {
-  padding-bottom: 2rem;
-  font-size: 2rem;
-}
-
 .extra-margin {
   margin-top: 10rem;
 }
@@ -67,4 +57,64 @@ html, body {
 
 .card-shadow:hover {
   box-shadow:0 0 1rem rgba(0,0,0,.1);
+}
+
+/* SIDE NAV */
+.sidenav {
+  height: 100%;
+  width: 5rem;
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #ffffff;
+  overflow-x: hidden;
+}
+
+.coursenav {
+  height: 100%;
+  width: 7rem;
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+  top: 0;
+  left: 5rem;
+  background-color: #ffffff;
+  overflow-x: hidden;
+}
+
+.sidenav a {
+  text-decoration: none;
+  margin-bottom: 2rem;
+  font-size: 2rem;
+}
+
+.coursenav a {
+  text-decoration: none;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+}
+
+.navdrop a {
+  text-decoration: none;
+  margin-bottom: 1rem;
+}
+
+#navDropdown {
+  transition: height 2s;
+}
+
+
+/* MEDIUM */
+@media (min-width: 768px) {
+  .course-content {
+    margin-left: 10rem !important;
+  }
 }

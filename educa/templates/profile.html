@@ -6,7 +6,7 @@
       {{ form.hidden_tag() }}
       <!-- SECTION 1 NAME -->
       <section>
-        <div class="d-flex flex-column flex-sm-row align-items-center justify-content-start my-5 mx-2 mx-md-5">
+        <div class="d-flex flex-column flex-sm-row align-items-center justify-content-start my-5 mx-5">
           <img class="rounded-circle profile-img" src="{{ profile_image }}" alt="">
           <div class="mt-5 mt-sm-0 mx-5 col col-sm-7 col-lg-5 col-xl-4">
             {% if form.fullname.errors %}
@@ -24,7 +24,7 @@
       </section>
       <!-- SECTION 2 EMAIL -->
       <section>
-        <div class="d-flex flex-column flex-sm-row align-items-center justify-content-start my-5 mx-2 mx-md-5">
+        <div class="d-flex flex-column flex-sm-row align-items-center justify-content-start my-5 mx-5">
           <div>
             <h2 class="email-profile d-none d-sm-block">Email:</h2>
           </div>
@@ -44,10 +44,10 @@
       </section>
       <!-- SECTION 3 BIO -->
       <section>
-        <div class="d-flex justify-content-start mx-2 mx-md-5">
+        <div class="d-flex justify-content-start mx-5">
           <h2 class="d-none d-sm-block">Biography:</h2>
         </div>
-        <div class="d-flex justify-content-center justify-content-sm-start mx-2 mx-md-5">
+        <div class="d-flex justify-content-center justify-content-sm-start mx-5">
             {% if form.biography.errors %}
               {{ form.biography(class="form-control is-invalid mt-3", placeholder="A short story about your journey...") }}
               <div class="invalid-feedback">
@@ -62,7 +62,7 @@
       </section>
       <!-- SECTION 4 REMOVE PROFILE PICTURE -->
       <section>
-        <div class="d-flex justify-content-center justify-content-sm-start mt-3 mx-2 mx-md-5">
+        <div class="d-flex justify-content-center justify-content-sm-start mt-3 mx-5">
           {{ form.removepic.label }}
           <div class="ml-2">
             {{ form.removepic }}
@@ -72,13 +72,13 @@
       </section>
       <!-- SECTION 5 FILE UPLOAD-->
       <section>
-        <div class="d-flex justify-content-center justify-content-sm-start mt-3 mx-2 mx-md-5">
+        <div class="d-flex justify-content-center justify-content-sm-start mt-3 mx-5">
           <p>Update Profile Picture</p>
         </div>
           <!-- <button class="btn btn-light" type="button">{{ form.picture.label(class="p-0 m-0") }}</button>
           {{ form.picture(class="d-none m-0 p-0") }} -->
           {% if form.picture.errors %}
-            <div class="form-group d-flex justify-content-center justify-content-sm-start mx-2 mx-md-5">
+            <div class="form-group d-flex justify-content-center justify-content-sm-start mx-5">
               <button class="btn btn-light" type="button">{{ form.picture.label(class="p-0 m-0") }}</button>
               {{ form.picture(class="d-none") }}
             </div>
@@ -88,7 +88,7 @@
               {% endfor %}
             </div>
           {% else %}
-            <div class="form-group d-flex justify-content-center justify-content-sm-start mx-2 mx-md-5">
+            <div class="form-group d-flex justify-content-center justify-content-sm-start mx-5">
               <button class="btn btn-light" type="button">{{ form.picture.label(class="p-0 m-0") }}</button>
               {{ form.picture(class="d-none") }}
             </div>
@@ -96,7 +96,7 @@
       </section>
       <!-- SECTION 6 SUBMIT -->
       <section>
-        <div class="form-group d-flex justify-content-center justify-content-sm-start mx-2 mx-md-5 mt-2">
+        <div class="form-group d-flex justify-content-center justify-content-sm-start mx-5 mt-2">
           {{ form.submit(class="btn btn-primary mb-5") }}
         </div>
       </section>

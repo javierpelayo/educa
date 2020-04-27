@@ -1,14 +1,23 @@
 {% extends "dashboard.html" %}
 {% block content_dash %}
-  <div class="h-100 d-none d-md-flex flex-column justify-content-center align-items-center col-md-1 border-right">
-    <ul class="side-nav col-3">
-      <li class="side-nav-item"><a href="{{ url_for('profile') }}"><i class="fas fa-user"></i></a></li>
-      <li class="side-nav-item"><a href="{{ url_for('courses') }}"><i class="fas fa-pencil-alt"></i></a></li>
-      <li class="side-nav-item"><a href="#"><i class="far fa-calendar-alt"></i></a></li>
-      <li class="side-nav-item"><a href="#"><i class="fas fa-inbox"></i></a></li>
-    </ul>
+  <div class="d-none d-md-flex coursenav border-right pt-5">
+      <a href="#">About</a>
+      <a href="#">Assignments</a>
+      <a href="#">Grades</a>
+      <a href="#">Lectures</a>
+      {% if current_user.id == course.teacher_id %}
+      {% endif %}
   </div>
-  <div class="col-12 col-md-10 d-flex justify-content-center align-items-center">
-    <h2>Welcome to course {{ course.title }}</h2>
+  <div class="d-flex justify-content-center justify-content-md-start course-content mt-5 border-bottom">
+    <h2>{{ course.id }} {{ course.title }}</h2>
+  </div>
+  <div class="d-flex justify-content-center course-content mt-2">
+    <p>{{ course.syllabus }}</p>
+  </div>
+  <!-- Course Syllabus Buttons -->
+  <div class="course-content">
+    {% if current_user.id == course.teacher_id %}
+      <button class="btn btn-primary" type="button">Edit Syllabus</button>
+    {% endif %}
   </div>
 {% endblock %}
