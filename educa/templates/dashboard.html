@@ -20,22 +20,37 @@
       <nav>
         <div class="d-flex d-md-none justify-content-between">
           <a class="navbar-brand ml-3" href="{{ url_for("home") }}"><i class="fas fa-book"></i> EDUCA</a>
-          <button id="btn-drop" class="navbar-toggler navbar-light" type="button">
+          <button class="navbar-toggler navbar-light" type="button" data-toggle="collapse" data-target="#navDropdown">
             <span class="navbar-toggler-icon"></span>
           </button>
         </div>
-        <div class="navdrop d-none flex-column d-md-none align-items-start ml-3" id="navDropdown">
+        <div class="collapse navdrop d-md-none" id="navDropdown">
           <a href="{{ url_for('profile') }}">Profile</a>
           <a href="{{ url_for('courses') }}">Courses</a>
           <a href="#">Deadline</a>
           <a href="#">Inbox</a>
         </div>
-        <div class="d-none d-md-flex sidenav border-right pt-5">
-          <a class="navbar-brand ml-3" href="{{ url_for("home") }}"><i class="fas fa-book"></i></a>
-          <a href="{{ url_for('profile') }}"><i class="fas fa-user"></i></a>
-          <a href="{{ url_for('courses') }}"><i class="fas fa-pencil-alt"></i></a>
-          <a href="#"><i class="far fa-calendar-alt"></i></a>
-          <a href="#"><i class="fas fa-inbox"></i></a>
+        <div class="d-none d-md-flex sidenav border-right py-5">
+          <a class="sidenav-item"href="{{ url_for('home') }}">
+            <i class="fas fa-book"></i>
+            <span class="sidenav-text">EDUCA</span>
+          </a>
+          <a class="sidenav-item" href="{{ url_for('profile') }}">
+            <i class="fas fa-user"></i>
+            <span class="sidenav-text">Profile</span>
+          </a>
+          <a class="sidenav-item" href="{{ url_for('courses') }}">
+            <i class="fas fa-pencil-alt"></i>
+            <span class="sidenav-text">Courses</span>
+          </a>
+          <a class="sidenav-item" href="#">
+            <i class="far fa-calendar-alt"></i>
+            <span class="sidenav-text">Deadlines</span>
+          </a>
+          <a class="sidenav-item" href="#">
+            <i class="fas fa-inbox"></i>
+            <span class="sidenav-text">Inbox</span>
+          </a>
         </div>
       </nav>
       <!-- <div class="container col-12 col-md-11 p-0"> -->
@@ -46,6 +61,7 @@
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://cdn.tiny.cloud/1/5t7si4kzxnjyk0lgsz2gu9mgqhzgjunlvlxfbc1z8u5ircmn/tinymce/5/tinymce.min.js" referrerpolicy="origin"/></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/script.js')|autoversion }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/dashboard.js')|autoversion }}"></script>
   </body>

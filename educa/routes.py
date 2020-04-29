@@ -1,14 +1,19 @@
-from flask import (render_template,request,
+from flask import (render_template, request,
                     redirect, url_for,
-                    session, logging, current_app, sessions)
+                    session, logging,
+                    current_app, sessions)
 from . import app, db, bcrypt, limiter
 from educa.forms import (RegistrationForm,
                         LoginForm,
                         UpdateProfileForm,
                         NewCourseForm,
-                        AddCourseForm)
+                        AddCourseForm,
+                        UpdateSyllabusForm)
 from educa.models import *
-from flask_login import login_user, current_user, logout_user, login_required
+from flask_login import (login_user,
+                        current_user,
+                        logout_user,
+                        login_required)
 from functools import wraps
 from educa.filters import autoversion
 import secrets
@@ -19,7 +24,7 @@ import os
 
 @app.errorhandler(429)
 def too_many_requests(e):
-    return render_template("429.html"), 429
+    return render_template("error/429.html"), 429
 
 # INTRODUCTION PAGES
 
@@ -195,7 +200,7 @@ def courses():
         return redirect(url_for('courses'))
 
     if request.method == "GET":
-        return render_template('courses.html',
+        return render_template('course/courses.html',
                                 courses=courses,
                                 new_course=new_course,
                                 add_course=add_course)
@@ -204,5 +209,23 @@ def courses():
 @login_required
 def course(course_id):
     course = Course.query.filter_by(id=course_id).first()
-    return render_template('course.html',
-                            course=course)
+    syllabusform = UpdateSyllabusForm()
+    edit = request.args.get('edit')
+    if course.teacher_id == current_user.id and request.method == "GET" and edit == "true":
+        syllabusform.syllabus.data = course.syllabus
+        return render_template('course/course_about.html',
+                                course=course,
+                                syllabusform=syllabusform,
+                                edit=edit)
+    elif course.teacher_id == current_user.id and syllabusform.validate_on_submit():
+        course.syllabus = syllabusform.syllabus.data
+        db.session.commit()
+        return redirect(url_for('course', course_id=course.id))
+    else:
+        return render_template('course/course_about.html',
+                                course=course)
+
+# @app.route('/dashboard/courses/<int:course_id>/assignments', methods=['GET', 'POST'])
+# @login_required
+# def assignments(course_id):
+#     return render_template('assignment/assignments.html')

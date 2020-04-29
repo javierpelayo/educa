@@ -59,33 +59,18 @@ html, body {
   box-shadow:0 0 1rem rgba(0,0,0,.1);
 }
 
-/* SIDE NAV */
+/* DASHBOARD SIDE NAV */
 .sidenav {
   height: 100%;
   width: 5rem;
   position: fixed;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
   z-index: 1;
   top: 0;
   left: 0;
-  background-color: #ffffff;
-  overflow-x: hidden;
-}
-
-.coursenav {
-  height: 100%;
-  width: 7rem;
-  position: fixed;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  z-index: 2;
-  top: 0;
-  left: 5rem;
   background-color: #ffffff;
   overflow-x: hidden;
 }
@@ -96,10 +81,12 @@ html, body {
   font-size: 2rem;
 }
 
-.coursenav a {
-  text-decoration: none;
-  margin-bottom: 1rem;
-  font-size: 1rem;
+.navdrop {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  margin-left: 1rem;
 }
 
 .navdrop a {
@@ -107,14 +94,60 @@ html, body {
   margin-bottom: 1rem;
 }
 
-#navDropdown {
-  transition: height 2s;
+.sidenav-text {
+  font-size: .75rem;
 }
 
+.sidenav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
-/* MEDIUM */
+/* INDIVIDUAL COURSE NAV */
+.coursenav {
+  height: 100%;
+  width: 7rem;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  z-index: 1;
+  top: 6rem;
+  left: 5rem;
+  background-color: #ffffff;
+  overflow-x: hidden;
+}
+
+.coursenav a {
+  text-decoration: none;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+}
+
+/* INDIVIDUAL COURSE */
+.course-title {
+  margin: 0 1rem 0 1rem;
+}
+
+.course-content {
+  margin: 0 1rem 0 1rem;
+}
+
+.syllabus-textarea {
+  height: 500px;
+}
+
+/* INDIVIDUAL COURSE - MEDIUM */
 @media (min-width: 768px) {
+  .course-title {
+    margin-left: 2.5rem !important;
+    margin-right: 1rem !important;
+  }
+
   .course-content {
     margin-left: 10rem !important;
+    margin-right: 1rem !important;
   }
 }

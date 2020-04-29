@@ -89,3 +89,7 @@ class AddCourseForm(FlaskForm):
     link = StringField('Invite Link',
                         validators=[DataRequired()])
     submit = SubmitField('Add')
+
+class UpdateSyllabusForm(FlaskForm):
+    syllabus = TextAreaField('Syllabus')
+    submit = SubmitField('Submit')
