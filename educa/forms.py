@@ -86,7 +86,7 @@ class NewCourseForm(FlaskForm):
     submit = SubmitField('Create')
 
 class AddCourseForm(FlaskForm):
-    link = StringField('Invite Link',
+    id = StringField('Course ID',
                         validators=[DataRequired()])
     submit = SubmitField('Add')
 

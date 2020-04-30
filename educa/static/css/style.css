@@ -133,6 +133,7 @@ html, body {
 
 .course-content {
   margin: 0 1rem 0 1rem;
+  padding-bottom: 3rem;
 }
 
 .syllabus-textarea {
@@ -147,7 +148,7 @@ html, body {
   }
 
   .course-content {
-    margin-left: 10rem !important;
-    margin-right: 1rem !important;
+    margin: 0 1rem 0 10rem !important;
+    padding-bottom: 3rem;
   }
 }

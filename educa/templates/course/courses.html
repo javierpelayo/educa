@@ -26,7 +26,7 @@
                 </div>
               </div>
               <div class="modal-footer">
-                {{ new_course.submit(class="btn btn-primary") }}
+                {{ new_course.submit(class="btn btn-outline-primary") }}
               </div>
             </form>
           </div>
@@ -43,19 +43,19 @@
             <span>&times;</span>
           </button>
         </div>
-        <form class="" action="index.html" method="post">
+        <form class="form-group" action="" method="POST">
           {{ add_course.hidden_tag() }}
           <div class="modal-body">
               <div class="col">
-                <h5>Paste Your Course Invite Link</h5>
+                <h5>Paste Your Course ID</h5>
               </div>
               <div class="col">
-                {{ add_course.link(class="form-control", placeholder="Invite Link") }}
+                {{ add_course.id(class="form-control", placeholder="Course ID") }}
                 <small class="text-muted mt-1 ml-2">This should have been emailed to you by your professor.</small>
               </div>
           </div>
-          <div class="modal-footer">
-            {{ new_course.submit(class="btn btn-primary") }}
+          <div class="modal-footer pb-0">
+            {{ add_course.submit(class="btn btn-outline-primary") }}
           </div>
         </form>
       </div>

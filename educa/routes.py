@@ -99,8 +99,7 @@ def logout():
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    return render_template('dashboard.html',
-                            title='Dashboard')
+    return redirect(url_for('courses'))
 
 
 # Profile Picture Functionality
@@ -178,8 +177,14 @@ def profile():
 @app.route('/dashboard/courses', methods=['GET', 'POST'])
 @login_required
 def courses():
-    courses = Course.query.filter_by(teacher_id=current_user.id).all()
-    print(courses)
+    teacher_courses = Course.query.filter_by(teacher_id=current_user.id).all()
+
+    # Get the student courses
+    user_courses = Course_User.query.filter_by(user_id=current_user.id).all()
+    student_courses = []
+    for i in range(len(user_courses)):
+        student_courses.append(Course.query.filter_by(id=user_courses[i].course_id).first())
+
     # For Students
     add_course = AddCourseForm()
     # For Teachers
@@ -195,15 +200,26 @@ def courses():
         db.session.commit()
         return redirect(url_for('courses'))
     elif add_course.validate_on_submit():
+        course = Course.query.filter_by(id=add_course.id.data).first()
+        if course:
+            course_user = Course_User(user_id=current_user.id,
+                                    course_id=add_course.id.data)
+            db.session.add(course_user)
+            db.session.commit()
         return redirect(url_for('courses'))
     elif request.method == "POST" and new_course.errors or add_course.errors:
         return redirect(url_for('courses'))
 
-    if request.method == "GET":
+    if request.method == "GET" and current_user.profession == "Teacher":
         return render_template('course/courses.html',
-                                courses=courses,
+                                courses=teacher_courses,
                                 new_course=new_course,
-                                add_course=add_course)
+                                title="Courses")
+    elif request.method == "GET" and current_user.profession == "Student":
+        return render_template('course/courses.html',
+                                courses=student_courses,
+                                add_course=add_course,
+                                title="Courses")
 
 @app.route('/dashboard/courses/<int:course_id>', methods=['GET', 'POST'])
 @login_required
@@ -211,19 +227,30 @@ def course(course_id):
     course = Course.query.filter_by(id=course_id).first()
     syllabusform = UpdateSyllabusForm()
     edit = request.args.get('edit')
+    delete = request.form.get('delete')
+    # GET
     if course.teacher_id == current_user.id and request.method == "GET" and edit == "true":
         syllabusform.syllabus.data = course.syllabus
         return render_template('course/course_about.html',
                                 course=course,
                                 syllabusform=syllabusform,
-                                edit=edit)
+                                edit=edit,
+                                title="Course - " + str(course.title))
+    # POST
+    elif course.teacher_id == current_user.id and delete == "true":
+        db.session.delete(course)
+        db.session.commit()
+        return redirect(url_for('courses'))
+    #POST
     elif course.teacher_id == current_user.id and syllabusform.validate_on_submit():
         course.syllabus = syllabusform.syllabus.data
         db.session.commit()
         return redirect(url_for('course', course_id=course.id))
+    #GET
     else:
         return render_template('course/course_about.html',
-                                course=course)
+                                course=course,
+                                title="Course - " + str(course.title))
 
 # @app.route('/dashboard/courses/<int:course_id>/assignments', methods=['GET', 'POST'])
 # @login_required
