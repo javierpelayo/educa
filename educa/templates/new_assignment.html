@@ -1,0 +1,87 @@
+{% extends "course_layout.html" %}
+{% block course_content %}
+<div class="course-content">
+  <form class="needs-validation" action="/dashboard/courses/{{ course.id }}/assignments" method="POST">
+    {{ assignmentform.hidden_tag() }}
+    <div class="form-group d-flex flex-column align-items-center">
+      <div class="col-10 mb-3">
+        {% if assignmentform.title.errors %}
+          {{ assignmentform.title(class="form-control is-invalid", placeholder="Title") }}
+          <div class="invalid-feedback">
+            {% for error in assignmentform.title.errors %}
+              <small>{{ error }}</small>
+            {% endfor %}
+          </div>
+        {% else %}
+          {{ assignmentform.title(class="form-control", placeholder="Title") }}
+          <div class="valid-feedback">
+            <span>Looks Good!</span>
+          </div>
+        {% endif %}
+      </div>
+      <div class="col-10 mb-3">
+        {{ assignmentform.type(class="form-control") }}
+      </div>
+      <div class="col-10 mb-3">
+        {% if assignmentform.content.errors %}
+          {{ assignmentform.content(class="form-control is-invalid", placeholder="Instructions (optional)", id="mytextarea") }}
+          <div class="invalid-feedback">
+            {% for error in assignmentform.content.errors %}
+              <small>{{ error }}</small>
+            {% endfor %}
+          </div>
+        {% else %}
+          {{ assignmentform.content(class="form-control", placeholder="Instructions (optional)", id="mytextarea") }}
+          <div class="valid-feedback">
+            <span>Looks Good!</span>
+          </div>
+        {% endif %}
+      </div>
+      <div class="col-10 mb-1">
+        {% if assignmentform.points.errors %}
+          {{ assignmentform.points(class="form-control is-invalid", placeholder="Points") }}
+          <div class="invalid-feedback">
+            {% for error in assignmentform.points.errors %}
+              <small>{{ error }}</small>
+            {% endfor %}
+          </div>
+        {% else %}
+          {{ assignmentform.points(class="form-control", placeholder="Points") }}
+          <div class="valid-feedback">
+            <span>Looks Good!</span>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+    <div class="d-flex justify-content-center">
+      <b>{{ assignmentform.dateInput.label }}</b>
+    </div>
+      <div class="form-row justify-content-center">
+          <div class="form-group col-3">
+            {% if assignmentform.dateInput.errors %}
+              {{ assignmentform.dateInput(class="form-control is-invalid", placeholder="M/D/Y") }}
+              <div class="invalid-feedback">
+                {% for error in assignmentform.dateInput.errors %}
+                  <small>{{ error }}</small>
+                {% endfor %}
+              </div>
+            {% else %}
+              {{ assignmentform.dateInput(class="form-control", placeholder="M/D/Y") }}
+              <div class="valid-feedback">
+                <span>Looks Good!</span>
+              </div>
+            {% endif %}
+          </div>
+          <div class="form-group col-3">
+            {{ assignmentform.hour(class="form-control") }}
+          </div>
+          <div class="form-group col-3">
+            {{ assignmentform.minute(class="form-control") }}
+          </div>
+      </div>
+    <div class="d-flex justify-content-center my-4">
+      {{ assignmentform.submit(class="btn btn-outline-primary") }}
+    </div>
+  </form>
+</div>
+{% endblock course_content %}

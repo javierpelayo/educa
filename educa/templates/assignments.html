@@ -1,18 +1,26 @@
 {% extends "course_layout.html" %}
 {% block course_content %}
   <div class="course-content">
-    <form class="" action="" method="POST">
-      {{ assignmentform.hidden_tag() }}
-      <div class="d-flex flex-column align-items-center">
-        {{ assignmentform.title(class="form-control", placeholder="Title") }}
-        {{ assignmentform.type(class="form-control") }}
-        {{ assignmentform.content(class="form-control", placeholder="Content") }}
-        {{ assignmentform.points(class="form-control", placeholder="Points") }}
-        {{ assignmentform.dateInput(class="form-control", placeholder="Month/Day/Year") }}
-        {{ assignmentform.hour(class="form-control") }}
-        {{ assignmentform.minute(class="form-control") }}
-        {{ assignmentform.submit }}
-      </div>
-    </form>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Title</th>
+          <th scope="col">Due Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for assignment in assignments %}
+            <tr>
+              <th scope="row"><a href="#">{{ assignment.id }}</a></th>
+              <td><a href="#">{{ assignment.title }}</a></td>
+              <td>{{ assignment.duedate }}</td>
+            </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <div class="d-flex justify-content-center my-1">
+      <a class="btn btn-outline-primary" href="/dashboard/courses/{{ course.id }}/assignments/new">New Assignment</a>
+    </div>
   </div>
 {% endblock course_content %}

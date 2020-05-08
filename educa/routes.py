@@ -183,6 +183,7 @@ def courses():
     teacher_courses = Course.query.filter_by(teacher_id=current_user.id).all()
 
     # Get the student courses
+    # NEEDS REFACTORING/MORE EFFICIENT WAY
     user_courses = Course_User.query.filter_by(user_id=current_user.id).all()
     student_courses = []
     for i in range(len(user_courses)):
@@ -229,13 +230,13 @@ def courses():
 def course(course_id):
     course = Course.query.filter_by(id=course_id).first()
 
-    edit_course = UpdateCourseForm()
+    edit_course_form = UpdateCourseForm()
     syllabusform = UpdateSyllabusForm()
 
     if request.method == "GET":
-        edit_course.title.data = course.title
-        edit_course.subject.data = course.subject
-        edit_course.points.data = course.points
+        edit_course_form.title.data = course.title
+        edit_course_form.subject.data = course.subject
+        edit_course_form.points.data = course.points
 
     # GET - HTTP URL Queries
     edit_syllabus = request.args.get('edit')
@@ -254,7 +255,7 @@ def course(course_id):
                                 course=course,
                                 syllabusform=syllabusform,
                                 edit=edit_syllabus,
-                                edit_course=edit_course,
+                                edit_course_form=edit_course_form,
                                 title="Course - " + str(course.title))
     # POST - DELETE - delete course query
     elif course.teacher_id == current_user.id and request.method == "POST" and delete == "true":
@@ -268,35 +269,31 @@ def course(course_id):
         return redirect(url_for('course', course_id=course.id))
     # POST - PUT - UPDATE course information
     elif (course.teacher_id == current_user.id and
-            edit_course.validate_on_submit() and
+            edit_course_form.validate_on_submit() and
             title and subject and points):
-        course.title = edit_course.title.data
-        course.subject = edit_course.subject.data
-        course.points = edit_course.points.data
+        course.title = edit_course_form.title.data
+        course.subject = edit_course_form.subject.data
+        course.points = edit_course_form.points.data
         db.session.commit()
         return redirect(url_for('course', course_id=course.id))
-    elif edit_course.errors:
+    elif edit_course_form.errors:
         return redirect(url_for('course', course_id=course.id))
     # GET
     else:
         return render_template('course_about.html',
                                 course=course,
-                                edit_course=edit_course,
+                                edit_course_form=edit_course_form,
                                 title="Course - " + str(course.title))
 
 @app.route('/dashboard/courses/<int:course_id>/assignments', methods=['GET', 'POST'])
 @login_required
 def assignments(course_id):
     course = Course.query.filter_by(id=course_id).first()
-    edit_course = UpdateCourseForm()
+    assignments = Assignment.query.filter_by(course_id=course_id).all()
     assignmentform = AssignmentForm()
 
-    if request.method == "GET":
-        edit_course.title.data = course.title
-        edit_course.subject.data = course.subject
-        edit_course.points.data = course.points
-
-    if request.method == "POST" and assignmentform.validate_on_submit():
+    # POST - CREATE ASSIGNMENT
+    if current_user.id == course.teacher_id and request.method == "POST" and assignmentform.validate_on_submit():
         dateInput = assignmentform.dateInput.data.strftime('%m/%d/%Y').split("/")
         hour = int(assignmentform.hour.data)
         minute = int(assignmentform.minute.data)
@@ -312,10 +309,26 @@ def assignments(course_id):
         db.session.add(assignment)
         db.session.commit()
 
-        return redirect(url_for('course', course_id=course.id))
+        return redirect(url_for('assignments', course_id=course.id))
     elif assignmentform.errors:
-        print(assignmentform.errors)
-    return render_template('assignments.html',
-                            course=course,
-                            edit_course=edit_course,
-                            assignmentform=assignmentform)
+        return redirect(url_for('new_assignment', course_id))
+    else:
+        return render_template('assignments.html',
+                                course=course,
+                                assignments=assignments,
+                                title=str(course.title) + "- Assignments",
+                                assignmentform=assignmentform)
+
+@app.route('/dashboard/courses/<int:course_id>/assignments/new', methods=['GET'])
+@login_required
+def new_assignment(course_id):
+    course = Course.query.filter_by(id=course_id).first()
+    assignmentform = AssignmentForm()
+
+    if current_user.id == course.teacher_id:
+        return render_template('new_assignment.html',
+                                course=course,
+                                assignmentform=assignmentform,
+                                title=str(course.title) + "- New Assignment")
+    else:
+        return redirect(url_for("assignments", course_id))

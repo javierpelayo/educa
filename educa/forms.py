@@ -110,7 +110,7 @@ class AssignmentForm(FlaskForm):
                 ('11', '11 a.m.'), ('12', '12 p.m.'), ('13', '1 p.m.'), ('14', '2 p.m.'), ('15', '3 p.m.'),
                 ('16', '4 p.m.'), ('17', '5 p.m.'), ('18', '6 p.m.'), ('19', '7 p.m.'), ('20', '8 p.m.'),
                 ('21', '9 p.m.'), ('22', '10 p.m.'), ('23', '11 p.m.')]
-    due_minute = [(str(min), str(min)) for min in range(0, 60)]
+    due_minute = [(str(min), str(min) + " minutes") for min in range(0, 60)]
     title = StringField('Title',
                         validators=[DataRequired()])
     type = SelectField('Type', choices=[('Exam/Quiz', 'Exam/Quiz'),

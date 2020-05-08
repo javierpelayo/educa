@@ -137,7 +137,7 @@ html, body {
 
 .course-content {
   margin: 0 1rem 0 1rem;
-  padding-bottom: 3rem;
+  padding: .5rem 0 3rem 0;
 }
 
 .syllabus-textarea {
@@ -148,13 +148,19 @@ html, body {
 @media (min-width: 768px) {
   .course-title {
     flex-direction: row !important;
-    justify-content: space-between !important;
+    justify-content: start !important;
     margin-left: 2.5rem !important;
     margin-right: 1rem !important;
   }
 
   .course-content {
     margin: 0 1rem 0 10rem !important;
-    padding-bottom: 3rem;
+    padding: .5rem 0 3rem 0;
   }
+}
+
+/* ASSIGNMENTS */
+
+td a:hover {
+  text-decoration: none;
 }

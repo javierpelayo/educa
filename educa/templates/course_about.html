@@ -1,8 +1,37 @@
 {% extends "course_layout.html" %}
 {% block course_content %}
-
   {% if course.teacher_id == current_user.id %}
-    <!-- MODAL ADD COURSE -->
+    <!-- MODAL EDIT COURSE -->
+    <div id="edit_modal" class="modal fade" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="ml-3">Edit Course</h2>
+            <button type="button" class="close" data-dismiss="modal">
+              <span>&times;</span>
+            </button>
+          </div>
+          <form class="needs-validation form-group mb-0" method="POST" novalidate>
+            {{ edit_course_form.hidden_tag() }}
+            <div class="modal-body mt-0">
+              <div class="col mt-2">
+                {{ edit_course_form.title(class="form-control", placeholder="Title") }}
+              </div>
+              <div class="col mt-2">
+                {{ edit_course_form.subject(class="form-control", placeholder="Subject") }}
+              </div>
+              <div class="col my-2">
+                {{ edit_course_form.points(class="form-control", placeholder="Max Points") }}
+              </div>
+            </div>
+            <div class="modal-footer">
+              {{ edit_course_form.submit(class="btn btn-outline-primary") }}
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- MODAL DELETE COURSE -->
     <div id="delete_modal" class="modal fade" tabindex="-1" role="dialog">
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -39,8 +68,9 @@
       {% if course.teacher_id == current_user.id %}
         <div class="d-flex justify-content-center my-5">
           <form action="" method="GET">
-            <button class="btn btn-outline-warning mx-2 mb-5" type="submit" name="edit" value="true">Edit Syllabus</button>
+            <button class="btn btn-outline-primary mx-2 mb-5" type="submit" name="edit" value="true">Edit Syllabus</button>
           </form>
+          <button class="btn btn-outline-warning mx-2 mb-5" type="button" data-toggle="modal" data-target="#edit_modal">Edit Course</button>
           <button class="btn btn-outline-danger mx-2 mb-5" type="button" data-toggle="modal" data-target="#delete_modal">Delete Course</button>
         </div>
       {% endif %}
