@@ -1,0 +1,18 @@
+{% extends "course_layout.html" %}
+{% block course_content %}
+  <div class="course-content">
+    <form class="" action="" method="POST">
+      {{ assignmentform.hidden_tag() }}
+      <div class="d-flex flex-column align-items-center">
+        {{ assignmentform.title(class="form-control", placeholder="Title") }}
+        {{ assignmentform.type(class="form-control") }}
+        {{ assignmentform.content(class="form-control", placeholder="Content") }}
+        {{ assignmentform.points(class="form-control", placeholder="Points") }}
+        {{ assignmentform.dateInput(class="form-control", placeholder="Month/Day/Year") }}
+        {{ assignmentform.hour(class="form-control") }}
+        {{ assignmentform.minute(class="form-control") }}
+        {{ assignmentform.submit }}
+      </div>
+    </form>
+  </div>
+{% endblock course_content %}

@@ -1,7 +1,7 @@
-{% extends "course/course_layout.html" %}
+{% extends "course_layout.html" %}
 {% block course_content %}
 
-  {% if current_user.profession == "Teacher" %}
+  {% if course.teacher_id == current_user.id %}
     <!-- MODAL ADD COURSE -->
     <div id="delete_modal" class="modal fade" tabindex="-1" role="dialog">
       <div class="modal-dialog modal-dialog-centered" role="document">
@@ -23,7 +23,7 @@
       </div>
     </div>
   {% endif %}
-  {% if current_user.profession == 'Teacher' and edit == 'true' %}
+  {% if course.teacher_id == current_user.id and edit == 'true' %}
     <form class="needs-validation form-group" action="" method="POST" novalidate>
       {{ syllabusform.hidden_tag() }}
       <div class="course-content mt-2">
@@ -36,7 +36,7 @@
   {% else %}
     <div class="course-content">
       {{ course.syllabus|safe }}
-      {% if current_user.profession == "Teacher" %}
+      {% if course.teacher_id == current_user.id %}
         <div class="d-flex justify-content-center my-5">
           <form action="" method="GET">
             <button class="btn btn-outline-warning mx-2 mb-5" type="submit" name="edit" value="true">Edit Syllabus</button>

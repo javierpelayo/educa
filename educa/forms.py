@@ -3,7 +3,8 @@ from flask_wtf.file import FileField, FileAllowed
 from wtforms import (StringField, PasswordField,
                     SubmitField, BooleanField,
                     RadioField, TextAreaField,
-                    IntegerField)
+                    IntegerField, DateField,
+                    SelectField)
 from flask_login import current_user
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from educa.models import User_Account
@@ -90,6 +91,37 @@ class AddCourseForm(FlaskForm):
                         validators=[DataRequired()])
     submit = SubmitField('Add')
 
+class UpdateCourseForm(FlaskForm):
+    title = StringField('Title',
+                        validators=[DataRequired()])
+    subject = StringField('Subject',
+                            validators=[DataRequired()])
+    points = IntegerField('Points',
+                        validators=[DataRequired()])
+    submit = SubmitField('Update')
+
 class UpdateSyllabusForm(FlaskForm):
     syllabus = TextAreaField('Syllabus')
     submit = SubmitField('Submit')
+
+class AssignmentForm(FlaskForm):
+    due_hour = [('1','1 a.m.'), ('2', '2 a.m.'), ('3', '3 a.m.'), ('4', '4 a.m.'), ('5', '5 a.m.'),
+                ('6', '6 a.m.'), ('7', '7 a.m.'), ('8', '8 a.m.'), ('9', '9 a.m.'), ('10', '10 a.m.'),
+                ('11', '11 a.m.'), ('12', '12 p.m.'), ('13', '1 p.m.'), ('14', '2 p.m.'), ('15', '3 p.m.'),
+                ('16', '4 p.m.'), ('17', '5 p.m.'), ('18', '6 p.m.'), ('19', '7 p.m.'), ('20', '8 p.m.'),
+                ('21', '9 p.m.'), ('22', '10 p.m.'), ('23', '11 p.m.')]
+    due_minute = [(str(min), str(min)) for min in range(0, 60)]
+    title = StringField('Title',
+                        validators=[DataRequired()])
+    type = SelectField('Type', choices=[('Exam/Quiz', 'Exam/Quiz'),
+                                        ('Instructions', 'Instructions'),
+                                        ('Lab', 'Lab'),
+                                        ('HW', 'HW')])
+    # If type = Instructional
+    content = TextAreaField('Content')
+    points = IntegerField('Points',
+                        validators=[DataRequired()])
+    dateInput = DateField('Due Date', format='%m/%d/%Y')
+    hour = SelectField('Hour', choices=due_hour)
+    minute = SelectField('Minute', choices=due_minute)
+    submit = SubmitField('Create')

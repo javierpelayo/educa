@@ -128,7 +128,11 @@ html, body {
 
 /* INDIVIDUAL COURSE */
 .course-title {
-  margin: 0 1rem 0 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 3rem 1rem 0 1rem;
 }
 
 .course-content {
@@ -143,6 +147,8 @@ html, body {
 /* INDIVIDUAL COURSE - MEDIUM */
 @media (min-width: 768px) {
   .course-title {
+    flex-direction: row !important;
+    justify-content: space-between !important;
     margin-left: 2.5rem !important;
     margin-right: 1rem !important;
   }

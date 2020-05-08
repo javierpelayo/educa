@@ -105,6 +105,7 @@ class Assignment(db.Model):
     title = db.Column(db.String(120), nullable=False)
     content = db.Column(db.Text, nullable=False)
     timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    duedate = db.Column(db.DateTime, nullable=False)
     questions = db.relationship('Question')
 
     def __repr__(self):

@@ -8,7 +8,9 @@ from educa.forms import (RegistrationForm,
                         UpdateProfileForm,
                         NewCourseForm,
                         AddCourseForm,
-                        UpdateSyllabusForm)
+                        UpdateCourseForm,
+                        UpdateSyllabusForm,
+                        AssignmentForm)
 from educa.models import *
 from flask_login import (login_user,
                         current_user,
@@ -18,6 +20,7 @@ from functools import wraps
 from educa.filters import autoversion
 import secrets
 from PIL import Image
+from datetime import datetime
 import os
 
 # ERROR ROUTES
@@ -211,12 +214,12 @@ def courses():
         return redirect(url_for('courses'))
 
     if request.method == "GET" and current_user.profession == "Teacher":
-        return render_template('course/courses.html',
+        return render_template('courses.html',
                                 courses=teacher_courses,
                                 new_course=new_course,
                                 title="Courses")
     elif request.method == "GET" and current_user.profession == "Student":
-        return render_template('course/courses.html',
+        return render_template('courses.html',
                                 courses=student_courses,
                                 add_course=add_course,
                                 title="Courses")
@@ -225,34 +228,94 @@ def courses():
 @login_required
 def course(course_id):
     course = Course.query.filter_by(id=course_id).first()
+
+    edit_course = UpdateCourseForm()
     syllabusform = UpdateSyllabusForm()
-    edit = request.args.get('edit')
+
+    if request.method == "GET":
+        edit_course.title.data = course.title
+        edit_course.subject.data = course.subject
+        edit_course.points.data = course.points
+
+    # GET - HTTP URL Queries
+    edit_syllabus = request.args.get('edit')
     delete = request.form.get('delete')
-    # GET
-    if course.teacher_id == current_user.id and request.method == "GET" and edit == "true":
+
+    # POST - PUT HTTP Variable Headers
+    syllabus = request.form.get('syllabus')
+    title = request.form.get('title')
+    subject = request.form.get('subject')
+    points = request.form.get('points')
+
+    # GET - edit syllabus query
+    if course.teacher_id == current_user.id and request.method == "GET" and edit_syllabus == "true":
         syllabusform.syllabus.data = course.syllabus
-        return render_template('course/course_about.html',
+        return render_template('course_about.html',
                                 course=course,
                                 syllabusform=syllabusform,
-                                edit=edit,
+                                edit=edit_syllabus,
+                                edit_course=edit_course,
                                 title="Course - " + str(course.title))
-    # POST
-    elif course.teacher_id == current_user.id and delete == "true":
+    # POST - DELETE - delete course query
+    elif course.teacher_id == current_user.id and request.method == "POST" and delete == "true":
         db.session.delete(course)
         db.session.commit()
         return redirect(url_for('courses'))
-    #POST
-    elif course.teacher_id == current_user.id and syllabusform.validate_on_submit():
+    # POST - PUT - Update syllabus
+    elif course.teacher_id == current_user.id and syllabusform.validate_on_submit() and syllabus:
         course.syllabus = syllabusform.syllabus.data
         db.session.commit()
         return redirect(url_for('course', course_id=course.id))
-    #GET
+    # POST - PUT - UPDATE course information
+    elif (course.teacher_id == current_user.id and
+            edit_course.validate_on_submit() and
+            title and subject and points):
+        course.title = edit_course.title.data
+        course.subject = edit_course.subject.data
+        course.points = edit_course.points.data
+        db.session.commit()
+        return redirect(url_for('course', course_id=course.id))
+    elif edit_course.errors:
+        return redirect(url_for('course', course_id=course.id))
+    # GET
     else:
-        return render_template('course/course_about.html',
+        return render_template('course_about.html',
                                 course=course,
+                                edit_course=edit_course,
                                 title="Course - " + str(course.title))
 
-# @app.route('/dashboard/courses/<int:course_id>/assignments', methods=['GET', 'POST'])
-# @login_required
-# def assignments(course_id):
-#     return render_template('assignment/assignments.html')
+@app.route('/dashboard/courses/<int:course_id>/assignments', methods=['GET', 'POST'])
+@login_required
+def assignments(course_id):
+    course = Course.query.filter_by(id=course_id).first()
+    edit_course = UpdateCourseForm()
+    assignmentform = AssignmentForm()
+
+    if request.method == "GET":
+        edit_course.title.data = course.title
+        edit_course.subject.data = course.subject
+        edit_course.points.data = course.points
+
+    if request.method == "POST" and assignmentform.validate_on_submit():
+        dateInput = assignmentform.dateInput.data.strftime('%m/%d/%Y').split("/")
+        hour = int(assignmentform.hour.data)
+        minute = int(assignmentform.minute.data)
+        month = int(dateInput[0])
+        day = int(dateInput[1])
+        year = int(dateInput[2])
+        date_time = datetime(year, month, day, hour, minute)
+        assignment = Assignment(course_id=course.id,
+                                points=assignmentform.points.data,
+                                title=assignmentform.title.data,
+                                content=assignmentform.content.data,
+                                duedate=date_time)
+        db.session.add(assignment)
+        db.session.commit()
+
+        return redirect(url_for('course', course_id=course.id))
+    elif assignmentform.errors:
+        print(assignmentform.errors)
+    return render_template('assignments.html',
+                            course=course,
+                            edit_course=edit_course,
+                            assignmentform=assignmentform)
