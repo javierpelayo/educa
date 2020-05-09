@@ -1,24 +1,33 @@
 {% extends "course_layout.html" %}
 {% block course_content %}
   <div class="course-content">
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th scope="col">#</th>
-          <th scope="col">Title</th>
-          <th scope="col">Due Date</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for assignment in assignments %}
-            <tr>
-              <th scope="row"><a href="#">{{ assignment.id }}</a></th>
-              <td><a href="#">{{ assignment.title }}</a></td>
-              <td>{{ assignment.duedate }}</td>
-            </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+      <table class="table table-hover text-center border">
+        <thead>
+          <tr>
+            <th scope="col">Title</th>
+            <th scope="col">Due Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for i in range(assignments| length) %}
+
+              <!-- ADD IF statement for table-success
+              if current_user has submitted the assignment -->
+
+              {% if a_time[i] > currenttime %}
+                <tr class="">
+                  <td><a href="#">{{ assignments[i].title }}</a></td>
+                  <td>{{ assignments[i].duedate }}</td>
+                </tr>
+              {% elif a_time[i] <= currenttime %}
+                <tr class="table-danger">
+                  <td><a href="#">{{ assignments[i].title }}</a></td>
+                  <td>{{ assignments[i].duedate }}</td>
+                </tr>
+              {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
     <div class="d-flex justify-content-center my-1">
       <a class="btn btn-outline-primary" href="/dashboard/courses/{{ course.id }}/assignments/new">New Assignment</a>
     </div>

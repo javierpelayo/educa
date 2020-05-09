@@ -2,16 +2,6 @@
 {% block content_dash %}
   <div class="course-title border-bottom">
     <h2>{{ course.id }} {{ course.title }}</h2>
-    <div class="d-none d-md-block">
-      <ol class="breadcrumb ml-2 bg-transparent m-0">
-        {% if "Assignment" in title %}
-          <li class="breadcrumb-item">Assignments</li>
-          {% if "New" in title %}
-            <li class="breadcrumb-item">New</li>
-          {% endif %}
-        {% endif %}
-      </ol>
-    </div>
   </div>
   <div class="d-flex d-md-none justify-content-center">
     <button class="navbar-toggler navbar-light" type="button" data-toggle="collapse" data-target="#courseNavDropdown">

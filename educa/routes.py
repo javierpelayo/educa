@@ -10,7 +10,9 @@ from educa.forms import (RegistrationForm,
                         AddCourseForm,
                         UpdateCourseForm,
                         UpdateSyllabusForm,
-                        AssignmentForm)
+                        AssignmentForm,
+                        QuestionForm,
+                        OptionForm)
 from educa.models import *
 from flask_login import (login_user,
                         current_user,
@@ -290,8 +292,24 @@ def course(course_id):
 def assignments(course_id):
     course = Course.query.filter_by(id=course_id).first()
     assignments = Assignment.query.filter_by(course_id=course_id).all()
-    assignmentform = AssignmentForm()
 
+    # Convert duedate to timestamp for easier sorting
+    for i in range(len(assignments)):
+        assignments[i].duedate = datetime.timestamp(assignments[i].duedate)
+
+    assignments.sort(key=lambda a:a.duedate)
+
+    # Put assignments time in a list
+    a_time = []
+    for assignment in assignments:
+        a_time.append(assignment.duedate)
+
+    # Convert duedate to a readable format
+    for i in range(len(assignments)):
+        assignments[i].duedate = datetime.fromtimestamp(assignments[i].duedate)
+        assignments[i].duedate = assignments[i].duedate.strftime("%b %d %Y %I:%M %p %Z")
+
+    assignmentform = AssignmentForm()
     # POST - CREATE ASSIGNMENT
     if current_user.id == course.teacher_id and request.method == "POST" and assignmentform.validate_on_submit():
         dateInput = assignmentform.dateInput.data.strftime('%m/%d/%Y').split("/")
@@ -308,7 +326,6 @@ def assignments(course_id):
                                 duedate=date_time)
         db.session.add(assignment)
         db.session.commit()
-
         return redirect(url_for('assignments', course_id=course.id))
     elif assignmentform.errors:
         return redirect(url_for('new_assignment', course_id))
@@ -316,6 +333,8 @@ def assignments(course_id):
         return render_template('assignments.html',
                                 course=course,
                                 assignments=assignments,
+                                currenttime=datetime.timestamp(datetime.utcnow()),
+                                a_time=a_time,
                                 title=str(course.title) + "- Assignments",
                                 assignmentform=assignmentform)
 
@@ -324,11 +343,30 @@ def assignments(course_id):
 def new_assignment(course_id):
     course = Course.query.filter_by(id=course_id).first()
     assignmentform = AssignmentForm()
+    questionform = QuestionForm()
+    optionform = OptionForm()
 
+    q_amt = request.args.get('q_amt')
+    o_amt = request.args.get('o_amt')
+
+    if q_amt:
+        q_amt = int(request.args.get('q_amt'))
+        o_amt = 0
+        if o_amt:
+            o_amt = int(request.args.get('o_amt'))
+    else:
+        q_amt = 0
+        o_amt = 0
+
+    print(o_amt)
     if current_user.id == course.teacher_id:
         return render_template('new_assignment.html',
                                 course=course,
                                 assignmentform=assignmentform,
+                                questionform=questionform,
+                                optionform=optionform,
+                                q_amt=q_amt,
+                                o_amt=o_amt,
                                 title=str(course.title) + "- New Assignment")
     else:
         return redirect(url_for("assignments", course_id))

@@ -116,6 +116,8 @@ class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     assignment_id = db.Column(db.Integer, db.ForeignKey('assignment.id'))
     title = db.Column(db.String(20), nullable=False)
+    type = db.Column(db.String(20), nullable=False)
+    amt_options = db.Column(db.Integer)
     options = db.relationship('Option')
 
     def __repr__(self):

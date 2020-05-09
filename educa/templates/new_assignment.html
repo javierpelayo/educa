@@ -1,5 +1,49 @@
 {% extends "course_layout.html" %}
 {% block course_content %}
+<div id="add_q_modal" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="ml-3">Add Questions</h2>
+        <button type="button" class="close" data-dismiss="modal">
+          <span>&times;</span>
+        </button>
+      </div>
+      <form class="needs-validation form-group mb-0" method="GET" novalidate>
+        <div class="modal-body mt-0">
+          <div class="col mt-2">
+            <input class="form-control" type="text" name="q_amt" placeholder="Amount of Questions">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline-primary" type="submit" name="button">Add</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div id="add_o_modal" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="ml-3">Add Options</h2>
+        <button type="button" class="close" data-dismiss="modal">
+          <span>&times;</span>
+        </button>
+      </div>
+      <form class="needs-validation form-group mb-0" method="GET" novalidate>
+        <div class="modal-body mt-0">
+          <div class="col mt-2">
+            <input class="form-control" type="text" name="o_amt" placeholder="Amount of Options">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline-primary" type="submit" name="button">Add</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 <div class="course-content">
   <form class="needs-validation" action="/dashboard/courses/{{ course.id }}/assignments" method="POST">
     {{ assignmentform.hidden_tag() }}
@@ -52,6 +96,27 @@
           </div>
         {% endif %}
       </div>
+      {% if q_amt > 0 %}
+        {% for i in range(q_amt) %}
+          <b class="mt-2">Question {{ i+1 }}</b>
+          <div class="col-10 mb-1">
+            {{ questionform.title(class="form-control", placeholder="Question Title") }}
+          </div>
+          <div class="col-10 mb-1">
+            {{ questionform.question(class="form-control", placeholder="Question Content") }}
+          </div>
+          <div class="col-10 mb-1">
+            {{ questionform.type(class="form-control", id="question_form_type") }}
+          </div>
+          {% if o_amt > 0 %}
+            {% for j in range(o_amt) %}
+              {{ optionform.option }}
+            {% endfor %}
+          {% endif %}
+          <button id="add_o_btn" class="btn btn-outline-primary mt-1 d-none" type="button" data-toggle="modal" data-target="#add_o_modal">Add Options</button>
+        {% endfor %}
+      {% endif %}
+      <button class="btn btn-outline-primary mt-1" type="button" data-toggle="modal" data-target="#add_q_modal">Add Questions</button>
     </div>
     <div class="d-flex justify-content-center">
       <b>{{ assignmentform.dateInput.label }}</b>
@@ -84,4 +149,5 @@
     </div>
   </form>
 </div>
+<script type="text/javascript" src="{{ url_for('static', filename='js/new_assignment.js')|autoversion }}"></script>
 {% endblock course_content %}

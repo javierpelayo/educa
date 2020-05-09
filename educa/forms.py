@@ -4,12 +4,13 @@ from wtforms import (StringField, PasswordField,
                     SubmitField, BooleanField,
                     RadioField, TextAreaField,
                     IntegerField, DateField,
-                    SelectField)
+                    SelectField, FieldList)
 from flask_login import current_user
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from educa.models import User_Account
 from educa.filters import autoversion
 from . import bcrypt
+from pytz import common_timezones
 
 class RegistrationForm(FlaskForm):
     first_name = StringField('First Name',
@@ -105,23 +106,34 @@ class UpdateSyllabusForm(FlaskForm):
     submit = SubmitField('Submit')
 
 class AssignmentForm(FlaskForm):
-    due_hour = [('1','1 a.m.'), ('2', '2 a.m.'), ('3', '3 a.m.'), ('4', '4 a.m.'), ('5', '5 a.m.'),
+    due_hour = [('0','12 a.m.'), ('1','1 a.m.'), ('2', '2 a.m.'), ('3', '3 a.m.'), ('4', '4 a.m.'), ('5', '5 a.m.'),
                 ('6', '6 a.m.'), ('7', '7 a.m.'), ('8', '8 a.m.'), ('9', '9 a.m.'), ('10', '10 a.m.'),
                 ('11', '11 a.m.'), ('12', '12 p.m.'), ('13', '1 p.m.'), ('14', '2 p.m.'), ('15', '3 p.m.'),
                 ('16', '4 p.m.'), ('17', '5 p.m.'), ('18', '6 p.m.'), ('19', '7 p.m.'), ('20', '8 p.m.'),
                 ('21', '9 p.m.'), ('22', '10 p.m.'), ('23', '11 p.m.')]
-    due_minute = [(str(min), str(min) + " minutes") for min in range(0, 60)]
+    due_minute = [(str(min), str(min) + " mins") for min in range(0, 60)]
     title = StringField('Title',
                         validators=[DataRequired()])
     type = SelectField('Type', choices=[('Exam/Quiz', 'Exam/Quiz'),
                                         ('Instructions', 'Instructions'),
                                         ('Lab', 'Lab'),
                                         ('HW', 'HW')])
-    # If type = Instructional
     content = TextAreaField('Content')
     points = IntegerField('Points',
                         validators=[DataRequired()])
+
     dateInput = DateField('Due Date', format='%m/%d/%Y')
     hour = SelectField('Hour', choices=due_hour)
     minute = SelectField('Minute', choices=due_minute)
+
     submit = SubmitField('Create')
+
+class QuestionForm(FlaskForm):
+    title = StringField('Title',
+                        validators=[DataRequired()])
+    question = StringField('Question',
+                        validators=[DataRequired()])
+    type = SelectField('Type', choices=[('Input', 'Input'), ('Multiple Choice', 'Multiple Choice'), ('Paragraph', 'Paragraph')])
+
+class OptionForm(FlaskForm):
+    option = FieldList(StringField('Option Answer', validators=[DataRequired()]))
