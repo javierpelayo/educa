@@ -10,9 +10,7 @@ from educa.forms import (RegistrationForm,
                         AddCourseForm,
                         UpdateCourseForm,
                         UpdateSyllabusForm,
-                        AssignmentForm,
-                        QuestionForm,
-                        OptionForm)
+                        AssignmentForm)
 from educa.models import *
 from flask_login import (login_user,
                         current_user,
@@ -24,6 +22,7 @@ import secrets
 from PIL import Image
 from datetime import datetime
 import os
+import json
 
 # ERROR ROUTES
 
@@ -310,6 +309,17 @@ def assignments(course_id):
         assignments[i].duedate = assignments[i].duedate.strftime("%b %d %Y %I:%M %p %Z")
 
     assignmentform = AssignmentForm()
+
+    questions = []
+    options = []
+    # Get Assignment Questions/Options
+    if request.method == "POST":
+        for key, value in request.form:
+            print(f"{key}: {value}")
+            # if "question_option" in x:
+            #     options.append(x)
+        return redirect(url_for('assignments', course_id=course.id))
+
     # POST - CREATE ASSIGNMENT
     if current_user.id == course.teacher_id and request.method == "POST" and assignmentform.validate_on_submit():
         dateInput = assignmentform.dateInput.data.strftime('%m/%d/%Y').split("/")
@@ -343,30 +353,11 @@ def assignments(course_id):
 def new_assignment(course_id):
     course = Course.query.filter_by(id=course_id).first()
     assignmentform = AssignmentForm()
-    questionform = QuestionForm()
-    optionform = OptionForm()
 
-    q_amt = request.args.get('q_amt')
-    o_amt = request.args.get('o_amt')
-
-    if q_amt:
-        q_amt = int(request.args.get('q_amt'))
-        o_amt = 0
-        if o_amt:
-            o_amt = int(request.args.get('o_amt'))
-    else:
-        q_amt = 0
-        o_amt = 0
-
-    print(o_amt)
     if current_user.id == course.teacher_id:
         return render_template('new_assignment.html',
                                 course=course,
                                 assignmentform=assignmentform,
-                                questionform=questionform,
-                                optionform=optionform,
-                                q_amt=q_amt,
-                                o_amt=o_amt,
                                 title=str(course.title) + "- New Assignment")
     else:
         return redirect(url_for("assignments", course_id))

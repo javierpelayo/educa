@@ -127,13 +127,3 @@ class AssignmentForm(FlaskForm):
     minute = SelectField('Minute', choices=due_minute)
 
     submit = SubmitField('Create')
-
-class QuestionForm(FlaskForm):
-    title = StringField('Title',
-                        validators=[DataRequired()])
-    question = StringField('Question',
-                        validators=[DataRequired()])
-    type = SelectField('Type', choices=[('Input', 'Input'), ('Multiple Choice', 'Multiple Choice'), ('Paragraph', 'Paragraph')])
-
-class OptionForm(FlaskForm):
-    option = FieldList(StringField('Option Answer', validators=[DataRequired()]))
