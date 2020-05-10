@@ -69,14 +69,14 @@
       <div class="form-row justify-content-center">
           <div class="form-group col-3">
             {% if assignmentform.dateInput.errors %}
-              {{ assignmentform.dateInput(class="form-control is-invalid", placeholder="m/d/y") }}
+              {{ assignmentform.dateInput(class="form-control is-invalid", placeholder="M/D/Y 01/01/2000") }}
               <div class="invalid-feedback">
                 {% for error in assignmentform.dateInput.errors %}
                   <small>{{ error }}</small>
                 {% endfor %}
               </div>
             {% else %}
-              {{ assignmentform.dateInput(class="form-control", placeholder="m/d/y") }}
+              {{ assignmentform.dateInput(class="form-control", placeholder="M/D/Y 01/01/2000") }}
               <div class="valid-feedback">
                 <span>Looks Good!</span>
               </div>

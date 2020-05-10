@@ -310,15 +310,48 @@ def assignments(course_id):
 
     assignmentform = AssignmentForm()
 
-    questions = []
-    options = []
+    questions = {}
+    options = {}
+    q_ids = []
+    question_option_ids = []
+
+    # exclusive (if looping)
+    o_amt = 0
+    q_amt = 0
+
     # Get Assignment Questions/Options
     if request.method == "POST":
-        for key, value in request.form:
-            print(f"{key}: {value}")
-            # if "question_option" in x:
-            #     options.append(x)
-        return redirect(url_for('assignments', course_id=course.id))
+        request_form = request.form.to_dict()
+
+        # separate the questions from the options
+        for key, value in request_form.items():
+            if "question_option" in key:
+                options[key] = value
+            elif "question_" in key:
+                questions[key] = value
+
+        # Split the POST question variables to just be question ids
+        for key, value in questions.items():
+            question_ids = key.split("_")
+            question_id = question_ids[2]
+            q_ids.append(question_id)
+
+        # Split the POST option variables to just be question ids and option ids
+        for key, value in options.items():
+            quop_ids = key.split("_")
+            q_id = quop_ids[2]
+            o_id = quop_ids[3]
+
+            # creating list of tuples [(q_key, o_value)]
+            question_option_ids.append((q_id, o_id))
+
+        q_ids.sort()
+        # get the amount of options
+        for x in options:
+            o_amt += 1
+
+        # get the amount of questions
+        q_amt = int(q_ids[-1]) + 1
 
     # POST - CREATE ASSIGNMENT
     if current_user.id == course.teacher_id and request.method == "POST" and assignmentform.validate_on_submit():
@@ -329,6 +362,7 @@ def assignments(course_id):
         day = int(dateInput[1])
         year = int(dateInput[2])
         date_time = datetime(year, month, day, hour, minute)
+
         assignment = Assignment(course_id=course.id,
                                 points=assignmentform.points.data,
                                 title=assignmentform.title.data,
@@ -336,9 +370,27 @@ def assignments(course_id):
                                 duedate=date_time)
         db.session.add(assignment)
         db.session.commit()
+
+        # CREATE each question
+        for x in range(q_amt):
+            question = Question(assignment_id=assignment.id,
+                                title=questions['question_title_' + str(x)],
+                                type=questions['question_type_' + str(x)])
+
+            db.session.add(question)
+            db.session.commit()
+
+            # CREATE each option for that question
+            for key, value in question_option_ids:
+                if key == str(x):
+                    option = Option(question_id=question.id,
+                                    content=options["question_option_" + key + "_" + value])
+                    db.session.add(option)
+                    db.session.commit()
+
         return redirect(url_for('assignments', course_id=course.id))
     elif assignmentform.errors:
-        return redirect(url_for('new_assignment', course_id))
+        return redirect(url_for('new_assignment', course_id=course.id))
     else:
         return render_template('assignments.html',
                                 course=course,
@@ -360,4 +412,4 @@ def new_assignment(course_id):
                                 assignmentform=assignmentform,
                                 title=str(course.title) + "- New Assignment")
     else:
-        return redirect(url_for("assignments", course_id))
+        return redirect(url_for("assignments", course_id=course.id))
