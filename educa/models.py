@@ -104,6 +104,7 @@ class Assignment(db.Model):
     points = db.Column(db.Integer, nullable=False)
     title = db.Column(db.String(120), nullable=False)
     content = db.Column(db.Text, nullable=False)
+    type = db.Column(db.String(120), nullable=False)
     timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     duedate = db.Column(db.DateTime, nullable=False)
     questions = db.relationship('Question')
@@ -116,7 +117,9 @@ class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     assignment_id = db.Column(db.Integer, db.ForeignKey('assignment.id'))
     title = db.Column(db.String(20), nullable=False)
+    content = db.Column(db.Text, nullable=False)
     type = db.Column(db.String(20), nullable=False)
+    answer = db.Column(db.String(20), nullable=False)
     options = db.relationship('Option')
 
     def __repr__(self):

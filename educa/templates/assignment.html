@@ -1,0 +1,57 @@
+{% extends "course_layout.html" %}
+{% block course_content %}
+  <div class="course-content">
+    <div class="form-group d-flex flex-column align-items-center">
+      <h3>{{ assignment.title }}</h3>
+      <h4>Total Points: {{ assignment.points }}</h4>
+      {% if done == False %}
+          {% if page > 0 %}
+            <div class="col-10 col-md-6 border p-3 mb-2">
+              <div class="d-flex flex-column align-items-center">
+                <div class="col text-center">
+                  <h5>{{ question[0].title }}</h5>
+                </div>
+                <div class="col text-center">
+                  <p>{{ question[0].content }}</p>
+                </div>
+                {% if question[0].type == "input" %}
+                  <div class="col">
+                    <input class="form-control" type="text" name="input_{{ question[0].id }}" placeholder="Type Your Answer">
+                  </div>
+                {% elif question[0].type == "multiple_choice" %}
+                  {% for option in options %}
+                  <div class="col text-center">
+                    <input id="multiple_choice_{{ question[0].id }}" type="radio" name="multiple_choice_{{ question[0].id }}" value="{{ option.id }}">
+                    <label for="multiple_choice_{{ question[0].id }}">{{ option.content }}</label>
+                  </div>
+                  {% endfor %}
+                {% elif question[0].type == "paragraph" %}
+                  <div class="col">
+                    <textarea class="form-control" name="paragraph_{{ question[0].id }}" rows="8" cols="80" placeholder="Type Your Answer"></textarea>
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+            {% if questions.total == page %}
+              <form action="" method="POST">
+                <button class="btn btn-outline-primary" type="submit">Submit</button>
+              </form>
+            {% else %}
+              <form action="" method="GET">
+                <button class="btn-link" type="submit" name="page" value="{{ page+1 }}"><i class="fas fa-arrow-circle-right"></i></button>
+              </form>
+            {% endif %}
+          {% endif %}
+            {% if page == 0 %}
+              <form action="" method="GET">
+                <button class="btn btn-outline-primary" type="submit" name="page" value="{{ page+1 }}">Start</button>
+              </form>
+            {% endif %}
+      {% else %}
+        {% if assignment.type == "Exam/Quiz" or assignment.type == "Lab" or assignment.type == "HW" %}
+          <p>Finished!</p>
+        {% endif %}
+      {% endif %}
+    </div>
+  </div>
+{% endblock course_content %}

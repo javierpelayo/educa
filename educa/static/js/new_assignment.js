@@ -5,6 +5,7 @@ let oClickAmt = 0;
 let div = "<div class='col-10 mb-3'>"
 let qTitle = "";
 let qContent = "";
+let qAnswer = "";
 let qType = "";
 
 let qTypeChoice = [];
@@ -17,6 +18,8 @@ addQuestionBtn.onclick = function() {
   qTitle = "<input class='form-control' type='text' name='question_title_" + String(qClickAmt) + "'  placeholder='Question Title'></div>";
   // name = question_content_<q#> -- POST VARIABLE
   qContent = "<textarea class='form-control' name='question_content_" + String(qClickAmt) + "'  placeholder='Question Content'></textarea></div>";
+  // name = question_answer_<q#> -- POST VARIABLE
+  qAnswer = "<input class='form-control' type='text' name='question_answer_" + String(qClickAmt) + "'  placeholder='Question Answer'></div>";
   // name = question_type_<q#> -- POST VARIABLE
   qType = "<select id='qtype_" + String(qClickAmt) + "' class='form-control' name='question_type_" + String(qClickAmt) + "'>";
   qType += "<option value='input'>Input</option>";
@@ -25,6 +28,7 @@ addQuestionBtn.onclick = function() {
 
   questions.insertAdjacentHTML('beforeend', "<h5 class='mb-2'>Question " + String(qClickAmt+1) + "</h5>" + div + qTitle);
   questions.insertAdjacentHTML('beforeend', div + qContent);
+  questions.insertAdjacentHTML('beforeend', div + qAnswer);
   questions.insertAdjacentHTML('beforeend', "<b class='mb-2'>Answer Type</b>" + div + qType + "</div><button id='add_option_" + String(qClickAmt) + "' class='btn btn-outline-warning mt-1 mb-2 d-none' type='button'>Add Option</button>");
 
   qTypeChoice.push(document.querySelector("#qtype_" + String(qClickAmt)));

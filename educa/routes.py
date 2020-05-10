@@ -367,6 +367,7 @@ def assignments(course_id):
                                 points=assignmentform.points.data,
                                 title=assignmentform.title.data,
                                 content=assignmentform.content.data,
+                                type=assignmentform.type.data,
                                 duedate=date_time)
         db.session.add(assignment)
         db.session.commit()
@@ -375,6 +376,8 @@ def assignments(course_id):
         for x in range(q_amt):
             question = Question(assignment_id=assignment.id,
                                 title=questions['question_title_' + str(x)],
+                                content=questions['question_content_' + str(x)],
+                                answer=questions['question_answer_' + str(x)],
                                 type=questions['question_type_' + str(x)])
 
             db.session.add(question)
@@ -413,3 +416,48 @@ def new_assignment(course_id):
                                 title=str(course.title) + "- New Assignment")
     else:
         return redirect(url_for("assignments", course_id=course.id))
+
+@app.route('/dashboard/courses/<int:course_id>/assignments/<int:assignment_id>', methods=['GET', 'POST'])
+@login_required
+def assignment(course_id, assignment_id):
+
+    page = request.args.get('page', 0, type=int)
+    submit = request.form.get('submit')
+
+    course = Course.query.filter_by(id=course_id).first()
+    assignment = Assignment.query.filter_by(id=assignment_id).first()
+    questions = Question.query.filter_by(assignment_id=assignment.id).paginate(page, 1, False)
+
+    if questions.total == 0:
+        return render_template('assignment.html',
+                                course=course,
+                                assignment=assignment,
+                                questions=questions,
+                                question=[],
+                                options=[],
+                                page=0,
+                                done=True,
+                                title=str(course.title) + " - " + str(assignment.title))
+    elif questions.total < page:
+        return redirect(url_for("assignments", course_id=course.id))
+    else:
+        if request.method == "POST":
+
+            # add user_assignment to db when submitted
+
+            return redirect(url_for("assignment", course_id=course.id, assignment_id=assignment.id))
+        elif request.method == "GET":
+            options = Option.query.filter_by(question_id=questions.items[0].id).all()
+            # get user_assignment
+            # if user_assignment exists
+                # done = true
+            done = True
+            return render_template('assignment.html',
+                                    course=course,
+                                    assignment=assignment,
+                                    questions=questions,
+                                    question=questions.items,
+                                    options=options,
+                                    page=page,
+                                    done=done,
+                                    title=str(course.title) + " - " + str(assignment.title))
