@@ -445,13 +445,14 @@ def assignment(course_id, assignment_id):
 
             # add user_assignment to db when submitted
 
+
             return redirect(url_for("assignment", course_id=course.id, assignment_id=assignment.id))
         elif request.method == "GET":
             options = Option.query.filter_by(question_id=questions.items[0].id).all()
             # get user_assignment
             # if user_assignment exists
                 # done = true
-            done = True
+            done = False
             return render_template('assignment.html',
                                     course=course,
                                     assignment=assignment,

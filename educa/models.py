@@ -10,12 +10,13 @@ def load_user(user_id):
 
 # Association/Join Tables
 conversation_user = db.Table('conversation_user',
-                    db.Column('user_id', db.Integer, db.ForeignKey('user_account.id')),
-                    db.Column('conversation_id', db.Integer, db.ForeignKey('conversation.id')))
+                    db.Column('user_id', db.Integer, db.ForeignKey('user_account.id'), primary_key=True),
+                    db.Column('conversation_id', db.Integer, db.ForeignKey('conversation.id'), primary_key=True))
 
 class Course_User(db.Model):
     # SQLAlchemy creates tablenames by default unless specified inside class
     __tablename__ = 'course_user'
+    # Two primary keys come together to create a composite primary key
     user_id = db.Column(db.Integer, db.ForeignKey('user_account.id'), primary_key=True)
     course_id = db.Column(db.Integer, db.ForeignKey('course.id'), primary_key=True)
     grade = db.Column(db.Integer)
@@ -26,11 +27,19 @@ class Course_User(db.Model):
 
 class User_Assignment(db.Model):
     __tablename__ = 'user_assignment'
-    user_id = db.Column(db.Integer, db.ForeignKey('user_account.id'), primary_key=True)
-    assignment_id = db.Column(db.Integer, db.ForeignKey('assignment.id'), primary_key=True)
+    # user can turn assignment in more than once,
+    # thus a unique primary key is needed rather than a composite primary key
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user_account.id'))
+    assignment_id = db.Column(db.Integer, db.ForeignKey('assignment.id'))
+    # if student uploads assignment
     url = db.Column(db.String(20))
+    # if question is of type paragraph/input
     content = db.Column(db.Text)
+    answers = db.Column(db.ARRAY(db.String))
     grade = db.Column(db.Integer)
+    # used incase student resubmits / latest is the one that is graded
+    timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     assignment = db.relationship('Assignment', backref='users')
 
     def __repr__(self):
@@ -101,11 +110,12 @@ class Assignment(db.Model):
     __tablename__ = 'assignment'
     id = db.Column(db.Integer, primary_key=True)
     course_id = db.Column(db.Integer, db.ForeignKey('course.id'))
-    points = db.Column(db.Integer, nullable=False)
     title = db.Column(db.String(120), nullable=False)
     content = db.Column(db.Text, nullable=False)
+    points = db.Column(db.Integer, nullable=False)
     type = db.Column(db.String(120), nullable=False)
     timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    # NULLABLE=TRUE? -- assignments without due date --
     duedate = db.Column(db.DateTime, nullable=False)
     questions = db.relationship('Question')
 
