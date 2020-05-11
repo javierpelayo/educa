@@ -24,14 +24,14 @@
       </div>
       <div class="col-10 mb-3">
         {% if assignmentform.content.errors %}
-          {{ assignmentform.content(class="form-control is-invalid", placeholder="Instructions (optional)", id="mytextarea") }}
+          {{ assignmentform.content(class="form-control is-invalid", placeholder="Instructions", id="mytextarea") }}
           <div class="invalid-feedback">
             {% for error in assignmentform.content.errors %}
               <small>{{ error }}</small>
             {% endfor %}
           </div>
         {% else %}
-          {{ assignmentform.content(class="form-control", placeholder="Instructions (optional)", id="mytextarea") }}
+          {{ assignmentform.content(class="form-control", placeholder="Instructions", id="mytextarea") }}
           <div class="valid-feedback">
             <span>Looks Good!</span>
           </div>

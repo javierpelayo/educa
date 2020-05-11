@@ -126,10 +126,10 @@ class Question(db.Model):
     __tablename__ = 'question'
     id = db.Column(db.Integer, primary_key=True)
     assignment_id = db.Column(db.Integer, db.ForeignKey('assignment.id'))
-    title = db.Column(db.String(20), nullable=False)
+    title = db.Column(db.String(120), nullable=False)
     content = db.Column(db.Text, nullable=False)
-    type = db.Column(db.String(20), nullable=False)
-    answer = db.Column(db.String(20), nullable=False)
+    type = db.Column(db.String(120), nullable=False)
+    answer = db.Column(db.String(120), nullable=False)
     options = db.relationship('Option')
 
     def __repr__(self):
