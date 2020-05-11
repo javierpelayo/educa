@@ -1,12 +1,22 @@
 let addQuestionBtn = document.querySelector("#add_question");
+let removeQuestionBtn = document.querySelector("#remove_question");
 let questions = document.querySelector("#questions");
+
 let qClickAmt = 0;
 let oClickAmt = 0;
+
 let div = "<div class='col-10 mb-3'>"
 let qTitle = "";
 let qContent = "";
 let qAnswer = "";
 let qType = "";
+
+let rqHeader = "";
+let rqTitle = "";
+let rqContent = "";
+let rqAHeader = "";
+let rqAnswer = "";
+let rqType = "";
 
 let qTypeChoice = [];
 let addOptionBtn = [];
@@ -16,15 +26,50 @@ let optionsAtIndex = [];
 let lastOptionAtIndex = [];
 let removedOption = "";
 
+removeQuestionBtn.onclick = function() {
+
+  if (qClickAmt > 0){
+    qClickAmt -= 1;
+    document.querySelectorAll(".qOption_" + String(qClickAmt)).forEach(e => e.parentNode.parentNode.removeChild(e.parentNode));
+
+    // Removes both add and remove option buttons
+    let aOptionBtn = document.querySelector(`#add_option_${qClickAmt}`);
+    aOptionBtn.parentNode.parentNode.removeChild(aOptionBtn.parentNode);
+
+    // removes the question fields
+    rqHeader = document.querySelector(`#q_header_${qClickAmt}`);
+    rqHeader.parentNode.removeChild(rqHeader);
+
+    rqTitle = document.querySelector(`#question_title_${String(qClickAmt)}`);
+    rqTitle.parentNode.parentNode.removeChild(rqTitle.parentNode);
+
+    rqContent = document.querySelector(`#question_content_${String(qClickAmt)}`);
+    rqContent.parentNode.parentNode.removeChild(rqContent.parentNode);
+
+    rqAHeader = document.querySelector(`#q_answer_header_${qClickAmt}`);
+    rqAHeader.parentNode.removeChild(rqAHeader);
+
+    rqAnswer = document.querySelector(`#question_answer_${String(qClickAmt)}`);
+    rqAnswer.parentNode.parentNode.removeChild(rqAnswer.parentNode);
+
+    rqType = document.querySelector(`#qtype_${String(qClickAmt)}`);
+    rqType.parentNode.parentNode.removeChild(rqType.parentNode);
+
+    // resets the arrays for the option fields
+    qTypeChoice = [];
+    addOptionBtn = [];
+    removeOptionBtn = [];
+  }
+};
 addQuestionBtn.onclick = function() {
   // name = question_title_<q#> -- POST VARIABLE
-  qTitle = `<input class='form-control' type='text' name='question_title_${String(qClickAmt)}' placeholder='Title'>`;
+  qTitle = `<input id='question_title_${String(qClickAmt)}' class='form-control' type='text' name='question_title_${String(qClickAmt)}' placeholder='Title'>`;
 
   // name = question_content_<q#> -- POST VARIABLE
-  qContent = `<textarea class='form-control' name='question_content_${String(qClickAmt)}'  placeholder='Question (Ask your question here)'></textarea>`;
+  qContent = `<textarea id='question_content_${String(qClickAmt)}' class='form-control' name='question_content_${String(qClickAmt)}'  placeholder='Question (Ask your question here)'></textarea>`;
 
   // name = question_answer_<q#> -- POST VARIABLE
-  qAnswer = `<input class='form-control' type='text' name='question_answer_${String(qClickAmt)}' placeholder='Correct Answer (optional)'>`;
+  qAnswer = `<input id='question_answer_${String(qClickAmt)}' class='form-control' type='text' name='question_answer_${String(qClickAmt)}' placeholder='Correct Answer (optional)'>`;
 
   // name = question_type_<q#> -- POST VARIABLE
   qType = `<select id='qtype_${String(qClickAmt)}' class='form-control' name='question_type_${String(qClickAmt)}'>
@@ -33,19 +78,19 @@ addQuestionBtn.onclick = function() {
               <option value='paragraph'>Paragraph</option>
             </select>`;
 
-  questions.insertAdjacentHTML('beforeend', `<h5 class='mb-2 mt-5'>Question ${String(qClickAmt+1)}</h5>
+  questions.insertAdjacentHTML('beforeend', `<h5 id='q_header_${qClickAmt}' class='mb-2 mt-5'>Question ${String(qClickAmt+1)}</h5>
                                             ${div}
                                               ${qTitle}
                                             </div>`);
   questions.insertAdjacentHTML('beforeend', div + qContent + "</div>");
   questions.insertAdjacentHTML('beforeend', div + qAnswer + "</div>");
-  questions.insertAdjacentHTML('beforeend', `<b class='mb-2'>Answer Type</b>
+  questions.insertAdjacentHTML('beforeend', `<b id='q_answer_header_${qClickAmt}' class='mb-2'>Answer Type</b>
                                                 ${div}
                                                   ${qType}
                                                 </div>
                                                 <div class='col text-center'>
-                                                  <button id='add_option_${String(qClickAmt)}' class='btn btn-outline-warning mt-1 mb-2 d-none' type='button'>Add Option</button>
-                                                  <button id='remove_option_${String(qClickAmt)}' class='btn btn-outline-danger mt-1 mb-2 d-none' type='button'>Remove Option</button>
+                                                  <button id='add_option_${String(qClickAmt)}' class='btn btn-outline-warning btn-sm my-1 d-none' type='button'>Add Option</button>
+                                                  <button id='remove_option_${String(qClickAmt)}' class='btn btn-outline-danger btn-sm my-1 d-none' type='button'>Remove Option</button>
                                                 </div>`)
 
   qTypeChoice.push(document.querySelector("#qtype_" + String(qClickAmt)));
@@ -82,9 +127,11 @@ this.onmousemove = function() {
         // sets the option click amt to the last one at the index to keep option #'s sequential
         oClickAmt = Number(lastOptionAtIndex[2]);
       }
-
+      
       removedOption = document.querySelector(`#qOption_${String(index)}_${String(oClickAmt)}`)
-      removedOption.parentNode.parentNode.removeChild(removedOption.parentNode);
+      if(removedOption != null){
+        removedOption.parentNode.parentNode.removeChild(removedOption.parentNode);
+      }
     };
     addOptionBtn[index].onclick = function() {
       // Gets all the option fields at the index

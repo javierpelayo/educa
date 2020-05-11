@@ -59,7 +59,10 @@
     </div>
 
     <div class="form-group d-flex flex-column align-items-center">
-      <button id="add_question" class="btn btn-outline-secondary mt-1" type="button">Add Question</button>
+      <div class="col-10 my-1">
+          <button id="add_question" class="btn btn-outline-warning btn-block mt-1" type="button">Add Question</button>
+          <button id="remove_question" class="btn btn-outline-danger btn-block mt-1" type="button">Remove Question</button>
+      </div>
     </div>
 
     <!-- DUE DATE -->
@@ -90,7 +93,7 @@
           </div>
       </div>
     <div class="d-flex justify-content-center my-4">
-      {{ assignmentform.submit(class="btn btn-outline-primary") }}
+      {{ assignmentform.submit(class="btn btn-outline-primary btn-lg") }}
     </div>
   </form>
 </div>
