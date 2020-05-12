@@ -69,15 +69,17 @@
   <section>
     <div class="container mx-md-5">
       <div class="row mt-5">
-        {% for course in courses %}
-        <a class="card-click col-12 col-md-6 col-lg-4 d-flex justify-content-center" href="/dashboard/courses/{{ course.id }}">
+        {% for i in range(courses| length) %}
+        <a id="course_{{ i }}" class="card-click col-12 col-md-6 col-lg-4 d-flex justify-content-center mb-5" href="/dashboard/courses/{{ courses[i].id }}">
           <div class="card card-shadow card-size my-2">
-            <h5 class="card-title d-flex justify-content-center py-2 border-bottom">
-              {{ course.title }}
-            </h5>
+            <div class="card-title-header">
+              <h5 class="text-white">
+                {{ courses[i].title }}
+              </h5>
+            </div>
             <div class="card-body d-flex align-items-center justify-content-center">
                 <p class="card-text">
-                  {{ course.subject }}
+                  {{ courses[i].subject }}
                 </p>
             </div>
           </div>
@@ -100,4 +102,5 @@
       </div>
     </div>
   </section>
+  <script type="text/javascript" src="{{ url_for('static', filename='js/courses.js')|autoversion }}"></script>
 {% endblock content_dash %}
