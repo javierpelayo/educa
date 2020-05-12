@@ -61,24 +61,45 @@ html, body {
 
 /* DASHBOARD SIDE NAV */
 .sidenav {
-  height: 100%;
-  width: 5rem;
-  position: fixed;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: center;
-  z-index: 1;
-  top: 0;
-  left: 0;
-  background-color: #ffffff;
-  overflow-x: hidden;
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .sidenav {
+    height: 100%;
+    width: 5rem;
+    position: fixed;
+    display: block;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #ffffff;
+    border-right: 1px solid #dee2e6 !important;
+    overflow-x: hidden;
+  }
 }
 
 .sidenav a {
   text-decoration: none;
-  margin-bottom: 2rem;
   font-size: 2rem;
+}
+
+.sidenav-text {
+  font-size: .75rem;
+}
+
+.sidenav-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.25rem 0 1.25rem 0;
+}
+
+.sidenav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem 0 .75rem 0;
 }
 
 .navdrop {
@@ -94,16 +115,6 @@ html, body {
   margin-bottom: 1rem;
 }
 
-.sidenav-text {
-  font-size: .75rem;
-}
-
-.sidenav-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
 /* INDIVIDUAL COURSE NAV */
 .coursenav {
   height: 100%;
@@ -115,7 +126,7 @@ html, body {
   align-items: center;
   z-index: 1;
   top: 6rem;
-  left: 5rem;
+  left: 6.5rem;
   background-color: #ffffff;
   overflow-x: hidden;
 }
@@ -132,7 +143,8 @@ html, body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin: 3rem 1rem 0 1rem;
+  margin: 2.15rem 1rem 0 1rem;
+  padding-bottom: .6rem;
 }
 
 .course-content {
@@ -149,12 +161,12 @@ html, body {
   .course-title {
     flex-direction: row !important;
     justify-content: start !important;
-    margin-left: 2.5rem !important;
+    margin-left: 4rem !important;
     margin-right: 1rem !important;
   }
 
   .course-content {
-    margin: 0 1rem 0 10rem !important;
+    margin: 0 1rem 0 11.5rem !important;
     padding: .5rem 0 3rem 0;
   }
 }
