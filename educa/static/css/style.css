@@ -90,8 +90,6 @@ html, body {
     z-index: 1;
     top: 0;
     left: 0;
-    background-color: #ffffff;
-    border-right: 1px solid #dee2e6 !important;
     overflow-x: hidden;
   }
 }
@@ -109,6 +107,7 @@ html, body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  color: #ffffff;
   padding: 1.25rem 0 1.25rem 0;
 }
 
@@ -116,7 +115,17 @@ html, body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  color: #ffffff;
+  background-color: #007bff;
   padding: 1rem 0 .75rem 0;
+}
+.sidenav-brand:hover {
+  color: #ffffff;
+}
+.sidenav-item:hover {
+  color: #ffffff;
+  font-size: 2.5rem;
+  padding: .75rem 0 .5rem 0;
 }
 
 .navdrop {
