@@ -90,6 +90,8 @@ html, body {
     z-index: 1;
     top: 0;
     left: 0;
+    background-color: #007bff !important;
+    box-shadow: inset -.3rem 0 0 0 #ffc107;
     overflow-x: hidden;
   }
 }
@@ -119,14 +121,30 @@ html, body {
   background-color: #007bff;
   padding: 1rem 0 .75rem 0;
 }
+
 .sidenav-brand:hover {
   color: #ffffff;
 }
 .sidenav-item:hover {
   color: #ffffff;
-  font-size: 2.5rem;
-  padding: .75rem 0 .5rem 0;
+  font-size: 2.25rem;
+  padding: .85rem 0 .65rem 0;
 }
+
+/* SIDENAV BORDER COLORS */
+.r-border-red {
+  box-shadow: inset -.3rem 0 0 0 #dc3545;
+}
+
+.r-border-yellow {
+  box-shadow: inset -.3rem 0 0 0 #ffc107;
+}
+
+.r-border-green {
+  box-shadow: inset -.3rem 0 0 0 #28a745;
+}
+
+/* --------------------- */
 
 .navdrop {
   overflow: hidden;
