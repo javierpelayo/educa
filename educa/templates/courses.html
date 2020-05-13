@@ -70,20 +70,22 @@
     <div class="container mx-md-5">
       <div class="row mt-5">
         {% for i in range(courses| length) %}
-        <a id="course_{{ i }}" class="card-click col-12 col-md-6 col-lg-4 d-flex justify-content-center mb-5" href="/dashboard/courses/{{ courses[i].id }}">
-          <div class="card card-shadow card-size my-2">
-            <div class="card-title-header">
-              <h5 class="text-white">
-                {{ courses[i].title }}
-              </h5>
+        <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center mb-5">
+          <a id="course_{{ i }}" class="card-click" href="/dashboard/courses/{{ courses[i].id }}">
+            <div class="card card-shadow card-size my-2">
+              <div class="card-title-header">
+                <h5 class="text-white">
+                  {{ courses[i].title }}
+                </h5>
+              </div>
+              <div class="card-body d-flex align-items-center justify-content-center">
+                  <p class="card-text">
+                    {{ courses[i].subject }}
+                  </p>
+              </div>
             </div>
-            <div class="card-body d-flex align-items-center justify-content-center">
-                <p class="card-text">
-                  {{ courses[i].subject }}
-                </p>
-            </div>
-          </div>
-        </a>
+          </a>
+        </div>
         {% endfor %}
         <!-- SECTION 2 - CREATE COURSE LINK -->
         <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center">
