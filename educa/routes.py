@@ -1,7 +1,7 @@
 from flask import (render_template, request,
                     redirect, url_for,
                     session, logging,
-                    current_app, sessions)
+                    current_app, sessions, flash)
 from . import app, db, bcrypt, limiter
 from educa.forms import (RegistrationForm,
                         LoginForm,
@@ -351,7 +351,8 @@ def assignments(course_id):
             o_amt += 1
 
         # get the amount of questions
-        q_amt = int(q_ids[-1]) + 1
+        if q_ids:
+            q_amt = int(q_ids[-1]) + 1
 
     # POST - CREATE ASSIGNMENT
     if current_user.id == course.teacher_id and request.method == "POST" and assignmentform.validate_on_submit():
@@ -420,13 +421,10 @@ def new_assignment(course_id):
 @app.route('/dashboard/courses/<int:course_id>/assignments/<int:assignment_id>', methods=['GET', 'POST'])
 @login_required
 def assignment(course_id, assignment_id):
-
-    # page = request.args.get('page', 0, type=int)
-    submit = request.form.get('submit')
+    delete = request.form.get("delete")
 
     course = Course.query.filter_by(id=course_id).first()
     assignment = Assignment.query.filter_by(id=assignment_id).first()
-    # questions = Question.query.filter_by(assignment_id=assignment.id).paginate(page, 1, False)
     questions = Question.query.filter_by(assignment_id=assignment.id).all()
     options_dict = {}
 
@@ -438,7 +436,18 @@ def assignment(course_id, assignment_id):
         options = Option.query.filter_by(question_id=questions[x].id).all()
         options_dict[questions[x].title] = options
 
-    if request.method == "GET":
+    if current_user.id == course.teacher_id and request.method == "POST" and delete == "true":
+        db.session.delete(assignment)
+        for question in questions:
+            db.session.delete(question)
+        for question, options in options_dict.items():
+            for option in options:
+                db.session.delete(option)
+        db.session.commit()
+
+        flash('Assignment was deleted successfully')
+        return redirect(url_for("assignments", course_id=course.id))
+    elif request.method == "GET":
         # get user_assignment
         # if user_assignment exists
             # done = true

@@ -8,6 +8,20 @@ html, body {
   margin-top: 10rem;
 }
 
+
+/* Flash Messages - COURSE */
+
+.flash-message {
+  margin: 0 1rem 0 1rem !important;
+  padding: .5rem 0 0 0;
+}
+
+@media (min-width: 768px) {
+  .flash-message {
+    margin: 0 1rem 0 11.5rem !important;
+    padding: .5rem 0 0 0;
+  }
+}
 /* USER PROFILE */
 
 .profile-img {
