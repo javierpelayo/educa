@@ -262,11 +262,14 @@ def course(course_id):
     elif course.teacher_id == current_user.id and request.method == "POST" and delete == "true":
         db.session.delete(course)
         db.session.commit()
+
+        flash("Course deletion was successful!", "success")
         return redirect(url_for('courses'))
     # POST - PUT - Update syllabus
     elif course.teacher_id == current_user.id and syllabusform.validate_on_submit() and syllabus:
         course.syllabus = syllabusform.syllabus.data
         db.session.commit()
+        flash("Syllabus was updated successfully!", "success")
         return redirect(url_for('course', course_id=course.id))
     # POST - PUT - UPDATE course information
     elif (course.teacher_id == current_user.id and
@@ -276,8 +279,12 @@ def course(course_id):
         course.subject = edit_course_form.subject.data
         course.points = edit_course_form.points.data
         db.session.commit()
+
+        flash("Course was updated successfully!", "success")
         return redirect(url_for('course', course_id=course.id))
     elif edit_course_form.errors:
+
+        flash("Course could not be updated! Please check the form again.", "warning")
         return redirect(url_for('course', course_id=course.id))
     # GET
     else:
@@ -336,7 +343,7 @@ def assignments(course_id):
             question_id = question_ids[2]
             q_ids.append(question_id)
 
-        # Split the POST option variables to just be question ids and option ids
+        # Split the POST option variables to just be question ids with option ids
         for key, value in options.items():
             quop_ids = key.split("_")
             q_id = quop_ids[2]
@@ -392,8 +399,12 @@ def assignments(course_id):
                     db.session.add(option)
                     db.session.commit()
 
+        flash("Assignment created successfully!", "success")
         return redirect(url_for('assignments', course_id=course.id))
     elif assignmentform.errors:
+
+        for keyerror, error in assignmentform.errors.items():
+            flash(error[0], "danger")
         return redirect(url_for('new_assignment', course_id=course.id))
     else:
         return render_template('assignments.html',
@@ -401,7 +412,7 @@ def assignments(course_id):
                                 assignments=assignments,
                                 currenttime=datetime.timestamp(datetime.utcnow()),
                                 a_time=a_time,
-                                title=str(course.title) + "- Assignments",
+                                title=str(course.title) + " - Assignments",
                                 assignmentform=assignmentform)
 
 @app.route('/dashboard/courses/<int:course_id>/assignments/new', methods=['GET'])
@@ -445,7 +456,7 @@ def assignment(course_id, assignment_id):
                 db.session.delete(option)
         db.session.commit()
 
-        flash('Assignment was deleted successfully')
+        flash('Assignment was deleted successfully!')
         return redirect(url_for("assignments", course_id=course.id))
     elif request.method == "GET":
         # get user_assignment

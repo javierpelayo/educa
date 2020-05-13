@@ -11,13 +11,13 @@ html, body {
 
 /* Flash Messages - COURSE */
 
-.flash-message {
+.flash-message-course {
   margin: 0 1rem 0 1rem !important;
   padding: .5rem 0 0 0;
 }
 
 @media (min-width: 768px) {
-  .flash-message {
+  .flash-message-course {
     margin: 0 1rem 0 11.5rem !important;
     padding: .5rem 0 0 0;
   }

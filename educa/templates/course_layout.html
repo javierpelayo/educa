@@ -3,20 +3,20 @@
   <div class="course-title border-bottom">
     <h2>{{ course.id }} {{ course.title }}</h2>
   </div>
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-          {% for message in messages %}
-            <div class="flash-message">
-              <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-                {{ message }}
-              </div>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash-message-course">
+            <div class="alert alert-{{ category }} alert-dismissible fade show text-center" role="alert">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+              {{ message }}
             </div>
-          {% endfor %}
-      {% endif %}
-    {% endwith %}
+          </div>
+        {% endfor %}
+    {% endif %}
+  {% endwith %}
   <div class="d-flex d-md-none justify-content-center">
     <button class="navbar-toggler navbar-light" type="button" data-toggle="collapse" data-target="#courseNavDropdown">
       <span><i class="fas fa-chevron-down"></i></span>
