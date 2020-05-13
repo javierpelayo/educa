@@ -16,12 +16,12 @@
 
               {% if a_time[i] > currenttime %}
                 <tr class="">
-                  <td><a href="/dashboard/courses/{{ course.id }}/assignments/{{ assignments[i].id }}">{{ assignments[i].title }}</a></td>
+                  <td class="assignment-link"><a href="/dashboard/courses/{{ course.id }}/assignments/{{ assignments[i].id }}">{{ assignments[i].title }}</a></td>
                   <td>{{ assignments[i].duedate }}</td>
                 </tr>
               {% elif a_time[i] <= currenttime %}
                 <tr class="table-danger">
-                  <td><a href="/dashboard/courses/{{ course.id }}/assignments/{{ assignments[i].id }}">{{ assignments[i].title }}</a></td>
+                  <td class="assignment-link"><a href="/dashboard/courses/{{ course.id }}/assignments/{{ assignments[i].id }}">{{ assignments[i].title }}</a></td>
                   <td>{{ assignments[i].duedate }}</td>
                 </tr>
               {% endif %}

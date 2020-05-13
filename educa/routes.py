@@ -421,44 +421,32 @@ def new_assignment(course_id):
 @login_required
 def assignment(course_id, assignment_id):
 
-    page = request.args.get('page', 0, type=int)
+    # page = request.args.get('page', 0, type=int)
     submit = request.form.get('submit')
 
     course = Course.query.filter_by(id=course_id).first()
     assignment = Assignment.query.filter_by(id=assignment_id).first()
-    questions = Question.query.filter_by(assignment_id=assignment.id).paginate(page, 1, False)
+    # questions = Question.query.filter_by(assignment_id=assignment.id).paginate(page, 1, False)
+    questions = Question.query.filter_by(assignment_id=assignment.id).all()
+    options_dict = {}
 
-    if questions.total == 0:
+    # Make assignment due date readable
+    assignment.duedate = assignment.duedate.strftime("%b %d %Y %I:%M %p %Z")
+
+    # get all options
+    for x in range(len(questions)):
+        options = Option.query.filter_by(question_id=questions[x].id).all()
+        options_dict[questions[x].title] = options
+
+    if request.method == "GET":
+        # get user_assignment
+        # if user_assignment exists
+            # done = true
+        done = False
         return render_template('assignment.html',
                                 course=course,
                                 assignment=assignment,
                                 questions=questions,
-                                question=[],
-                                options=[],
-                                page=0,
-                                done=True,
+                                options_dict=options_dict,
+                                done=done,
                                 title=str(course.title) + " - " + str(assignment.title))
-    elif questions.total < page:
-        return redirect(url_for("assignments", course_id=course.id))
-    else:
-        if request.method == "POST":
-
-            # add user_assignment to db when submitted
-
-
-            return redirect(url_for("assignment", course_id=course.id, assignment_id=assignment.id))
-        elif request.method == "GET":
-            options = Option.query.filter_by(question_id=questions.items[0].id).all()
-            # get user_assignment
-            # if user_assignment exists
-                # done = true
-            done = False
-            return render_template('assignment.html',
-                                    course=course,
-                                    assignment=assignment,
-                                    questions=questions,
-                                    question=questions.items,
-                                    options=options,
-                                    page=page,
-                                    done=done,
-                                    title=str(course.title) + " - " + str(assignment.title))

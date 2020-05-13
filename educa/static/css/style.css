@@ -48,7 +48,7 @@ html, body {
   font-size: 2rem;
 }
 
-/* COURSE CARDS */
+/* COURSES CARDS */
 
 .card-size {
   width: 18rem;
@@ -76,7 +76,7 @@ html, body {
   border-top-right-radius: 0.2rem !important;
 }
 
-/* DASHBOARD SIDE NAV */
+/* DASHBOARD SIDENAV */
 .sidenav {
   display: none;
 }
@@ -91,7 +91,7 @@ html, body {
     top: 0;
     left: 0;
     background-color: #007bff !important;
-    box-shadow: inset -.3rem 0 0 0 #ffc107;
+    box-shadow: inset -.3rem 0 0 0 #EBBAB9;
     overflow-x: hidden;
   }
 }
@@ -144,6 +144,14 @@ html, body {
   box-shadow: inset -.3rem 0 0 0 #28a745;
 }
 
+.r-border-purple {
+  box-shadow: inset -.3rem 0 0 0 #6E2594;
+}
+
+.r-border-pink {
+  box-shadow: inset -.3rem 0 0 0 #EBBAB9;
+}
+
 /* --------------------- */
 
 .navdrop {
@@ -181,7 +189,7 @@ html, body {
   font-size: 1rem;
 }
 
-/* INDIVIDUAL COURSE */
+/* INDIVIDUAL COURSE - SMALL */
 .course-title {
   display: flex;
   flex-direction: column;
@@ -216,7 +224,63 @@ html, body {
 }
 
 /* ASSIGNMENTS */
-
-td a:hover {
+.assignment-link a:hover {
   text-decoration: none;
+}
+
+
+/* INDIVIDUAL ASSIGNMENTS */
+.assignment-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-bottom: 1px solid #dee2e6;
+  margin-bottom: 1rem;
+}
+
+.assignment-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-bottom: 1px solid #dee2e6;
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+  .assignment-info {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-around !important;
+    border-bottom: 1px solid #dee2e6;
+    margin-bottom: 1rem;
+  }
+}
+
+.assignment-instructions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-bottom: 1px solid #dee2e6;
+  margin-bottom: 1rem;
+}
+
+.questions {
+  display; flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 2rem 0 2rem;
+  margin: 1rem 0 1rem 0;
+}
+
+@media (min-width: 768px) {
+  .questions {
+    padding: 0 15rem 0 15rem !important;
+  }
+}
+.options {
+  display; flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem 0 1rem 1.25rem;
+  border-top: 1px solid #dee2e6;
 }
