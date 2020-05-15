@@ -288,9 +288,22 @@ html, body {
 
 @media (min-width: 768px) {
   .questions {
+    padding: 0 5rem 0 5rem !important;
+  }
+}
+
+@media (min-width: 992px) {
+  .questions {
+    padding: 0 10rem 0 10rem !important;
+  }
+}
+
+@media (min-width: 1200px) {
+  .questions {
     padding: 0 15rem 0 15rem !important;
   }
 }
+
 .options {
   display; flex;
   flex-direction: column;

@@ -1,7 +1,8 @@
 from flask import (render_template, request,
                     redirect, url_for,
                     session, logging,
-                    current_app, sessions, flash)
+                    current_app, sessions, flash,
+                    jsonify)
 from . import app, db, bcrypt, limiter
 from educa.forms import (RegistrationForm,
                         LoginForm,
@@ -44,6 +45,31 @@ def about():
 @app.route('/packages')
 def packages():
     return render_template("packages.html", title="Packages")
+
+
+####### TEST ROUTE / REMOVE IN PRODUCTION #######
+@app.route('/test')
+def test():
+    return render_template("test.html", title="Test")
+
+@app.route('/process', methods=['POST'])
+def process():
+    email = request.form.get('email')
+    name = request.form.get('name')
+    print(email)
+    print(name)
+    if name and email:
+        # reverses the name
+        new_name = name[::-1]
+
+        # no need to call jsonify since flask
+        # parses out dictionaries as JSON
+        return {'name': new_name}
+
+    print("error")
+    return {'error': 'Missing Data!'}
+
+##################################################
 
 # REGISTER / LOGIN / LOGOUT
 
@@ -327,7 +353,7 @@ def assignments(course_id):
     q_amt = 0
 
     # Get Assignment Questions/Options
-    if request.method == "POST":
+    if current_user.id == course.teacher_id and request.method == "POST":
         request_form = request.form.to_dict()
 
         # separate the questions from the options
@@ -403,8 +429,8 @@ def assignments(course_id):
         return redirect(url_for('assignments', course_id=course.id))
     elif assignmentform.errors:
 
-        for keyerror, error in assignmentform.errors.items():
-            flash(error[0], "danger")
+        for error in range(len(assignmentform.errors)):
+            flash(error[error], "danger")
         return redirect(url_for('new_assignment', course_id=course.id))
     else:
         return render_template('assignments.html',
