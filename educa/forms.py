@@ -125,5 +125,3 @@ class AssignmentForm(FlaskForm):
     dateInput = DateField('Due Date', format='%m/%d/%Y')
     hour = SelectField('Hour', choices=due_hour)
     minute = SelectField('Minute', choices=due_minute)
-
-    submit = SubmitField('Create')

@@ -320,42 +320,170 @@ def course(course_id):
                                 edit_course_form=edit_course_form,
                                 title="Course - " + str(course.title))
 
-@app.route('/dashboard/courses/<int:course_id>/assignments', methods=['GET', 'POST'])
+@app.route('/dashboard/courses/<int:course_id>/assignments', methods=['GET'])
 @login_required
 def assignments(course_id):
     course = Course.query.filter_by(id=course_id).first()
     assignments = Assignment.query.filter_by(course_id=course_id).all()
+    assignmentform = AssignmentForm()
+    a_ts_duedate = []
 
     # Convert duedate to timestamp for easier sorting
     for i in range(len(assignments)):
         assignments[i].duedate = datetime.timestamp(assignments[i].duedate)
 
+    # sort assignments by duedate with earliest due date showing up first
     assignments.sort(key=lambda a:a.duedate)
 
-    # Put assignments time in a list
-    a_time = []
-    for assignment in assignments:
-        a_time.append(assignment.duedate)
-
-    # Convert duedate to a readable format
+    # Put assignments duedate timestamp in a list - used to check for late assignments
+    # and convert duedate back to a readable format
     for i in range(len(assignments)):
-        assignments[i].duedate = datetime.fromtimestamp(assignments[i].duedate)
-        assignments[i].duedate = assignments[i].duedate.strftime("%b %d %Y %I:%M %p %Z")
+        a_ts_duedate.append(assignments[i].duedate)
+        assignments[i].duedate = datetime.fromtimestamp(assignments[i].duedate).strftime("%b %d %Y %I:%M %p %Z")
 
+    # questions = {}
+    # options = {}
+    # q_ids = []
+    # question_option_ids = []
+    #
+    # # exclusive (if looping)
+    # question_amt = 0
+    #
+    # # Get Assignment Questions/Options
+    # if current_user.id == course.teacher_id and request.method == "POST":
+    #     request_form = request.form.to_dict()
+    #
+    #     # separate the questions from the options
+    #     for key, value in request_form.items():
+    #         if "question_option" in key:
+    #             options[key] = value
+    #         elif "question_" in key:
+    #             questions[key] = value
+    #
+    #     # Split the POST question variables to just be question ids
+    #     for key, value in questions.items():
+    #         question_ids = key.split("_")
+    #         question_id = question_ids[2]
+    #         if question_id not in q_ids:
+    #             q_ids.append(question_id)
+    #
+    #     # Split the POST option variables to just be question ids with option ids
+    #     for key, value in options.items():
+    #         qu_op_ids = key.split("_")
+    #         q_id = qu_op_ids[2]
+    #         o_id = qu_op_ids[3]
+    #
+    #         # creating list of key value tuples [(q_key, o_value)]
+    #         question_option_ids.append((q_id, o_id))
+    #
+    #     q_ids.sort()
+    #     question_amt = len(q_ids)
+    #
+    # # POST - CREATE ASSIGNMENT
+    # if current_user.id == course.teacher_id and request.method == "POST" and assignmentform.validate_on_submit():
+    #     dateInput = assignmentform.dateInput.data.strftime('%m/%d/%Y').split("/")
+    #     hour = int(assignmentform.hour.data)
+    #     minute = int(assignmentform.minute.data)
+    #     month = int(dateInput[0])
+    #     day = int(dateInput[1])
+    #     year = int(dateInput[2])
+    #     date_time = datetime(year, month, day, hour, minute)
+    #
+    #     assignment = Assignment(course_id=course.id,
+    #                             points=assignmentform.points.data,
+    #                             title=assignmentform.title.data,
+    #                             content=assignmentform.content.data,
+    #                             type=assignmentform.type.data,
+    #                             duedate=date_time)
+    #     db.session.add(assignment)
+    #     db.session.commit()
+    #
+    #     # CREATE each question
+    #     for x in range(question_amt):
+    #         question = Question(assignment_id=assignment.id,
+    #                             title=questions['question_title_' + str(x)],
+    #                             content=questions['question_content_' + str(x)],
+    #                             answer=questions['question_answer_' + str(x)],
+    #                             type=questions['question_type_' + str(x)])
+    #
+    #         db.session.add(question)
+    #         db.session.commit()
+    #
+    #         # CREATE each option for that question
+    #         for key, value in question_option_ids:
+    #             if key == str(x):
+    #                 option = Option(question_id=question.id,
+    #                                 content=options["question_option_" + key + "_" + value])
+    #                 db.session.add(option)
+    #                 db.session.commit()
+    #
+    #     flash("Assignment created successfully!", "success")
+    #     return redirect(url_for('assignments', course_id=course.id))
+    # elif assignmentform.errors:
+    #
+    #     for error in range(len(assignmentform.errors)):
+    #         flash(error[error], "danger")
+    #     return redirect(url_for('new_assignment', course_id=course.id))
+    if request.method == "GET":
+        return render_template('assignments.html',
+                                course=course,
+                                assignments=assignments,
+                                current_time=datetime.timestamp(datetime.utcnow()),
+                                a_ts_duedate=a_ts_duedate,
+                                title=str(course.title) + " - Assignments")
+
+@app.route('/dashboard/courses/<int:course_id>/assignments/new', methods=["GET", "POST"])
+@login_required
+def new_assignment(course_id):
+    course = Course.query.filter_by(id=course_id).first()
     assignmentform = AssignmentForm()
+    errors = {}
 
-    questions = {}
-    options = {}
-    q_ids = []
-    question_option_ids = []
+    if request.method == "POST":
+        return redirect(url_for('assignments', course_id=course.id))
 
-    # exclusive (if looping)
-    o_amt = 0
-    q_amt = 0
-
-    # Get Assignment Questions/Options
-    if current_user.id == course.teacher_id and request.method == "POST":
+    # TESTING
+    if request.method == "POST":
         request_form = request.form.to_dict()
+        assignmentform.validate()
+
+        print("ASSIGNMENT ERRORS:\n")
+        for name, error in assignmentform.errors.items():
+            print(name + " : " + str(error))
+
+        print("\nQUESTION ERRORS:\n")
+        for id, error in errors.items():
+            print(id + " : " + error)
+
+        print("\nFORM VALUES:\n")
+        for key, value in request_form.items():
+            print(key + " : " + value)
+
+        return redirect(url_for('assignments', course_id=course.id))
+
+    # form error handling
+    if request.method == "POST":
+        assignmentform.validate()
+        request_form = request.form.to_dict()
+
+        for key, value in assignmentform.errors.items():
+            errors[key] = value;
+
+        for key, value in request_form.items():
+            if "question_" in key and value == "":
+                errors[key] = "This field is required."
+
+        if len(assignment_errors) > 0 or len(question_errors) > 0:
+            return errors
+
+    if current_user.id == course.teacher_id and request.method == "POST":
+        questions = {}
+        options = {}
+        q_ids = []
+        question_option_ids = []
+        question_amt = 0
+
+        # GET ASSIGNMENT QUESTIONS/OPTIONS
 
         # separate the questions from the options
         for key, value in request_form.items():
@@ -368,28 +496,23 @@ def assignments(course_id):
         for key, value in questions.items():
             question_ids = key.split("_")
             question_id = question_ids[2]
-            q_ids.append(question_id)
+            if question_id not in q_ids:
+                q_ids.append(question_id)
 
         # Split the POST option variables to just be question ids with option ids
         for key, value in options.items():
-            quop_ids = key.split("_")
-            q_id = quop_ids[2]
-            o_id = quop_ids[3]
+            qu_op_ids = key.split("_")
+            q_id = qu_op_ids[2]
+            o_id = qu_op_ids[3]
 
-            # creating list of tuples [(q_key, o_value)]
+            # creating list of key value tuples [(q_key, o_value)]
             question_option_ids.append((q_id, o_id))
 
         q_ids.sort()
-        # get the amount of options
-        for x in options:
-            o_amt += 1
+        question_amt = len(q_ids)
 
-        # get the amount of questions
-        if q_ids:
-            q_amt = int(q_ids[-1]) + 1
+        # CREATE ASSIGNMENT/QUESTIONS/OPTIONS
 
-    # POST - CREATE ASSIGNMENT
-    if current_user.id == course.teacher_id and request.method == "POST" and assignmentform.validate_on_submit():
         dateInput = assignmentform.dateInput.data.strftime('%m/%d/%Y').split("/")
         hour = int(assignmentform.hour.data)
         minute = int(assignmentform.minute.data)
@@ -407,8 +530,8 @@ def assignments(course_id):
         db.session.add(assignment)
         db.session.commit()
 
-        # CREATE each question
-        for x in range(q_amt):
+        # CREATE each question for the assignment
+        for x in range(question_amt):
             question = Question(assignment_id=assignment.id,
                                 title=questions['question_title_' + str(x)],
                                 content=questions['question_content_' + str(x)],
@@ -427,28 +550,9 @@ def assignments(course_id):
                     db.session.commit()
 
         flash("Assignment created successfully!", "success")
-        return redirect(url_for('assignments', course_id=course.id))
-    elif assignmentform.errors:
+        return redirect(url_for("assignments", course_id=course.id))
 
-        for error in range(len(assignmentform.errors)):
-            flash(error[error], "danger")
-        return redirect(url_for('new_assignment', course_id=course.id))
-    else:
-        return render_template('assignments.html',
-                                course=course,
-                                assignments=assignments,
-                                currenttime=datetime.timestamp(datetime.utcnow()),
-                                a_time=a_time,
-                                title=str(course.title) + " - Assignments",
-                                assignmentform=assignmentform)
-
-@app.route('/dashboard/courses/<int:course_id>/assignments/new', methods=['GET'])
-@login_required
-def new_assignment(course_id):
-    course = Course.query.filter_by(id=course_id).first()
-    assignmentform = AssignmentForm()
-
-    if current_user.id == course.teacher_id:
+    if current_user.id == course.teacher_id and request.method == "GET":
         return render_template('new_assignment.html',
                                 course=course,
                                 assignmentform=assignmentform,
