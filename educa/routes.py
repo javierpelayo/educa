@@ -65,7 +65,8 @@ def process():
         # no need to call jsonify since flask
         # parses out dictionaries as JSON
         return {'name': new_name}
-
+    else:
+        return redirect(url_for('about'))
     print("error")
     return {'error': 'Missing Data!'}
 
