@@ -5,9 +5,12 @@ let questions = document.querySelector("#questions");
 // Create an Ajax object request
 let request = new XMLHttpRequest();
 let form = document.querySelector("#assignment");
-let data = {};
+let errors;
+let field;
+let smallTag;
 let dataQuery;
 let url;
+let urlRedirect;
 let courseID;
 
 let qClickAmt = 0;
@@ -72,7 +75,10 @@ function change(type, add, remove, index) {
     let options = document.querySelector("#options_" + String(index));
 
     // name = question_option_<q#>_<o#> -- POST VARIABLE
-    qOption = `<input id='qOption_${index}_${oClickAmt}' class='form-control qOption_${index}' type='text' name='question_option_${index}_${oClickAmt}' placeholder='Option #${oClickAmt+1}'>`;
+    qOption = `<input id='qOption_${index}_${oClickAmt}' class='form-control qOption_${index}' type='text' name='question_option_${index}_${oClickAmt}' placeholder='Option #${oClickAmt+1}'>
+              <div class="invalid-feedback">
+                  <small id="assignment_qOption_${index}_${oClickAmt}_error"></small>
+              </div>`;
     options.insertAdjacentHTML('beforeend', "<div class='col-12 mb-3'>" + qOption + "</div>");
 
     oClickAmt += 1;
@@ -81,6 +87,8 @@ function change(type, add, remove, index) {
 
 function fn(){
   form.addEventListener("submit", function(event) {
+    // resets the data object incase user removes or adds content to assignment
+    let data = {};
 
     // Bug is possible in production when retrieving course id - more testing needed
     url = document.URL.split("/");
@@ -88,30 +96,50 @@ function fn(){
 
     request.open("POST", `/dashboard/courses/${courseID}/assignments/new`, true);
     request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-    // pass data as a query string(flask converts it into a multi_dict)
 
     let fields = document.forms["assignment"].querySelectorAll('input,textarea,select');
+
+    // event handler : checks the state of the request,
+    // if it is done do something
+    request.onreadystatechange = function() {
+      if (request.readyState == XMLHttpRequest.DONE) {
+        errors = JSON.parse(request.responseText);
+
+        // if the request has an error
+        if (Object.keys(errors).length > 0) {
+          fields.forEach(function(item, index, array){
+            if (item.tagName === "INPUT" || item.tagName === "TEXTAREA"){
+              item.classList.remove("is-invalid");
+              smallTag = document.querySelector(`#assignment_${item.id}_error`);
+
+              // check is needed since some INPUTS don't need validation(CSRF token or question_answer) and may not have small element
+              if(smallTag) {
+                smallTag.innerText = "";
+              }
+            }
+          });
+
+          for(const key in errors){
+            field = document.querySelector(`#${key}`);
+            smallTag = document.querySelector(`#assignment_${key}_error`);
+            field.classList.add("is-invalid");
+            smallTag.innerText = errors[key];
+          }
+        } else {
+          // if no errors exist then submit the form
+          form.submit();
+        }
+      }
+    }
 
     fields.forEach(function(item, index, array){
       data[item.id] = item.value;
     });
 
     let dataQuery = Object.keys(data).map(key => key + '=' + encodeURIComponent(data[key])).join('&');
-    console.log(dataQuery);
-    // request.send(data);
-    //
-    // // event handler : checks the state of the request,
-    // // if it is done do something
-    // request.onreadystatechange = function() {
-    //   if (request.readyState == XMLHttpRequest.DONE) {
-    //     data = JSON.parse(request.responseText);
-    //
-    // 		// if the request has an error
-    //     if(data.error){
-    //       console.log(error);
-    //     }
-    //   }
-    // }
+    dataQuery += '&ajax=true';
+    // pass data as a query string(flask converts it into an immutable multi_dict)
+    request.send(dataQuery);
 
     // prevent request from being sent through HTML Form
     event.preventDefault();
@@ -131,10 +159,16 @@ function fn(){
     */
 
     // name = question_title_<q#> -- POST VARIABLE
-    qTitle = `<input id='question_title_${qClickAmt}' class='form-control' type='text' name='question_title_${qClickAmt}' placeholder='Title'>`;
+    qTitle = `<input id='question_title_${qClickAmt}' class='form-control' type='text' name='question_title_${qClickAmt}' placeholder='Title'>
+              <div class="invalid-feedback">
+                  <small id="assignment_question_title_${qClickAmt}_error"></small>
+              </div>`;
 
     // name = question_content_<q#> -- POST VARIABLE
-    qContent = `<textarea id='question_content_${qClickAmt}' class='form-control' name='question_content_${qClickAmt}'  placeholder='Question (Ask your question here)'></textarea>`;
+    qContent = `<textarea id='question_content_${qClickAmt}' class='form-control' name='question_content_${qClickAmt}'  placeholder='Question (Ask your question here)'></textarea>
+                <div class="invalid-feedback">
+                    <small id="assignment_question_content_${qClickAmt}_error"></small>
+                </div>`;
 
     // name = question_answer_<q#> -- POST VARIABLE
     qAnswer = `<input id='question_answer_${qClickAmt}' class='form-control' type='text' name='question_answer_${qClickAmt}' placeholder='Correct Answer (optional)'>`;

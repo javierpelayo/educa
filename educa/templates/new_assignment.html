@@ -1,7 +1,7 @@
 {% extends "course_layout.html" %}
 {% block course_content %}
 <div class="course-content">
-  <form id="assignment" class="needs-validation" novalidate>
+  <form id="assignment" class="needs-validation" action="{{ url_for('new_assignment', course_id=course.id) }}" method="POST" novalidate>
     {{ assignmentform.hidden_tag() }}
     <!-- Assignment -->
     <div class="form-group d-flex flex-column align-items-center">
@@ -20,7 +20,7 @@
 
       <!-- Assignment Instructions -->
       <div class="col-10 mb-3">
-          {{ assignmentform.content(class="form-control", placeholder="Instructions", id="mytextarea") }}
+          {{ assignmentform.content(class="form-control", placeholder="Instructions") }}
           <div class="invalid-feedback">
               <small id="assignment_content_error"></small>
           </div>
@@ -54,9 +54,9 @@
     </div>
     <div class="form-row justify-content-center">
       <div class="form-group col-3">
-        {{ assignmentform.dateInput(class="form-control", placeholder="M/D/Y 01/01/2000") }}
+        {{ assignmentform.dateInput(class="form-control", placeholder="M/D/Y") }}
         <div class="invalid-feedback">
-            <small id="assignment_date_error"></small>
+            <small id="assignment_dateInput_error"></small>
         </div>
       </div>
       <div class="form-group col-3">
