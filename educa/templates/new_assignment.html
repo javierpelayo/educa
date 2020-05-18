@@ -1,5 +1,11 @@
 {% extends "course_layout.html" %}
 {% block course_content %}
+
+<script type="text/javascript">
+tinymce.init({
+    selector: "textarea",
+});
+</script>
 <div class="course-content">
   <form id="assignment" class="needs-validation" action="{{ url_for('new_assignment', course_id=course.id) }}" method="POST" novalidate>
     {{ assignmentform.hidden_tag() }}

@@ -27,7 +27,11 @@ let qOption;
 
 let question;
 let rQuestion;
-
+function editor(){
+  tinymce.init({
+      selector: "textarea",
+  });
+}
 function change(type, add, remove, index) {
   // selfRemove.onclick = function() {
   //   // to be continued
@@ -98,12 +102,14 @@ function fn(){
     request.open("POST", window.location.pathname, true);
     request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
 
+    tinyMCE.triggerSave();
     let fields = document.forms["assignment"].querySelectorAll('input,textarea,select');
 
     // event handler : checks the state of the request,
     // if it is done do something
     request.onreadystatechange = function() {
       if (request.readyState == 4 && request.status == 200) {
+        console.log("REQUEST SENT")
         errors = JSON.parse(request.responseText);
 
         // if the request has an error
@@ -166,7 +172,9 @@ function fn(){
     if (qClickAmt > 0){
       qClickAmt -= 1;
       rQuestion = document.querySelector("#question_" + String(qClickAmt));
+      tinymce.remove();
       rQuestion.parentNode.removeChild(rQuestion);
+      editor();
     }
   };
 
@@ -233,6 +241,8 @@ function fn(){
                 </div>`;
 
     questions.insertAdjacentHTML('beforeend', question);
+
+    editor();
 
     // selfRemoveBtn = document.querySelector('#remove_question_' + String(qClickAmt));
     qType = document.querySelector("#qtype_" + String(qClickAmt));

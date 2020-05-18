@@ -42,7 +42,14 @@
           <div class="questions">
             <div class="card">
               <div class="card-header">
-                <h4>{{ questions[i].title }}</h4>
+                <div class="d-flex justify-content-between align-items-center">
+                  <h4>{{ questions[i].title }}</h4>
+                  {% if questions[i].points > 1 %}
+                    <h5>{{ questions[i].points }} Points</h5>
+                  {% else %}
+                    <h5>{{ questions[i].points }} Point</h5>
+                  {% endif %}
+                </div>
               </div>
               <div class="card-body">
                 <h5 class="card-title">{{ questions[i].content }}</h5>
