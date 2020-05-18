@@ -1,6 +1,7 @@
 let addQuestionBtn = document.querySelector("#add_question");
 let removeQuestionBtn = document.querySelector("#remove_question");
 let questions = document.querySelector("#questions");
+let aType = document.querySelector("#type");
 
 // Create an Ajax object request
 let request = new XMLHttpRequest();
@@ -17,6 +18,7 @@ let selfRemoveBtn;
 let qTitle;
 let qContent;
 let qAnswer;
+let qPoints;
 let qType;
 let oAddBtn;
 let oRemoveBtn;
@@ -146,6 +148,20 @@ function fn(){
     event.preventDefault();
   });
 
+  // if assignment type is instructions hide buttons
+  aType.onchange = function(){
+    if (aType.value === "Instructions"){
+      questions.innerHTML = "";
+      removeQuestionBtn.classList.add('d-none');
+      addQuestionBtn.classList.add('d-none');
+      qClickAmt = 0;
+    } else {
+      rQuestions =
+      removeQuestionBtn.classList.remove('d-none');
+      addQuestionBtn.classList.remove('d-none');
+    }
+  }
+
   removeQuestionBtn.onclick = function() {
     if (qClickAmt > 0){
       qClickAmt -= 1;
@@ -173,6 +189,12 @@ function fn(){
 
     // name = question_answer_<q#> -- POST VARIABLE
     qAnswer = `<input id='question_answer_${qClickAmt}' class='form-control' type='text' name='question_answer_${qClickAmt}' placeholder='Correct Answer (optional)'>`;
+
+    // name = question_points_<q#> -- POST VARIABLE
+    qPoints = `<input id='question_points_${qClickAmt}' class='form-control' type='text' name='question_points_${qClickAmt}' placeholder='Points'>
+              <div class="invalid-feedback">
+                  <small id="assignment_question_points_${qClickAmt}_error"></small>
+              </div>`;
 
     // name = question_type_<q#> -- POST VARIABLE
     qType = `<select id='qtype_${qClickAmt}' class='form-control' name='question_type_${qClickAmt}'>
@@ -202,6 +224,7 @@ function fn(){
                     <div class='col-12 mb-3'>${qTitle}</div>
                     <div class='col-12 mb-3'>${qContent}</div>
                     <div class='col-12 mb-3'>${qAnswer}</div>
+                    <div class='col-12 mb-3'>${qPoints}</div>
                     <b id='q_answer_header_${qClickAmt}' class='mb-2'>Answer Type</b>
                     <div class='col-12 mb-3'>${qType}</div>
                     <div id='options_${qClickAmt}' class="col-12 d-flex flex-column align-items-center p-0"></div>

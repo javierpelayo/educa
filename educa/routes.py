@@ -373,6 +373,11 @@ def new_assignment(course_id):
         for key, value in request_form.items():
             if "qOption_" in key and value == "":
                 errors[key] = "This field is required."
+            elif "question_points" in key:
+                try:
+                    int(value)
+                except ValueError:
+                    errors[key] = "Not a valid integer value."
             elif "question_answer" not in key and "question_" in key and value == "":
                 errors[key] = "This field is required."
         return errors
@@ -437,6 +442,7 @@ def new_assignment(course_id):
                                 title=questions['question_title_' + str(x)],
                                 content=questions['question_content_' + str(x)],
                                 answer=questions['question_answer_' + str(x)],
+                                points=questions['question_points_' + str(x)],
                                 type=questions['question_type_' + str(x)])
 
             db.session.add(question)
@@ -486,7 +492,7 @@ def assignment(course_id, assignment_id):
                 db.session.delete(option)
         db.session.commit()
 
-        flash('Assignment was deleted successfully!')
+        flash('Assignment was deleted successfully!', 'success')
         return redirect(url_for("assignments", course_id=course.id))
     elif request.method == "GET":
         # get user_assignment

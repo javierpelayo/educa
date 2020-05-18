@@ -129,7 +129,8 @@ class Question(db.Model):
     title = db.Column(db.String(120), nullable=False)
     content = db.Column(db.Text, nullable=False)
     type = db.Column(db.String(120), nullable=False)
-    answer = db.Column(db.String(120), nullable=False)
+    answer = db.Column(db.String(120))
+    points = db.Column(db.Integer, nullable=False)
     options = db.relationship('Option')
 
     def __repr__(self):

@@ -63,12 +63,12 @@
           </div>
         {% endfor %}
         <div class="d-flex justify-content-center">
-          {% if current_user.id != course.id %}
+          {% if current_user.id != course.teacher_id and assignment.type != "Instructions" %}
             <button class="btn btn-outline-primary" type="submit" name="button">Submit</button>
           {% endif %}
         </div>
       </form>
-        {% if current_user.id == course.id %}
+        {% if current_user.id == course.teacher_id %}
         <div class="d-flex justify-content-center">
           <button class="btn btn-outline-danger mx-2 mb-5" type="button" data-toggle="modal" data-target="#delete_modal">Delete Assignment</button>
         </div>
