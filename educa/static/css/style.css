@@ -10,7 +10,6 @@ html, body {
 
 
 /* Flash Messages - COURSE */
-
 .flash-message-course {
   margin: 0 1rem 0 1rem !important;
   padding: .5rem 0 0 0;
@@ -22,8 +21,8 @@ html, body {
     padding: .5rem 0 0 0;
   }
 }
-/* USER PROFILE */
 
+/* USER PROFILE */
 .profile-img {
   min-height: 100px;
   max-height: 100px;
@@ -145,6 +144,28 @@ html, body {
   padding: .85rem 0 .65rem 0;
 }
 
+/* BUTTON EXTRA COLORS */
+.btn-outline-purple {
+  color: #6E2594;
+  border: 1px solid #6E2594;
+}
+
+.btn-outline-pink {
+  color: #EBBAB9;
+  border: 1px solid #EBBAB9;
+}
+
+.btn-outline-pink:hover {
+  color: #ffffff;
+  background-color: #EBBAB9;
+}
+
+.btn-outline-purple:hover {
+  color: #ffffff;
+  background-color: #6E2594;
+}
+
+
 /* SIDENAV BORDER COLORS */
 .r-border-red {
   box-shadow: inset -.3rem 0 0 0 #dc3545;
@@ -242,6 +263,14 @@ html, body {
   text-decoration: none;
 }
 
+/* NEW ASSIGNMENT */
+.btn-question {
+  border: none;
+  background: none;
+  outline: none !important;
+  padding: 0;
+  font-size: 1rem;
+}
 
 /* INDIVIDUAL ASSIGNMENTS */
 .assignment-title {

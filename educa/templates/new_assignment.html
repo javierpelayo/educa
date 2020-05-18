@@ -5,6 +5,9 @@
     {{ assignmentform.hidden_tag() }}
     <!-- Assignment -->
     <div class="form-group d-flex flex-column align-items-center">
+      <div class="col-10 d-flex justify-content-center mb-3">
+        <h3>New Assignment</h3>
+      </div>
       <!-- Assignment Title -->
       <div class="col-10 mb-3">
         {{ assignmentform.title(class="form-control", placeholder="Title") }}
@@ -42,9 +45,13 @@
     </div>
 
     <div class="form-group d-flex flex-column align-items-center">
-      <div class="col-10 my-1">
-          <button id="add_question" class="btn btn-outline-warning btn-block mt-1" type="button">Add Question</button>
-          <button id="remove_question" class="btn btn-outline-danger btn-block mt-1" type="button">Remove Question</button>
+      <div class="col-10 d-flex justify-content-center my-1">
+          <button id="add_question" class="btn btn-outline-success mt-1 mx-1" type="button">
+            Add Question
+          </button>
+          <button id="remove_question" class="btn btn-outline-purple mt-1 mx-1" type="button">
+            Remove Question
+          </button>
       </div>
     </div>
 

@@ -9,13 +9,11 @@ let errors;
 let field;
 let smallTag;
 let dataQuery;
-let url;
-let urlRedirect;
-let courseID;
 
 let qClickAmt = 0;
 let oClickAmt = 0;
 
+let selfRemoveBtn;
 let qTitle;
 let qContent;
 let qAnswer;
@@ -23,10 +21,15 @@ let qType;
 let oAddBtn;
 let oRemoveBtn;
 
+let qOption;
+
 let question;
 let rQuestion;
 
 function change(type, add, remove, index) {
+  // selfRemove.onclick = function() {
+  //   // to be continued
+  // }
   type.onchange = function() {
     // if the Question Type is Multiple Choice
     if(type.value == "multiple_choice"){
@@ -90,11 +93,7 @@ function fn(){
     // resets the data object incase user removes or adds content to assignment
     let data = {};
 
-    // Bug is possible in production when retrieving course id - more testing needed
-    url = document.URL.split("/");
-    courseID = url[5];
-
-    request.open("POST", `/dashboard/courses/${courseID}/assignments/new`, true);
+    request.open("POST", window.location.pathname, true);
     request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
 
     let fields = document.forms["assignment"].querySelectorAll('input,textarea,select');
@@ -102,7 +101,7 @@ function fn(){
     // event handler : checks the state of the request,
     // if it is done do something
     request.onreadystatechange = function() {
-      if (request.readyState == XMLHttpRequest.DONE) {
+      if (request.readyState == 4 && request.status == 200) {
         errors = JSON.parse(request.responseText);
 
         // if the request has an error
@@ -129,6 +128,8 @@ function fn(){
           // if no errors exist then submit the form
           form.submit();
         }
+      } else {
+        console.log("HTTP request not 200.");
       }
     }
 
@@ -179,6 +180,9 @@ function fn(){
                 <option value='multiple_choice'>Multiple Choice</option>
                 <option value='paragraph'>Paragraph</option>
               </select>`;
+    // selfRemoveBtn = `<button id="remove_question_${qClickAmt}" type="button" class="close pr-2" aria-label="Close">
+    //                     <span aria-hidden="true">&times;</span>
+    //                   </button>`;
     oAddBtn = `<button id='add_option_${qClickAmt}' class='btn btn-outline-warning btn-sm my-1 d-none' type='button'>Add Option</button>`;
     oRemoveBtn = `<button id='remove_option_${qClickAmt}' class='btn btn-outline-danger btn-sm my-1 d-none' type='button'>Remove Option</button>`;
 
@@ -186,9 +190,15 @@ function fn(){
       Question Components Together
     */
 
+
+    // new feature - self remove btn added after q_header_<q#>
     question = `<div id="question_${qClickAmt}" class="d-flex flex-column align-items-center my-2">
                   <div class='col-10 d-flex flex-column align-items-center border pb-3'>
-                    <h5 id='q_header_${qClickAmt}' class='my-3'>Question ${qClickAmt+1}</h5>
+                    <div class='col-12 mb-3 pt-3 px-0'>
+                      <div class="d-flex justify-content-center align-items-center">
+                        <h5 id='q_header_${qClickAmt}'>Question ${qClickAmt+1}</h5>
+                      </div>
+                    </div>
                     <div class='col-12 mb-3'>${qTitle}</div>
                     <div class='col-12 mb-3'>${qContent}</div>
                     <div class='col-12 mb-3'>${qAnswer}</div>
@@ -201,6 +211,7 @@ function fn(){
 
     questions.insertAdjacentHTML('beforeend', question);
 
+    // selfRemoveBtn = document.querySelector('#remove_question_' + String(qClickAmt));
     qType = document.querySelector("#qtype_" + String(qClickAmt));
     oAddBtn = document.querySelector("#add_option_" + String(qClickAmt));
     oRemoveBtn = document.querySelector("#remove_option_" + String(qClickAmt));

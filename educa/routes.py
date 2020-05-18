@@ -2,7 +2,7 @@ from flask import (render_template, request,
                     redirect, url_for,
                     session, logging,
                     current_app, sessions, flash,
-                    jsonify)
+                    jsonify, Response)
 from . import app, db, bcrypt, limiter
 from educa.forms import (RegistrationForm,
                         LoginForm,
