@@ -475,7 +475,6 @@ def assignment(course_id, assignment_id):
 
     delete = request.form.get("delete")
     request_form = request.form.to_dict()
-    print(request_form)
     course = Course.query.filter_by(id=course_id).first()
     assignment = Assignment.query.filter_by(id=assignment_id).first()
     user_assignments = User_Assignment.query.filter_by(user_id=current_user.id, assignment_id=assignment.id).all()
@@ -518,9 +517,10 @@ def assignment(course_id, assignment_id):
         for key, value in request_form.items():
             if "question_" in key and value == "":
                 errors[key] = "This question requires an answer."
+        print(errors)
         return errors
     elif request.method == "POST":
-        print("redirect")
+        print(request_form)
         return redirect(url_for("assignment", course_id=course.id, assignment_id=assignment.id))
     elif request.method == "GET":
         return render_template('assignment.html',

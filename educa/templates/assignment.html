@@ -54,7 +54,7 @@
               <div class="card-body">
                 <h5 class="card-title">{{ questions[i].content| safe }}</h5>
                 {% if questions[i].type == "multiple_choice" %}
-                  <div id="question_{{ i }}" class="option_question">
+                  <div id="question_{{ i }}">
                     {% for x in range(options_dict[questions[i].title]| length) %}
                       <div class="options">
                         <input id="question_{{ i }}_{{ x }}" type="radio" name="question_{{ i }}" value="{{ options_dict[questions[i].title][x].content }}">

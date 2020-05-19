@@ -4,44 +4,41 @@ let form = document.querySelector("#questions");
 
 function fn(){
   form.addEventListener("submit", function(event) {
-    // resets the data object incase user removes or adds content to assignment
+    // get the amount of questions
+    let questionCount = document.getElementsByClassName("card");
+    let fields = []
     let data = {};
 
     request.open("POST", window.location.pathname, true);
     request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
 
     tinyMCE.triggerSave();
-    let fields = document.forms["questions"].querySelectorAll('input,textarea,select');
-    let question_answers = []
-    fields.forEach(function(item, index, array){
-      if(item.id == "question_" + String(index)){
-        question_answers.push(item);
-      }
-    });
 
-    // Checks for any multiple choice type questions
-    let options = document.querySelectorAll(".option_question");
+    for (var i = 0; i < questionCount.length; i++) {
+      // get the question for the particular index
+      let question = document.querySelector("#question_" + String(i));
+      if (question.tagName == "DIV") {
+        // get the input selected at that particular index
+        let input_selected = document.querySelector('input[name="question_' + String(i) + '"]:checked');
 
-    // loop through those divs to check for any inputs selected
-    options.forEach(function(item, index, array){
-      if(item.id === "question_" + String(question_answers.length)){
-        let input_selected = document.querySelector('input[name="question_' + String(question_answers.length) + '"]:checked');
-
-        if (input_selected == null){
-          // creates an empty input for the question so it has an empty value
-          // if no input is selected
-          let element = document.createElement("input");
-          element.id = "question_" + String(question_answers.length);
-          element.type = "text";
-          element.name = "question_" + String(question_answers.length);
-          question_answers.push(element);
+        // if it exists then change the id of the input selected to the question index
+        if (input_selected != null){
+          input_selected.id = "question_" + String(i);
+          fields.push(input_selected);
         } else {
-          // appends the input selected inside the question div
-          input_selected.id = "question_" + String(question_answers.length)
-          question_answers.push(input_selected);
+          // creates an empty input for the question so it has an empty value
+          // if no input was selected for that question
+          let element = document.createElement("input");
+          element.id = "question_" + String(fields.length);
+          element.type = "text";
+          element.name = "question_" + String(fields.length);
+          fields.push(element);
         }
+      } else {
+        // if the question isnt multiple choice
+        fields.push(question);
       }
-    });
+    }
 
     // event handler : checks the state of the request,
     // if it is done do something
@@ -52,7 +49,7 @@ function fn(){
 
         // if the request has an error
         if (Object.keys(errors).length > 0) {
-          question_answers.forEach(function(item, index, array){
+          fields.forEach(function(item, index, array){
             if (item.tagName === "INPUT" || item.tagName === "TEXTAREA"){
               item.classList.remove("is-invalid");
               smallTag = document.querySelector(`#${item.id}_error`);
@@ -79,7 +76,7 @@ function fn(){
       }
     }
 
-    question_answers.forEach(function(item, index, array){
+    fields.forEach(function(item, index, array){
         data[item.id] = item.value;
     });
 
