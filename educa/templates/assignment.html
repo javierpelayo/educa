@@ -37,7 +37,7 @@
     </div>
 
     {% if done == False %}
-      <form class="form-group" action="" method="POST">
+      <form id="questions" class="form-group" action="{{ url_for('assignment', course_id=course.id, assignment_id=assignment.id) }}" method="POST">
         {% for i in range(questions| length) %}
           <div class="questions">
             <div class="card">
@@ -52,27 +52,36 @@
                 </div>
               </div>
               <div class="card-body">
-                <h5 class="card-title">{{ questions[i].content }}</h5>
+                <h5 class="card-title">{{ questions[i].content| safe }}</h5>
                 {% if questions[i].type == "multiple_choice" %}
-                  {% for option in options_dict[questions[i].title] %}
-                    <div class="options">
-                      <input id="question_{{ i }}" type="radio" name="question_{{ i }}" value="{{ option.content }}">
-                      <label for="question_{{ i }}">{{ option.content }}</label>
-                    </div>
-                  {% endfor %}
+                  <div id="question_{{ i }}" class="option_question">
+                    {% for x in range(options_dict[questions[i].title]| length) %}
+                      <div class="options">
+                        <input id="question_{{ i }}_{{ x }}" type="radio" name="question_{{ i }}" value="{{ options_dict[questions[i].title][x].content }}">
+                        <label for="question_{{ i }}_{{ x }}">{{ options_dict[questions[i].title][x].content }}</label>
+                      </div>
+                    {% endfor %}
+                  </div>
+                  <div class="invalid-feedback">
+                    <small id="question_{{ i }}_error"></small>
+                  </div>
                 {% elif questions[i].type == "input" %}
-                  <input class="form-control" type="text" name="question_{{ i }}">
+                  <input id="question_{{ i }}" class="form-control" type="text" name="question_{{ i }}" placeholder="Type your answer here">
+                  <div class="invalid-feedback">
+                    <small id="question_{{ i }}_error"></small>
+                  </div>
                 {% else %}
-                  <textarea id="mytextarea" class="form-control" name="question_{{ i }}" rows="8" cols="80"></textarea>
+                  <textarea id="question_{{ i }}" class="form-control" name="question_{{ i }}" rows="8" cols="80" placeholder="Type your answer here"></textarea>
+                  <div class="invalid-feedback">
+                    <small id="question_{{ i }}_error"></small>
+                  </div>
                 {% endif %}
               </div>
             </div>
           </div>
         {% endfor %}
         <div class="d-flex justify-content-center">
-          {% if current_user.id != course.teacher_id and assignment.type != "Instructions" %}
-            <button class="btn btn-outline-primary" type="submit" name="button">Submit</button>
-          {% endif %}
+            <button class="btn btn-outline-primary" type="submit">Submit</button>
         </div>
       </form>
         {% if current_user.id == course.teacher_id %}
@@ -82,9 +91,10 @@
         {% endif %}
     {% else %}
       {% if assignment.type != "Instructions" %}
-        <p>Finished!</p>
+        <p>Finished! You scored {{ user_assignment.points }}/{{ assignment.points }}</p>
       {% endif %}
     {% endif %}
 
   </div>
+  <script type="text/javascript" src="{{ url_for('static', filename='js/assignment.js')|autoversion }}"></script>
 {% endblock course_content %}

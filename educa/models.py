@@ -37,7 +37,7 @@ class User_Assignment(db.Model):
     # if question is of type paragraph/input
     content = db.Column(db.Text)
     answers = db.Column(db.ARRAY(db.String))
-    grade = db.Column(db.Integer)
+    points = db.Column(db.Integer)
     # used incase student resubmits / latest is the one that is graded
     timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     assignment = db.relationship('Assignment', backref='users')

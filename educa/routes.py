@@ -320,6 +320,15 @@ def course(course_id):
                                 edit_course_form=edit_course_form,
                                 title="Course - " + str(course.title))
 
+# Convert duedate to timestamp for easier sorting
+def to_timestamp_sort(model_objects):
+    for i in range(len(model_objects)):
+        model_objects[i].duedate = datetime.timestamp(model_objects[i].duedate)
+
+    model_objects.sort(key=lambda a:a.duedate)
+
+    return model_objects
+
 @app.route('/dashboard/courses/<int:course_id>/assignments', methods=['GET'])
 @login_required
 def assignments(course_id):
@@ -327,12 +336,7 @@ def assignments(course_id):
     assignments = Assignment.query.filter_by(course_id=course_id).all()
     a_ts_duedate = []
 
-    # Convert duedate to timestamp for easier sorting
-    for i in range(len(assignments)):
-        assignments[i].duedate = datetime.timestamp(assignments[i].duedate)
-
-    # sort assignments by duedate with earliest due date showing up first
-    assignments.sort(key=lambda a:a.duedate)
+    assignments = to_timestamp_sort(assignments)
 
     # Put assignments duedate timestamp in a list - used to check for late assignments
     # and convert duedate back to a readable format
@@ -468,15 +472,27 @@ def new_assignment(course_id):
 @app.route('/dashboard/courses/<int:course_id>/assignments/<int:assignment_id>', methods=['GET', 'POST'])
 @login_required
 def assignment(course_id, assignment_id):
-    delete = request.form.get("delete")
 
+    delete = request.form.get("delete")
+    request_form = request.form.to_dict()
+    print(request_form)
     course = Course.query.filter_by(id=course_id).first()
     assignment = Assignment.query.filter_by(id=assignment_id).first()
+    user_assignments = User_Assignment.query.filter_by(user_id=current_user.id, assignment_id=assignment.id).all()
     questions = Question.query.filter_by(assignment_id=assignment.id).all()
     options_dict = {}
 
     # Make assignment due date readable
     assignment.duedate = assignment.duedate.strftime("%b %d %Y %I:%M %p %Z")
+
+    if user_assignments:
+        done = True
+        user_assignments = to_timestamp_sort(user_assignments)
+        # Get the latest assignment submitted by the user
+        user_assignment = user_assignments[0]
+    else:
+        user_assignment = ""
+        done = False
 
     # get all options
     for x in range(len(questions)):
@@ -484,6 +500,7 @@ def assignment(course_id, assignment_id):
         options_dict[questions[x].title] = options
 
     if current_user.id == course.teacher_id and request.method == "POST" and delete == "true":
+        print("delete")
         db.session.delete(assignment)
         for question in questions:
             db.session.delete(question)
@@ -494,14 +511,22 @@ def assignment(course_id, assignment_id):
 
         flash('Assignment was deleted successfully!', 'success')
         return redirect(url_for("assignments", course_id=course.id))
+    elif "ajax" in request_form and request.method == "POST":
+        print("ajax")
+        # error handling
+        errors = {}
+        for key, value in request_form.items():
+            if "question_" in key and value == "":
+                errors[key] = "This question requires an answer."
+        return errors
+    elif request.method == "POST":
+        print("redirect")
+        return redirect(url_for("assignment", course_id=course.id, assignment_id=assignment.id))
     elif request.method == "GET":
-        # get user_assignment
-        # if user_assignment exists
-            # done = true
-        done = False
         return render_template('assignment.html',
                                 course=course,
                                 assignment=assignment,
+                                user_assignment=user_assignment,
                                 questions=questions,
                                 options_dict=options_dict,
                                 done=done,
