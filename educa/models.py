@@ -1,4 +1,5 @@
 from datetime import datetime
+from time import time
 from . import db, login_manager
 from flask_login import UserMixin
 from educa.filters import autoversion
@@ -7,6 +8,10 @@ from educa.filters import autoversion
 @login_manager.user_loader
 def load_user(user_id):
     return User_Account.query.get(int(user_id))
+
+# time in readable format
+def time_readable():
+    return datetime.fromtimestamp(time()).strftime("%b %d %Y %I:%M %p")
 
 # Association/Join Tables
 conversation_user = db.Table('conversation_user',
@@ -34,16 +39,15 @@ class User_Assignment(db.Model):
     assignment_id = db.Column(db.Integer, db.ForeignKey('assignment.id'))
     # if student uploads assignment
     url = db.Column(db.String(20))
-    # if question is of type paragraph/input
-    content = db.Column(db.Text)
-    answers = db.Column(db.ARRAY(db.String))
+    answers = db.Column(db.ARRAY(db.Text))
     points = db.Column(db.Integer)
     # used incase student resubmits / latest is the one that is graded
-    timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    created_time = db.Column(db.Float, nullable=False, default=time)
+    created_ctime = db.Column(db.String(120), nullable=False, default=time_readable)
     assignment = db.relationship('Assignment', backref='users')
 
     def __repr__(self):
-        return f"User_Assignment('{self.user_id}', '{self.assignment_id}', '{self.url}', '{self.content}', '{self.grade}')"
+        return f"User_Assignment('{self.user_id}', '{self.assignment_id}', '{self.url}', '{self.answers}', '{self.points}')"
 
 # UserMixin adds classes used to represent users for login
 # SECTION 1. User Schema
@@ -85,10 +89,11 @@ class Message(db.Model):
     conversation_id = db.Column(db.Integer, db.ForeignKey('conversation.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user_account.id'), nullable=False)
     content = db.Column(db.Text, nullable=False)
-    timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    created_time = db.Column(db.Float, nullable=False, default=time)
+    created_ctime = db.Column(db.String(120), nullable=False, default=time_readable)
 
     def __repr__(self):
-        return f"Message('{self.id}', '{self.conversation_id}', '{self.user_id}', '{self.content}', '{self.timestamp}')"
+        return f"Message('{self.id}', '{self.conversation_id}', '{self.user_id}', '{self.content}')"
 
 
 # SECTION 3. Course Schema
@@ -114,13 +119,14 @@ class Assignment(db.Model):
     content = db.Column(db.Text, nullable=False)
     points = db.Column(db.Integer, nullable=False)
     type = db.Column(db.String(120), nullable=False)
-    timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    # NULLABLE=TRUE? -- assignments without due date --
-    duedate = db.Column(db.DateTime, nullable=False)
+    created_time = db.Column(db.Float, nullable=False, default=time)
+    created_ctime = db.Column(db.String(120), nullable=False, default=time_readable)
+    duedate_time = db.Column(db.Float)
+    duedate_ctime = db.Column(db.String(120))
     questions = db.relationship('Question')
 
     def __repr__(self):
-        return f"Assignment('{self.id}', '{self.course_id}', '{self.points}', '{self.title}', '{self.content}', '{self.timestamp}')"
+        return f"Assignment(id: {self.id}, course_id: {self.course_id}, title:{self.title})"
 
 class Question(db.Model):
     __tablename__ = 'question'
@@ -153,8 +159,9 @@ class Lecture(db.Model):
     course_id = db.Column(db.Integer, db.ForeignKey('course.id'))
     title = db.Column(db.String(120), nullable=False)
     description = db.Column(db.Text)
-    timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    created_time = db.Column(db.Float, nullable=False, default=time)
+    created_ctime = db.Column(db.String(120), nullable=False, default=time_readable)
     url = db.Column(db.String(20), nullable=False)
 
     def __repr__(self):
-        return f"Lecture('{self.id}', '{self.course_id}', '{self.title}', '{self.description}', '{self.timestamp}', '{self.url}')"
+        return f"Lecture('{self.id}', '{self.course_id}', '{self.title}', '{self.description}', '{self.url}')"

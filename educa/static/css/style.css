@@ -104,7 +104,7 @@ html, body {
     top: 0;
     left: 0;
     background-color: #007bff !important;
-    box-shadow: inset -.3rem 0 0 0 #EBBAB9;
+    box-shadow: inset -.4rem 0 0 -1px #EBBAB9;
     overflow-x: hidden;
   }
 }
@@ -168,23 +168,23 @@ html, body {
 
 /* SIDENAV BORDER COLORS */
 .r-border-red {
-  box-shadow: inset -.3rem 0 0 0 #dc3545;
+  box-shadow: inset -.4rem 0px 0px -1px #dc3545;
 }
 
 .r-border-yellow {
-  box-shadow: inset -.3rem 0 0 0 #ffc107;
+  box-shadow: inset -.4rem 0px 0px -1px #ffc107;
 }
 
 .r-border-green {
-  box-shadow: inset -.3rem 0 0 0 #28a745;
+  box-shadow: inset -.4rem 0px 0px -1px #28a745;
 }
 
 .r-border-purple {
-  box-shadow: inset -.3rem 0 0 0 #6E2594;
+  box-shadow: inset -.4rem 0px 0px -1px #6E2594;
 }
 
 .r-border-pink {
-  box-shadow: inset -.3rem 0 0 0 #EBBAB9;
+  box-shadow: inset -.4rem 0px 0px -1px #EBBAB9;
 }
 
 /* --------------------- */

@@ -28,18 +28,12 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
+
+login_manager.login_message = ""
+login_manager.login_message_category = "warning"
 # Tells the extension where our login route is located
 # redirects the user to the login route
 login_manager.login_view = 'login'
 
 from . import routes
 from educa.filters import autoversion
-
-#################
-# COLOR SCHEMES #
-#################
-#Green: #44AF69
-#Beige: #EFC7C2
-#Red: #F8333C
-#Yellow: #FCAB10
-#Blue: #2B9EB3
