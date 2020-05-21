@@ -1,5 +1,6 @@
 {% extends "course_layout.html" %}
 {% block course_content %}
+{% if current_user.id != course.teacher_id %}
   <div class="course-content">
         <table class="col-12 table table-hover border text-center">
           <thead>
@@ -53,7 +54,7 @@
             <tr>
               <th><h5>Assignment</h5></th>
               <th><h5>Points</h5></th>
-              <th><h5>Total Points</h5></th>
+              <th><h5>Out of</h5></th>
             </tr>
           </thead>
           <tbody>
@@ -71,4 +72,5 @@
           </tbody>
         </table>
   </div>
+{% endif %}
 {% endblock course_content %}

@@ -18,7 +18,7 @@ from flask_login import (login_user,
                         logout_user,
                         login_required)
 from functools import wraps
-from educa.filters import autoversion
+from educa.filters import autoversion, course_auth
 import secrets
 from PIL import Image
 from datetime import datetime
@@ -256,14 +256,15 @@ def courses():
 
 @app.route('/dashboard/courses/<int:course_id>', methods=['GET', 'POST'])
 @login_required
+@course_auth
 def course(course_id):
     course = Course.query.filter_by(id=course_id).first()
-    course_user = Course_User.query.filter_by(user_id=current_user.id, course_id=course.id).first()
-
-    # check if user is in course if not redirect
-    if current_user.id != course.teacher_id:
-        if not course_user:
-            return redirect(url_for("courses"))
+    # course_user = Course_User.query.filter_by(user_id=current_user.id, course_id=course.id).first()
+    #
+    # # check if user is in course if not redirect
+    # if current_user.id != course.teacher_id:
+    #     if not course_user:
+    #         return redirect(url_for("courses"))
 
     edit_course_form = UpdateCourseForm()
     syllabusform = UpdateSyllabusForm()
@@ -329,10 +330,18 @@ def course(course_id):
 
 @app.route('/dashboard/courses/<int:course_id>/assignments', methods=['GET'])
 @login_required
+@course_auth
 def assignments(course_id):
     course = Course.query.filter_by(id=course_id).first()
     assignments = Assignment.query.filter_by(course_id=course_id).all()
     assignments = sorted(assignments, key=lambda a: a.duedate_time)
+
+    course_user = Course_User.query.filter_by(user_id=current_user.id, course_id=course.id).first()
+
+    # check if user is in course if not redirect
+    if current_user.id != course.teacher_id:
+        if not course_user:
+            return redirect(url_for("courses"))
 
     if request.method == "GET":
         return render_template('assignments.html',
@@ -343,6 +352,7 @@ def assignments(course_id):
 
 @app.route('/dashboard/courses/<int:course_id>/assignments/new', methods=["GET", "POST"])
 @login_required
+@course_auth
 def new_assignment(course_id):
     course = Course.query.filter_by(id=course_id).first()
     assignmentform = AssignmentForm()
@@ -465,6 +475,7 @@ def new_assignment(course_id):
 
 @app.route('/dashboard/courses/<int:course_id>/assignments/<int:assignment_id>', methods=['GET', 'POST'])
 @login_required
+@course_auth
 def assignment(course_id, assignment_id):
 
     redo = request.args.get("redo")
@@ -477,6 +488,13 @@ def assignment(course_id, assignment_id):
     questions = Question.query.filter_by(assignment_id=assignment.id).all()
     options_dict = {}
     questions.sort(key=lambda q: q.id)
+
+    course_user = Course_User.query.filter_by(user_id=current_user.id, course_id=course.id).first()
+
+    # check if user is in course if not redirect
+    if current_user.id != course.teacher_id:
+        if not course_user:
+            return redirect(url_for("courses"))
 
     if user_assignments:
         user_assignments = sorted(user_assignments, key=lambda a:a.points)
@@ -554,11 +572,11 @@ def assignment(course_id, assignment_id):
 
 @app.route('/dashboard/courses/<int:course_id>/grades', methods=['GET', 'POST'])
 @login_required
+@course_auth
 def grades(course_id):
     course = Course.query.filter_by(id=course_id).first()
     if current_user.id == course.teacher_id:
         return redirect(url_for("course", course_id=course.id))
-
     course_user = Course_User.query.filter_by(user_id=current_user.id, course_id=course.id).first()
 
     assignments = Assignment.query.filter_by(course_id=course.id).all()
@@ -566,7 +584,7 @@ def grades(course_id):
 
     user_latest_assignments = []
 
-    # OrderedDict is for the template so it renders as shown
+    # OrderedDict is for the template so it renders as shown here
     user_points = OrderedDict([("Exam/Quiz", 0), ("Lab", 0), ("HW", 0), ("Instructions", 0)])
     assignment_points = OrderedDict([("Exam/Quiz", 0), ("Lab", 0), ("HW", 0), ("Instructions", 0)])
 
@@ -577,6 +595,8 @@ def grades(course_id):
             user_assignments = sorted(user_assignments, key=lambda ua:ua.created_time)
             user_latest_assignments.append(user_assignments[-1])
         else:
+            # used to keep the index the same as the assignment,
+            # a 0 means they haven't turned it in
             user_latest_assignments.append(0)
         assignment_points[assignment.type] += assignment.points
 

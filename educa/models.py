@@ -2,7 +2,6 @@ from datetime import datetime
 from time import time
 from . import db, login_manager
 from flask_login import UserMixin
-from educa.filters import autoversion
 
 # gets the user from the db and logs them in/ties it with their session
 @login_manager.user_loader
@@ -166,3 +165,6 @@ class Lecture(db.Model):
 
     def __repr__(self):
         return f"Lecture('{self.id}', '{self.course_id}', '{self.title}', '{self.description}', '{self.url}')"
+
+# fix circular import with filters.py
+from educa.filters import autoversion
