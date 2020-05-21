@@ -22,6 +22,7 @@ from educa.filters import autoversion
 import secrets
 from PIL import Image
 from datetime import datetime
+from collections import OrderedDict
 import os
 import json
 
@@ -257,6 +258,12 @@ def courses():
 @login_required
 def course(course_id):
     course = Course.query.filter_by(id=course_id).first()
+    course_user = Course_User.query.filter_by(user_id=current_user.id, course_id=course.id).first()
+
+    # check if user is in course if not redirect
+    if current_user.id != course.teacher_id:
+        if not course_user:
+            return redirect(url_for("courses"))
 
     edit_course_form = UpdateCourseForm()
     syllabusform = UpdateSyllabusForm()
@@ -279,7 +286,7 @@ def course(course_id):
     # GET - edit syllabus query
     if course.teacher_id == current_user.id and request.method == "GET" and edit_syllabus == "true":
         syllabusform.syllabus.data = course.syllabus
-        return render_template('course_about.html',
+        return render_template('course.html',
                                 course=course,
                                 syllabusform=syllabusform,
                                 edit=edit_syllabus,
@@ -315,7 +322,7 @@ def course(course_id):
         return redirect(url_for('course', course_id=course.id))
     # GET
     else:
-        return render_template('course_about.html',
+        return render_template('course.html',
                                 course=course,
                                 edit_course_form=edit_course_form,
                                 title="Course - " + str(course.title))
@@ -325,7 +332,7 @@ def course(course_id):
 def assignments(course_id):
     course = Course.query.filter_by(id=course_id).first()
     assignments = Assignment.query.filter_by(course_id=course_id).all()
-    assignments = sorted(assignments, key=lambda a: a.duedate_time, reverse=True)
+    assignments = sorted(assignments, key=lambda a: a.duedate_time)
 
     if request.method == "GET":
         return render_template('assignments.html',
@@ -472,7 +479,7 @@ def assignment(course_id, assignment_id):
     questions.sort(key=lambda q: q.id)
 
     if user_assignments:
-        user_assignments = sorted(user_assignments, key=lambda a:a.created_time)
+        user_assignments = sorted(user_assignments, key=lambda a:a.points)
         # Get the latest assignment submitted by the user
         print(user_assignments)
         user_assignment = user_assignments[-1]
@@ -506,6 +513,7 @@ def assignment(course_id, assignment_id):
         url = ""
         answers = []
         points = 0
+
         for key, value in request_form.items():
             if "question_" in key:
                 answers.append(value)
@@ -518,7 +526,8 @@ def assignment(course_id, assignment_id):
                                         assignment_id=assignment.id,
                                         url=url,
                                         answers=answers,
-                                        points=points)
+                                        points=points,
+                                        type=assignment.type)
         db.session.add(user_assignment)
         db.session.commit()
 
@@ -542,3 +551,52 @@ def assignment(course_id, assignment_id):
                                 questions=questions,
                                 options_dict=options_dict,
                                 title=str(course.title) + " - " + str(assignment.title))
+
+@app.route('/dashboard/courses/<int:course_id>/grades', methods=['GET', 'POST'])
+@login_required
+def grades(course_id):
+    course = Course.query.filter_by(id=course_id).first()
+    if current_user.id == course.teacher_id:
+        return redirect(url_for("course", course_id=course.id))
+
+    course_user = Course_User.query.filter_by(user_id=current_user.id, course_id=course.id).first()
+
+    assignments = Assignment.query.filter_by(course_id=course.id).all()
+    assignments = sorted(assignments, key=lambda a:a.duedate_time)
+
+    user_latest_assignments = []
+
+    # OrderedDict is for the template so it renders as shown
+    user_points = OrderedDict([("Exam/Quiz", 0), ("Lab", 0), ("HW", 0), ("Instructions", 0)])
+    assignment_points = OrderedDict([("Exam/Quiz", 0), ("Lab", 0), ("HW", 0), ("Instructions", 0)])
+
+    # get all user assignments and add the points for each assignment type
+    for assignment in assignments:
+        user_assignments = User_Assignment.query.filter_by(user_id=current_user.id, assignment_id=assignment.id).all()
+        if user_assignments:
+            user_assignments = sorted(user_assignments, key=lambda ua:ua.created_time)
+            user_latest_assignments.append(user_assignments[-1])
+        else:
+            user_latest_assignments.append(0)
+        assignment_points[assignment.type] += assignment.points
+
+    # add how much the student scored for each assignment and its type
+    for user_assignment in user_latest_assignments:
+        if user_assignment != 0:
+            user_points[user_assignment.type] += user_assignment.points
+
+    user_course_points = sum(user_points.values())
+    current_assignment_points = sum(assignment_points.values())
+
+    print(user_latest_assignments)
+    print(assignments)
+    if request.method == "GET":
+        return render_template('grades.html',
+                                course=course,
+                                course_user=course_user,
+                                assignments=assignments,
+                                user_latest_assignments=user_latest_assignments,
+                                assignment_points=assignment_points,
+                                user_points=user_points,
+                                user_course_points=user_course_points,
+                                current_assignment_points=current_assignment_points)

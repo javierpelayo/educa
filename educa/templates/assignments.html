@@ -28,8 +28,10 @@
           {% endfor %}
         </tbody>
       </table>
-    <div class="d-flex justify-content-center my-1">
-      <a class="btn btn-outline-primary" href="/dashboard/courses/{{ course.id }}/assignments/new">New Assignment</a>
-    </div>
+    {% if current_user.id == course.teacher_id %}
+      <div class="d-flex justify-content-center my-1">
+        <a class="btn btn-outline-primary" href="/dashboard/courses/{{ course.id }}/assignments/new">New Assignment</a>
+      </div>
+    {% endif %}
   </div>
 {% endblock course_content %}

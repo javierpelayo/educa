@@ -249,11 +249,11 @@ html, body {
     flex-direction: row !important;
     justify-content: start !important;
     margin-left: 4rem !important;
-    margin-right: 1rem !important;
+    margin-right: 2rem !important;
   }
 
   .course-content {
-    margin: 0 1rem 0 11.5rem !important;
+    margin: 0 2rem 0 11.5rem !important;
     padding: .5rem 0 3rem 0;
   }
 }
