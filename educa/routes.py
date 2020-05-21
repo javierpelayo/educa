@@ -18,7 +18,7 @@ from flask_login import (login_user,
                         logout_user,
                         login_required)
 from functools import wraps
-from educa.filters import autoversion, course_auth
+from educa.filters import autoversion, course_auth, teacher_auth
 import secrets
 from PIL import Image
 from datetime import datetime
@@ -259,12 +259,6 @@ def courses():
 @course_auth
 def course(course_id):
     course = Course.query.filter_by(id=course_id).first()
-    # course_user = Course_User.query.filter_by(user_id=current_user.id, course_id=course.id).first()
-    #
-    # # check if user is in course if not redirect
-    # if current_user.id != course.teacher_id:
-    #     if not course_user:
-    #         return redirect(url_for("courses"))
 
     edit_course_form = UpdateCourseForm()
     syllabusform = UpdateSyllabusForm()
@@ -353,14 +347,11 @@ def assignments(course_id):
 @app.route('/dashboard/courses/<int:course_id>/assignments/new', methods=["GET", "POST"])
 @login_required
 @course_auth
+@teacher_auth
 def new_assignment(course_id):
     course = Course.query.filter_by(id=course_id).first()
     assignmentform = AssignmentForm()
     errors = {}
-
-    # Course Teacher Authentication
-    if current_user.id is not course.teacher_id:
-        return redirect(url_for('assignments', course_id=course_id))
 
     request_form = request.form.to_dict()
 
@@ -489,13 +480,6 @@ def assignment(course_id, assignment_id):
     options_dict = {}
     questions.sort(key=lambda q: q.id)
 
-    course_user = Course_User.query.filter_by(user_id=current_user.id, course_id=course.id).first()
-
-    # check if user is in course if not redirect
-    if current_user.id != course.teacher_id:
-        if not course_user:
-            return redirect(url_for("courses"))
-
     if user_assignments:
         user_assignments = sorted(user_assignments, key=lambda a:a.points)
         # Get the latest assignment submitted by the user
@@ -528,9 +512,15 @@ def assignment(course_id, assignment_id):
                 errors[key] = "This question requires an answer."
         return errors
     elif request.method == "POST":
+        course_user = Course_User.query.filter_by(user_id=current_user.id, course_id=course.id).first()
+        assignments = Assignment.query.filter_by(course_id=course.id).all()
+        total_assignment_points = 0
         url = ""
         answers = []
         points = 0
+
+        for a in assignments:
+            total_assignment_points += a.points
 
         for key, value in request_form.items():
             if "question_" in key:
@@ -540,12 +530,39 @@ def assignment(course_id, assignment_id):
             if questions[i].answer == answers[i]:
                 points += questions[i].points
 
+        #
+        # Update the students grade during the course
+        #
+
+        # if the student has completed assignments
+        if course_user.assignments_done:
+            assignments_done = json.loads(course_user.assignments_done)
+        else:
+            assignments_done = {}
+
+        # if the assignment exists in the returned done assignments
+        if assignment.id in assignments_done:
+            if assignments_done[str(assignment.id)] < points:
+                course_user.points -= assignments_done[str(assignment.id)] + points
+                assignments_done[str(assignment.id)] = points
+        else:
+            course_user.points += points
+            assignments_done[str(assignment.id)] = points
+
+        # convert back to json for db storage
+        assignments_done = json.dumps(assignments_done)
+        course_user.assignments_done = assignments_done
+
+        # update grade with any new points and assignments needed to turn in
+        course_user.grade = '{:.2%}'.format(course_user.points/total_assignment_points)
+
         user_assignment = User_Assignment(user_id=current_user.id,
                                         assignment_id=assignment.id,
                                         url=url,
                                         answers=answers,
                                         points=points,
                                         type=assignment.type)
+
         db.session.add(user_assignment)
         db.session.commit()
 
@@ -570,14 +587,10 @@ def assignment(course_id, assignment_id):
                                 options_dict=options_dict,
                                 title=str(course.title) + " - " + str(assignment.title))
 
-@app.route('/dashboard/courses/<int:course_id>/grades', methods=['GET', 'POST'])
-@login_required
-@course_auth
-def grades(course_id):
-    course = Course.query.filter_by(id=course_id).first()
-    if current_user.id == course.teacher_id:
-        return redirect(url_for("course", course_id=course.id))
-    course_user = Course_User.query.filter_by(user_id=current_user.id, course_id=course.id).first()
+# used to gather information about
+# a user for grades template rendering
+def user_grades(course, user_id):
+    course_user = Course_User.query.filter_by(user_id=user_id, course_id=course.id).first()
 
     assignments = Assignment.query.filter_by(course_id=course.id).all()
     assignments = sorted(assignments, key=lambda a:a.duedate_time)
@@ -590,7 +603,7 @@ def grades(course_id):
 
     # get all user assignments and add the points for each assignment type
     for assignment in assignments:
-        user_assignments = User_Assignment.query.filter_by(user_id=current_user.id, assignment_id=assignment.id).all()
+        user_assignments = User_Assignment.query.filter_by(user_id=user_id, assignment_id=assignment.id).all()
         if user_assignments:
             user_assignments = sorted(user_assignments, key=lambda ua:ua.created_time)
             user_latest_assignments.append(user_assignments[-1])
@@ -605,11 +618,24 @@ def grades(course_id):
         if user_assignment != 0:
             user_points[user_assignment.type] += user_assignment.points
 
-    user_course_points = sum(user_points.values())
     current_assignment_points = sum(assignment_points.values())
 
-    print(user_latest_assignments)
-    print(assignments)
+    return (course_user, assignments, user_latest_assignments,
+            user_points, assignment_points, current_assignment_points)
+
+@app.route('/dashboard/courses/<int:course_id>/grades', methods=['GET'])
+@login_required
+@course_auth
+def grades(course_id):
+    course = Course.query.filter_by(id=course_id).first()
+    if current_user.id == course.teacher_id:
+        return redirect(url_for("students", course_id=course.id))
+
+    (course_user, assignments,
+    user_latest_assignments,
+    user_points, assignment_points,
+    current_assignment_points) = user_grades(course, current_user.id)
+
     if request.method == "GET":
         return render_template('grades.html',
                                 course=course,
@@ -618,5 +644,35 @@ def grades(course_id):
                                 user_latest_assignments=user_latest_assignments,
                                 assignment_points=assignment_points,
                                 user_points=user_points,
-                                user_course_points=user_course_points,
-                                current_assignment_points=current_assignment_points)
+                                current_assignment_points=current_assignment_points,
+                                title=course.title + " - Grades")
+
+@app.route('/dashboard/courses/<int:course_id>/students', methods=['GET', 'POST'])
+@login_required
+@course_auth
+def students(course_id):
+    course = Course.query.filter_by(id=course_id).first()
+    course_students = Course_User.query.filter_by(course_id=course.id).all()
+    students_list = []
+    for student in course_students:
+        user = User_Account.query.filter_by(id=student.user_id).first()
+        students_list.append(user)
+
+    if request.method == "GET":
+        return render_template("students.html",
+                                course=course,
+                                course_students=course_students,
+                                students_list=students_list,
+                                title=course.title + " - Students")
+
+@app.route('/dashboard/courses/<int:course_id>/students/<int:student_id>', methods=['GET', 'POST'])
+@login_required
+@course_auth
+def student(course_id, student_id):
+    course = Course.query.filter_by(id=course_id).first()
+
+@app.route('/dashboard/courses/<int:course_id>/students/<int:student_id>/grades', methods=['GET', 'POST'])
+@login_required
+@course_auth
+def student_grades(course_id, student_id):
+    course = Course.query.filter_by(id=course_id).first()

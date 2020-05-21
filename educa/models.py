@@ -23,7 +23,9 @@ class Course_User(db.Model):
     # Two primary keys come together to create a composite primary key
     user_id = db.Column(db.Integer, db.ForeignKey('user_account.id'), primary_key=True)
     course_id = db.Column(db.Integer, db.ForeignKey('course.id'), primary_key=True)
-    grade = db.Column(db.Integer)
+    points = db.Column(db.Integer, default=0)
+    grade = db.Column(db.String(120))
+    assignments_done = db.Column(db.JSON)
     course = db.relationship('Course', backref='users')
 
     def __repr__(self):

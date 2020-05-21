@@ -14,6 +14,10 @@ def autoversion(filename):
   shortpath = fullpath[7:]
   return f"{shortpath}?v={timestamp}"
 
+#
+# Middleware Section
+#
+
 # Used to check if the user is in the course
 def course_auth(f):
     @wraps(f)
@@ -25,8 +29,18 @@ def course_auth(f):
         # check if user is in course if not redirect
         if current_user.id != course.teacher_id:
             if not course_user:
-                flash("You are not in this course.", "warning")
                 return redirect(url_for("courses"))
         return f(*args, **kwargs)
 
+    return identify
+
+# used to check if the user is a teacher of the course
+def teacher_auth(f):
+    @wraps(f)
+    def identify(*args, **kwargs):
+        course = Course.query.filter_by(id=kwargs['course_id']).first()
+        if current_user.id != course.teacher_id:
+            return redirect(url_for('courses'))
+
+        return f(*args, **kwargs)
     return identify
