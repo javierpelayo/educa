@@ -106,6 +106,7 @@
     </form>
 
   {% else %}
+
     <div class="course-title border-bottom">
       <h2>Profile</h2>
     </div>
@@ -113,7 +114,7 @@
       <!-- SECTION 1 NAME -->
       <section>
         <div class="d-flex flex-column flex-sm-row align-items-center justify-content-start my-5 mx-5 mx-md-5">
-          <img class="rounded-circle profile-img" src="{{ profile_image }}" alt="">
+          <img class="profile-img" src="{{ profile_image }}" alt="">
           <div class="mt-5 mt-sm-0 mx-5">
             <h2 class="text-nowrap">{{ current_user.first_name }} {{ current_user.last_name }}</h2>
           </div>

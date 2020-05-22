@@ -665,11 +665,31 @@ def students(course_id):
                                 students_list=students_list,
                                 title=course.title + " - Students")
 
-@app.route('/dashboard/courses/<int:course_id>/students/<int:student_id>', methods=['GET', 'POST'])
+@app.route('/dashboard/courses/<int:course_id>/students/<int:student_id>', methods=['GET'])
 @login_required
 @course_auth
 def student(course_id, student_id):
     course = Course.query.filter_by(id=course_id).first()
+
+    courses_user = Course_User.query.filter_by(user_id=student_id).all()
+    assignments_user = User_Assignment.query.filter_by(user_id=student_id).all()
+
+    user = User_Account.query.filter_by(id=student_id).first()
+    profile_image = url_for('static', filename="profile_images/" + user.profile_image)
+    points = 0
+
+    for course_user in courses_user:
+        points += course_user.points
+
+    if request.method == "GET":
+        return render_template("student.html",
+                                course=course,
+                                user=user,
+                                courses_user=courses_user,
+                                assignments_user=assignments_user,
+                                profile_image=profile_image,
+                                points=points,
+                                title=course.title + " - " + user.first_name + " " + user.last_name)
 
 @app.route('/dashboard/courses/<int:course_id>/students/<int:student_id>/grades', methods=['GET', 'POST'])
 @login_required

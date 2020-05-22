@@ -1,0 +1,48 @@
+{% extends "course_layout.html" %}
+{% block course_content %}
+  <div class="course-content">
+    <div class="container">
+      <div class="row border-bottom pb-1">
+        <div class="col-6 col-md-4 d-flex justify-content-end my-2">
+          <img class="profile-img mx-5" src="{{ profile_image }}" alt="">
+        </div>
+        <div class="col-6 col-md-4 d-flex flex-column align-items-start my-4">
+            <h6 class="my-1">{{ user.first_name }} {{ user.last_name }}</h6>
+            <p class="my-1">{{ user.email }}</p>
+            <p>{{ points }} Points</p>
+        </div>
+        <div class="col-md-4 d-flex flex-column align-items-center my-5">
+          <a class="btn btn-outline-primary" href="#"><i class="far fa-comment"></i> Message</a>
+        </div>
+    </div>
+    <div class="row border-bottom">
+      <div class="col-6 d-flex justify-content-center align-items-center student-info">
+        <h6 class="m-3"><i class="far fa-folder-open"></i> Assignments</h6>
+      </div>
+      <div class="col-6 d-flex justify-content-center align-items-center student-info">
+        <h6 class="m-3"><i class="far fa-bell"></i> Courses</h6>
+      </div>
+    </div>
+    <!-- Assignments -->
+    <div id="assignments" class="">
+      {% for assignment in assignments_user %}
+        <div class="row border-bottom">
+          <div class="col-12 d-flex align-items-center student-info">
+            <h6 class="m-3">{{ assignment.assignment.title }}</h6>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    
+    <!-- Courses -->
+    <div id="courses" class="d-none">
+      {% for course in courses_user %}
+        <div class="row border-bottom">
+          <div class="col-12 d-flex align-items-center student-info">
+            <h6 class="m-3">{{ course.course.title }}</h6>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock course_content %}

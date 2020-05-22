@@ -24,10 +24,10 @@ html, body {
 
 /* USER PROFILE */
 .profile-img {
-  min-height: 100px;
-  max-height: 100px;
-  min-width: 100px;
-  max-width: 100px;
+  min-height: 125px;
+  max-height: 125px;
+  min-width: 125px;
+  max-width: 125px;
   border-radius: 50% !important;
 
   padding: .25rem;
@@ -339,4 +339,11 @@ html, body {
   align-items: center;
   padding: 1rem 0 1rem 1.25rem;
   border-top: 1px solid #dee2e6;
+}
+
+/* Student Profile */
+
+.student-info:hover {
+  color: #212529;
+  background-color: rgba(0, 0, 0, 0.075);
 }
