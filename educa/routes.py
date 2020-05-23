@@ -144,7 +144,7 @@ def save_picture(form_picture):
                                 picture_fn)
 
     # Resize image using PILLOW
-    output_size = (100,100)
+    output_size = (200,200)
     i = Image.open(form_picture)
     i.thumbnail(output_size)
     i.save(picture_path)
@@ -165,8 +165,18 @@ def profile():
     form = UpdateProfileForm()
     edit = request.args.get('edit')
     profile_image = url_for('static', filename="profile_images/" + current_user.profile_image)
-    if request.method == 'GET' and edit == "true":
-        print("test1")
+
+    # check if user is student or teacher
+    if current_user.profession == "Student":
+        courses = Course_User.query.filter_by(user_id=current_user.id).all()
+        assignments = User_Assignment.query.filter_by(user_id=current_user.id).all()
+    elif current_user.profession == "Teacher":
+        assignments = []
+        courses = Course.query.filter_by(teacher_id=current_user.id).all()
+        for course in courses:
+            assignments.append(Assignment.query.filter_by(course_id=course.id).all())
+
+    if request.method == 'GET' and edit:
         fullname = current_user.first_name + " " + current_user.last_name
         form.fullname.data = fullname
         form.email.data = current_user.email
@@ -174,17 +184,19 @@ def profile():
         return render_template('profile.html',
                                 title='Profile',
                                 profile_image=profile_image,
+                                courses=courses,
+                                assignments=assignments,
                                 form=form,
                                 edit=edit)
-    # If request is a 'POST' & form.val...
-    elif form.validate_on_submit():
-        if form.removepic.data == False and form.picture.data:
+    elif request.method == "POST" and form.validate_on_submit():
+        if not form.removepic.data and form.picture.data:
             delete_picture()
             picture_file = save_picture(form.picture.data)
             current_user.profile_image = picture_file
-        elif form.removepic.data == True:
+        elif form.removepic.data:
             delete_picture()
             current_user.profile_image = "default.png"
+
         fullname = form.fullname.data.split(" ")
         first_name = fullname[0]
         last_name = " ".join(fullname[1:])
@@ -193,18 +205,23 @@ def profile():
         current_user.email = form.email.data
         current_user.biography = form.biography.data
         db.session.commit()
+
         return redirect(url_for('profile'))
     elif form.errors:
         return render_template('profile.html',
                                 title='Profile',
                                 profile_image=profile_image,
+                                courses=courses,
+                                assignments=assignments,
                                 form=form,
-                                edit="true")
-    # elif request.method != 'POST'
-    else:
+                                edit=edit)
+    elif request.method == "GET":
         return render_template('profile.html',
                                 title='Profile',
-                                profile_image=profile_image)
+                                profile_image=profile_image,
+                                courses=courses,
+                                assignments=assignments,
+                                form=form)
 
 @app.route('/dashboard/courses', methods=['GET', 'POST'])
 @login_required
@@ -676,10 +693,6 @@ def student(course_id, student_id):
 
     user = User_Account.query.filter_by(id=student_id).first()
     profile_image = url_for('static', filename="profile_images/" + user.profile_image)
-    points = 0
-
-    for course_user in courses_user:
-        points += course_user.points
 
     if request.method == "GET":
         return render_template("student.html",
@@ -688,7 +701,6 @@ def student(course_id, student_id):
                                 courses_user=courses_user,
                                 assignments_user=assignments_user,
                                 profile_image=profile_image,
-                                points=points,
                                 title=course.title + " - " + user.first_name + " " + user.last_name)
 
 @app.route('/dashboard/courses/<int:course_id>/students/<int:student_id>/grades', methods=['GET', 'POST'])

@@ -46,19 +46,6 @@ class LoginForm(FlaskForm):
     remember = BooleanField('Remember Me')
     submit = SubmitField('Login')
 
-    # Raises an error if the user account already exists in our DB
-    # def validate_password(self, password):
-    #     user = User_Account.query.filter_by(email=self.email.data).first()
-    #     user_pw = bcrypt.check_password_hash(user.password, password.data)
-    #     if not user_pw:
-    #         raise ValidationError("The password you entered doesn't match the email")
-    #
-    # def validate_email(self, email):
-    #     user = User_Account.query.filter_by(email=email.data).first()
-    #
-    #     if not user:
-    #         raise ValidationError('This user does not exist.')
-
 class UpdateProfileForm(FlaskForm):
     fullname = StringField('Full Name',
                         validators=[DataRequired(),

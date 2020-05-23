@@ -2,29 +2,33 @@
 {% block course_content %}
   <div class="course-content">
     <div class="container">
-      <div class="row border-bottom pb-1">
+      <div class="row pb-1">
         <div class="col-6 col-md-4 d-flex justify-content-end my-2">
           <img class="profile-img mx-5" src="{{ profile_image }}" alt="">
         </div>
         <div class="col-6 col-md-4 d-flex flex-column align-items-start my-4">
             <h6 class="my-1">{{ user.first_name }} {{ user.last_name }}</h6>
             <p class="my-1">{{ user.email }}</p>
-            <p>{{ points }} Points</p>
         </div>
         <div class="col-md-4 d-flex flex-column align-items-center my-5">
           <a class="btn btn-outline-primary" href="#"><i class="far fa-comment"></i> Message</a>
         </div>
     </div>
-    <div class="row border-bottom">
-      <div class="col-6 d-flex justify-content-center align-items-center student-info">
+    <div class="row">
+      <div class="col-12 px-5">
+        <p>{{ user.biography }}</p>
+      </div>
+    </div>
+    <div class="row">
+      <div id="assignments" class="col-6 student-info student-info-tab student-info-selected">
         <h6 class="m-3"><i class="far fa-folder-open"></i> Assignments</h6>
       </div>
-      <div class="col-6 d-flex justify-content-center align-items-center student-info">
+      <div id="courses" class="col-6 student-info student-info-tab">
         <h6 class="m-3"><i class="far fa-bell"></i> Courses</h6>
       </div>
     </div>
     <!-- Assignments -->
-    <div id="assignments" class="">
+    <div id="assignments_list" class="">
       {% for assignment in assignments_user %}
         <div class="row border-bottom">
           <div class="col-12 d-flex align-items-center student-info">
@@ -33,9 +37,9 @@
         </div>
       {% endfor %}
     </div>
-    
+
     <!-- Courses -->
-    <div id="courses" class="d-none">
+    <div id="courses_list" class="d-none">
       {% for course in courses_user %}
         <div class="row border-bottom">
           <div class="col-12 d-flex align-items-center student-info">
@@ -45,4 +49,5 @@
       {% endfor %}
     </div>
   </div>
+  <script type="text/javascript" src="{{ url_for('static', filename='js/student.js')|autoversion }}"></script>
 {% endblock course_content %}

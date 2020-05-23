@@ -4,6 +4,10 @@ html, body {
    height: 100%;
 }
 
+.cursor-pointer:hover {
+  cursor: pointer;
+}
+
 .extra-margin {
   margin-top: 10rem;
 }
@@ -38,6 +42,25 @@ html, body {
   height: auto;
 }
 
+.profile-content {
+  margin: 0 1rem 0 1rem !important;
+  padding: .5rem 0 3rem 0 !important;
+}
+
+.bio-pad {
+  padding: 0 4rem 0 4rem;
+}
+
+@media (min-width: 768px) {
+  .bio-pad {
+    padding: 0 10rem 0 10rem;
+  }
+  .profile-content {
+    margin: 0 2rem 0 4rem !important;
+    padding: .5rem 0 3rem 0 !important;
+  }
+}
+
 .email-profile {
   width: 100px;
 }
@@ -47,7 +70,6 @@ html, body {
 }
 
 .bio-size {
-  width: 500px;
   min-height: 150px;
 }
 
@@ -156,11 +178,13 @@ html, body {
 }
 
 .btn-outline-pink:hover {
+  cursor: pointer;
   color: #ffffff;
   background-color: #EBBAB9;
 }
 
 .btn-outline-purple:hover {
+  cursor: pointer;
   color: #ffffff;
   background-color: #6E2594;
 }
@@ -342,8 +366,20 @@ html, body {
 }
 
 /* Student Profile */
+.student-info-tab {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);;
+}
 
 .student-info:hover {
+  cursor: pointer;
   color: #212529;
   background-color: rgba(0, 0, 0, 0.075);
+}
+
+.student-info-selected {
+  border-top: 1px solid #000000;
 }

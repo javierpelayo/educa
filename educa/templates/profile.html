@@ -1,154 +1,188 @@
 {% extends "dashboard.html" %}
 {% block content_dash %}
-
-  {% if edit == "true" %}
-    <div class="course-title border-bottom">
-      <h2>Profile</h2>
-    </div>
-    <form class="needs-validation mb-5 ml-md-3" action="{{ url_for('profile') }}" method="POST" enctype="multipart/form-data" novalidate>
-      {{ form.hidden_tag() }}
-      <!-- SECTION 1 NAME -->
-      <section>
-        <div class="d-flex flex-column flex-sm-row align-items-center justify-content-start my-5 mx-5">
-          <img class="profile-img" src="{{ profile_image }}" alt="">
-          <div class="mt-5 mt-sm-0 mx-5 col col-sm-7 col-lg-5 col-xl-4">
-            {% if form.fullname.errors %}
-              {{ form.fullname(class="form-control is-invalid", placeholder="Fullname") }}
-              <div class="invalid-feedback">
-                {% for error in form.fullname.errors %}
-                  <small>{{ error }}</small>
-                {% endfor %}
-              </div>
-            {% else %}
-              {{ form.fullname(class="form-control", placeholder="Fullname") }}
-            {% endif %}
-          </div>
-        </div>
-      </section>
-      <!-- SECTION 2 EMAIL -->
-      <section>
-        <div class="d-flex flex-column flex-sm-row align-items-center justify-content-start my-5 mx-5">
-          <div>
-            <h2 class="email-profile d-none d-sm-block">Email:</h2>
-          </div>
-          <div class="mx-5 col col-sm-7 col-lg-5 col-xl-4">
-            {% if form.email.errors %}
-              {{ form.email(class="form-control is-invalid", placeholder="Email") }}
-              <div class="invalid-feedback">
-                {% for error in form.email.errors %}
-                  <small>{{ error }}</small>
-                {% endfor %}
-              </div>
-            {% else %}
-              {{ form.email(class="form-control", placeholder="Email") }}
-            {% endif %}
-          </div>
-        </div>
-      </section>
-      <!-- SECTION 3 BIO -->
-      <section>
-        <div class="d-flex justify-content-start mx-5">
-          <h2 class="d-none d-sm-block">Biography:</h2>
-        </div>
-        <div class="d-flex justify-content-center justify-content-sm-start mx-5">
-            {% if form.biography.errors %}
-              {{ form.biography(class="form-control is-invalid mt-3", placeholder="A short story about your journey...") }}
-              <div class="invalid-feedback">
-                {% for error in form.biography.errors %}
-                  <small>{{ error }}</small>
-                {% endfor %}
-              </div>
-            {% else %}
-              {{ form.biography(class="form-control bio-size", placeholder="A short story about your journey...") }}
-            {% endif %}
-        </div>
-      </section>
-      <!-- SECTION 4 REMOVE PROFILE PICTURE -->
-      <section>
-        <div class="d-flex justify-content-center justify-content-sm-start mt-3 mx-5">
-          {{ form.removepic.label }}
-          <div class="ml-2">
-            {{ form.removepic }}
-          </div>
-        </div>
-
-      </section>
-      <!-- SECTION 5 FILE UPLOAD-->
-      <section>
-        <div class="d-flex justify-content-center justify-content-sm-start mt-3 mx-5">
-          <p>Update Profile Picture</p>
-        </div>
-          <!-- <button class="btn btn-light" type="button">{{ form.picture.label(class="p-0 m-0") }}</button>
-          {{ form.picture(class="d-none m-0 p-0") }} -->
-          {% if form.picture.errors %}
-            <div class="form-group d-flex justify-content-center justify-content-sm-start mx-5">
-              <button class="btn btn-light" type="button">{{ form.picture.label(class="p-0 m-0") }}</button>
-              {{ form.picture(class="d-none") }}
+  <div class="course-title border-bottom">
+    <h2>Profile</h2>
+  </div>
+  <div class="profile-content">
+    <div class="container">
+      {% if edit %}
+        <form action="" method="POST" enctype="multipart/form-data" novalidate>
+          {{ form.hidden_tag() }}
+          <div class="row pb-1">
+            <div class="col-6 col-md-4 d-flex justify-content-end my-2">
+              <img class="profile-img mx-5" src="{{ profile_image }}" alt="">
             </div>
-            <div class="text-danger d-flex justify-content-center justify-content-sm-left">
-              {% for error in form.picture.errors %}
-              <small>{{ error }}</small>
-              {% endfor %}
-            </div>
-          {% else %}
-            <div class="form-group d-flex justify-content-center justify-content-sm-start mx-5">
-              <button class="btn btn-light" type="button">{{ form.picture.label(class="p-0 m-0") }}</button>
-              {{ form.picture(class="d-none") }}
-            </div>
-          {% endif %}
-      </section>
-      <!-- SECTION 6 SUBMIT -->
-      <section>
-        <div class="form-group d-flex justify-content-center justify-content-sm-start mx-5 mt-2">
-          {{ form.submit(class="btn btn-primary mb-5") }}
-        </div>
-      </section>
-    </form>
+            <div class="col-6 col-md-4 d-flex flex-column align-items-start my-4">
 
-  {% else %}
+                {% if form.fullname.errors %}
+                  {{ form.fullname(class="form-control is-invalid my-1", placeholder="Fullname") }}
+                  <div class="invalid-feedback">
+                    {% for error in form.fullname.errors %}
+                      <small>{{ error }}</small>
+                    {% endfor %}
+                  </div>
+                {% else %}
+                  {{ form.fullname(class="form-control my-1", placeholder="Fullname") }}
+                {% endif %}
 
-    <div class="course-title border-bottom">
-      <h2>Profile</h2>
+                {% if form.email.errors %}
+                  {{ form.email(class="form-control is-invalid my-1", placeholder="Email") }}
+                  <div class="invalid-feedback">
+                    {% for error in form.email.errors %}
+                      <small>{{ error }}</small>
+                    {% endfor %}
+                  </div>
+                {% else %}
+                  {{ form.email(class="form-control my-1", placeholder="Email") }}
+                {% endif %}
+
+            </div>
+            <div class="col-md-4 d-none d-md-flex flex-column align-items-center my-4">
+              <div class="d-flex justify-content-center align-items-center mb-2">
+                {{ form.removepic(class="mr-2 mb-2") }}
+                {{ form.removepic.label }}
+              </div>
+
+              {% if form.picture.errors %}
+                <p class="mb-1">Update Profile Picture</p>
+                <button class="btn btn-sm btn-outline-purple" type="button">{{ form.picture.label(class="p-0 m-0 cursor-pointer") }}</button>
+                {{ form.picture(class="d-none") }}
+                {% for error in form.picture.errors %}
+                  <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+              {% else %}
+                <p class="mb-1">Update Profile Picture</p>
+                <button class="btn btn-sm btn-outline-purple" type="button">{{ form.picture.label(class="p-0 m-0 cursor-pointer") }}</button>
+                {{ form.picture(class="d-none") }}
+              {% endif %}
+            </div>
+          </div>
+          <div class="row">
+
+            <div class="col-12 bio-pad my-3">
+              {% if form.biography.errors %}
+                {{ form.biography(class="form-control is-invalid", placeholder="Biography") }}
+                <div class="invalid-feedback">
+                  {% for error in form.biography.errors %}
+                    <small>{{ error }}</small>
+                  {% endfor %}
+                </div>
+              {% else %}
+                {{ form.biography(class="form-control bio-size", placeholder="Biography") }}
+              {% endif %}
+            </div>
+
+            <div class="col-md-12 d-flex flex-column align-items-center mb-3">
+              <div class="d-flex d-md-none flex-column align-items-center">
+                <div class="d-flex justify-content-center align-items-center mb-2">
+                  {{ form.removepic(class="mr-2 mb-2") }}
+                  {{ form.removepic.label }}
+                </div>
+
+                {% if form.picture.errors %}
+                  <p class="mb-1">Update Profile Picture</p>
+                  <button class="btn btn-sm btn-outline-purple" type="button">{{ form.picture.label(class="p-0 m-0") }}</button>
+                  {{ form.picture(class="d-none") }}
+                  {% for error in form.picture.errors %}
+                    <small class="text-danger">{{ error }}</small>
+                  {% endfor %}
+                {% else %}
+                  <p class="mb-1">Update Profile Picture</p>
+                  <button class="btn btn-sm btn-outline-purple" type="button">{{ form.picture.label(class="p-0 m-0 cursor-pointer") }}</button>
+                  {{ form.picture(class="d-none") }}
+                {% endif %}
+              </div>
+
+              {{ form.submit(class="btn btn-outline-primary mt-4 mb-3") }}
+
+            </div>
+          </div>
+        </form>
+      {% else %}
+        <div class="row pb-1">
+          <div class="col-6 col-md-4 d-flex justify-content-end my-2">
+            <img class="profile-img mx-5" src="{{ profile_image }}" alt="">
+          </div>
+          <div class="col-6 col-md-4 d-flex flex-column align-items-start my-4">
+              <h6 class="my-1">{{ current_user.first_name }} {{ current_user.last_name }}</h6>
+              <p class="my-1">{{ current_user.email }}</p>
+          </div>
+          <div class="col-md-4 d-none d-md-flex flex-column align-items-center my-5">
+            <form action="" method="GET">
+              <button class="btn btn-outline-primary" type="submit" name="edit" value="true"><i class="far fa-edit"></i> Edit Profile</button>
+            </form>
+            <a class="btn btn-outline-warning mt-3" href="{{ url_for('logout') }}">Logout</a>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 bio-pad mb-3">
+            {{ current_user.biography }}
+          </div>
+          <div class="col-md-12 d-flex d-md-none flex-column align-items-center mt-2 mb-5">
+            <form action="" method="GET">
+              <button class="btn btn-outline-primary" type="submit" name="edit" value="true"><i class="far fa-edit"></i> Edit Profile</button>
+            </form>
+            <a class="btn btn-outline-primary mt-3" href="{{ url_for('logout') }}">Logout</a>
+          </div>
+        </div>
+      {% endif %}
+
+      <div class="row">
+        <div id="assignments" class="col-6 student-info student-info-tab student-info-selected">
+          <h6 class="my-3"><i class="far fa-folder-open"></i> Assignments</h6>
+        </div>
+        <div id="courses" class="col-6 student-info student-info-tab">
+          <h6 class="my-3"><i class="far fa-bell"></i> Courses</h6>
+        </div>
+      </div>
+      {% if current_user.profession == "Student" %}
+        <!-- Assignments -->
+        <div id="assignments_list" class="">
+          {% for assignment in assignments %}
+            <div class="row border-bottom">
+              <div class="col-12 d-flex align-items-center student-info">
+                <h6 class="m-3">{{ assignment.assignment.title }}</h6>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+
+        <!-- Courses -->
+        <div id="courses_list" class="d-none">
+          {% for course in courses %}
+            <div class="row border-bottom">
+              <div class="col-12 d-flex align-items-center student-info">
+                <h6 class="m-3">{{ course.course.title }}</h6>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% elif current_user.profession == "Teacher" %}
+        <!-- Assignments -->
+        <div id="assignments_list" class="">
+          {% for i in range(assignments| length) %}
+            {% for assignment in assignments[i] %}
+              <div class="row border-bottom">
+                <div class="col-12 d-flex align-items-center student-info">
+                  <h6 class="m-3">{{ assignment.title }}</h6>
+                </div>
+              </div>
+            {% endfor %}
+          {% endfor %}
+        </div>
+
+        <!-- Courses -->
+        <div id="courses_list" class="d-none">
+          {% for course in courses %}
+            <div class="row border-bottom">
+              <div class="col-12 d-flex align-items-center student-info">
+                <h6 class="m-3">{{ course.title }}</h6>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
     </div>
-    <div class="ml-md-3">
-      <!-- SECTION 1 NAME -->
-      <section>
-        <div class="d-flex flex-column flex-sm-row align-items-center justify-content-start my-5 mx-5 mx-md-5">
-          <img class="profile-img" src="{{ profile_image }}" alt="">
-          <div class="mt-5 mt-sm-0 mx-5">
-            <h2 class="text-nowrap">{{ current_user.first_name }} {{ current_user.last_name }}</h2>
-          </div>
-        </div>
-      </section>
-      <!-- SECTION 2 EMAIL -->
-      <section>
-        <div class="d-flex flex-column flex-sm-row align-items-center justify-content-start my-5 mx-5 mx-md-5">
-          <div class="d-none d-sm-block">
-            <h2 class="email-profile">Email:</h2>
-          </div>
-          <div class="mx-5">
-            <h5>{{ current_user.email }}</h5>
-          </div>
-        </div>
-      </section>
-      <!-- SECTION 3 BIO -->
-      <section>
-        <div class="d-none d-sm-block justify-content-start mx-5 mx-md-5">
-          <h2>Biography:</h2>
-        </div>
-        <div class="d-flex justify-content-center justify-content-sm-start mx-5 mx-md-5">
-          <p class="text-center text-sm-left">{{ current_user.biography }}</p>
-        </div>
-      </section>
-      <!-- SECTION 4 EDIT -->
-       <section>
-         <div class="mb-5 d-flex justify-content-center justify-content-sm-start mx-5 mx-md-5 my-2">
-           <form class="d-inline" action="" method="GET">
-             <button class="btn btn-light mb-5" type="submit" name="edit" value="true">Edit Profile</button>
-           </form>
-            <a class="btn btn-light ml-2 mb-5"href="{{ url_for('logout') }}">Logout</a>
-         </div>
-       </section>
-    </div>
-  {% endif %}
+  </div>
+  <script type="text/javascript" src="{{ url_for('static', filename='js/profile.js')|autoversion }}"></script>
 {% endblock content_dash %}
