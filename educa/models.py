@@ -107,6 +107,8 @@ class Course(db.Model):
     subject = db.Column(db.String(20), nullable=False)
     points = db.Column(db.Integer, nullable=False)
     syllabus = db.Column(db.Text)
+    code = db.Column(db.String(120))
+    join = db.Column(db.Boolean, nullable=False, default=False)
     assignments = db.relationship('Assignment')
     lectures = db.relationship('Lecture')
 

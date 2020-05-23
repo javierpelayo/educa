@@ -22,6 +22,7 @@
               </div>
               <div class="col my-2">
                 {{ edit_course_form.points(class="form-control", placeholder="Max Points") }}
+                <!-- <input type="hidden" name="update_course" value="true"> -->
               </div>
             </div>
             <div class="modal-footer">
@@ -52,28 +53,14 @@
       </div>
     </div>
   {% endif %}
-  {% if course.teacher_id == current_user.id and edit == 'true' %}
-    <form class="needs-validation form-group" action="" method="POST" novalidate>
-      {{ syllabusform.hidden_tag() }}
-      <div class="course-content mt-2">
-        {{ syllabusform.syllabus(class="syllabus-textarea") }}
-        <div class="d-flex justify-content-center mt-2 mb-5">
-          {{ syllabusform.submit(class="btn btn-primary") }}
-        </div>
+  <div class="course-content">
+    {{ course.syllabus|safe }}
+    {% if course.teacher_id == current_user.id %}
+      <div class="d-flex justify-content-center my-5">
+          <a class="btn btn-outline-primary mx-2 mb-5" href="{{ url_for('course_syllabus', course_id=course.id) }}">Edit Syllabus</a>
+        <button class="btn btn-outline-warning mx-2 mb-5" type="button" data-toggle="modal" data-target="#edit_modal">Edit Course</button>
+        <button class="btn btn-outline-danger mx-2 mb-5" type="button" data-toggle="modal" data-target="#delete_modal">Delete Course</button>
       </div>
-    </form>
-  {% else %}
-    <div class="course-content">
-      {{ course.syllabus|safe }}
-      {% if course.teacher_id == current_user.id %}
-        <div class="d-flex justify-content-center my-5">
-          <form action="" method="GET">
-            <button class="btn btn-outline-primary mx-2 mb-5" type="submit" name="edit" value="true">Edit Syllabus</button>
-          </form>
-          <button class="btn btn-outline-warning mx-2 mb-5" type="button" data-toggle="modal" data-target="#edit_modal">Edit Course</button>
-          <button class="btn btn-outline-danger mx-2 mb-5" type="button" data-toggle="modal" data-target="#delete_modal">Delete Course</button>
-        </div>
-      {% endif %}
-    </div>
-  {% endif %}
+    {% endif %}
+  </div>
 {% endblock course_content %}

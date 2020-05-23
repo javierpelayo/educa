@@ -47,10 +47,10 @@
           {{ add_course.hidden_tag() }}
           <div class="modal-body">
               <div class="col">
-                <h5>Paste Your Course ID</h5>
+                <h5>Paste Your Course Code</h5>
               </div>
               <div class="col">
-                {{ add_course.id(class="form-control", placeholder="Course ID") }}
+                {{ add_course.code(class="form-control", placeholder="Course Code") }}
                 <small class="text-muted mt-1 ml-2">This should have been emailed to you by your professor.</small>
               </div>
           </div>
@@ -67,10 +67,21 @@
     <h2>Courses</h2>
   </div>
   <section>
-
-    <!-- Include flash messaging here somehow -->
-    
     <div class="container mx-md-5">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+              <div class="flash-message-course">
+                <div class="alert alert-{{ category }} alert-dismissible fade show text-center" role="alert">
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                  {{ message }}
+                </div>
+              </div>
+            {% endfor %}
+        {% endif %}
+      {% endwith %}
       <div class="row mt-5">
         {% for i in range(courses| length) %}
         <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center mb-5">

@@ -4,7 +4,8 @@ from wtforms import (StringField, PasswordField,
                     SubmitField, BooleanField,
                     RadioField, TextAreaField,
                     IntegerField, DateField,
-                    SelectField, FieldList)
+                    SelectField, FieldList,
+                    HiddenField)
 from flask_login import current_user
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from educa.models import User_Account
@@ -75,7 +76,7 @@ class NewCourseForm(FlaskForm):
     submit = SubmitField('Create')
 
 class AddCourseForm(FlaskForm):
-    id = StringField('Course ID',
+    code = StringField('Course Code',
                         validators=[DataRequired()])
     submit = SubmitField('Add')
 

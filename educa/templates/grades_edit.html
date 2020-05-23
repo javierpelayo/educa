@@ -39,34 +39,40 @@
         </thead>
       {% endfor %}
     </table>
-    <table class="col-12 table table-hover table-bordered">
-      <thead>
-        <tr>
-          <th><h5>Assignment</h5></th>
-          <th><h5>Due Date</h5></th>
-          <th><h5>Points</h5></th>
-          <th><h5>Out of</h5></th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for i in range(assignments| length) %}
+
+    <!-- EDITABLE -->
+    <form action="" method="POST">
+      <table class="col-12 table table-hover table-bordered">
+        <thead>
           <tr>
-            <td class="assignment-link"><a href="{{ url_for('assignment', course_id=course.id, assignment_id=assignments[i].id) }}">{{ assignments[i].title }}</a></td>
-            <td>{{ assignments[i].duedate_ctime }}</td>
-            {% if user_latest_assignments[i] != 0 %}
-              <td>{{ user_latest_assignments[i].points }}</td>
-            {% else %}
-              <td>-</td>
-            {% endif %}
-            <td>{{ assignments[i].points }}</td>
+            <th><h5>Assignment</h5></th>
+            <th><h5>Due Date</h5></th>
+            <th><h5>Points</h5></th>
+            <th><h5>Out of</h5></th>
           </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-    {% if current_user.id == course.teacher_id %}
+        </thead>
+        <tbody>
+          {% for i in range(assignments| length) %}
+            <tr>
+              <td class="assignment-link"><a href="{{ url_for('assignment', course_id=course.id, assignment_id=assignments[i].id) }}">{{ assignments[i].title }}</a></td>
+              <td>{{ assignments[i].duedate_ctime }}</td>
+              {% if user_latest_assignments[i] != 0 %}
+
+                <td><input class="form-control" type="text" name="assignment_{{ assignments[i].id }}" value="{{ user_latest_assignments[i].points }}"></td>
+
+              {% else %}
+
+                <td><input class="form-control" type="text" name="assignment_{{ assignments[i].id }}" value="-"></td>
+
+              {% endif %}
+              <td>{{ assignments[i].points }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
       <div class="d-flex justify-content-center">
-        <a class="btn btn-outline-primary" href="{{ url_for('student_grades_edit', course_id=course.id, student_id=course_user.user_id) }}"><i class="far fa-edit"></i> Edit Grades</a>
+        <button class="btn btn-outline-purple" type="submit">Submit Changes</button>
       </div>
-    {% endif %}
+    </form>
   </div>
 {% endblock course_content %}
