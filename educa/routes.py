@@ -692,6 +692,10 @@ def student(course_id, student_id):
     assignments_user = User_Assignment.query.filter_by(user_id=student_id).all()
 
     user = User_Account.query.filter_by(id=student_id).first()
+
+    if current_user.id == user.id:
+        return redirect(url_for("profile"))
+
     profile_image = url_for('static', filename="profile_images/" + user.profile_image)
 
     if request.method == "GET":
@@ -706,5 +710,24 @@ def student(course_id, student_id):
 @app.route('/dashboard/courses/<int:course_id>/students/<int:student_id>/grades', methods=['GET', 'POST'])
 @login_required
 @course_auth
+@teacher_auth
 def student_grades(course_id, student_id):
     course = Course.query.filter_by(id=course_id).first()
+    student = User_Account.query.filter_by(id=student_id).first()
+
+    (course_user, assignments,
+    user_latest_assignments,
+    user_points, assignment_points,
+    current_assignment_points) = user_grades(course, student_id)
+
+    if request.method == "GET":
+        return render_template("grades.html",
+                                course=course,
+                                course_user=course_user,
+                                assignments=assignments,
+                                user_latest_assignments=user_latest_assignments,
+                                user_points=user_points,
+                                assignment_points=assignment_points,
+                                current_assignment_points=current_assignment_points,
+                                header=f" - Grades for {student.first_name} {student.last_name}",
+                                title=f"Grades - {student.first_name} {student.last_name}")

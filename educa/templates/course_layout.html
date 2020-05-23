@@ -1,7 +1,10 @@
 {% extends "dashboard.html" %}
 {% block content_dash %}
   <div class="course-title border-bottom">
-    <h2>{{ course.id }} {{ course.title }}</h2>
+    <div class="d-flex justify-content-center align-items-center">
+      <h2>{{ course.id }} {{ course.title }} </h2>
+      <h4 class="ml-2 mt-1">{{ header }}</h4>
+    </div>
   </div>
   {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
@@ -36,5 +39,10 @@
       <a href="/dashboard/courses/{{course.id}}/lectures">Lectures</a>
       <a href="/dashboard/courses/{{course.id}}/students">Students</a>
   </div>
+  <script type="text/javascript">
+    tinymce.init({
+        selector: "textarea",
+    });
+  </script>
   {% block course_content %}{% endblock course_content %}
 {% endblock content_dash %}

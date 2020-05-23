@@ -2,72 +2,133 @@
 {% block course_content %}
 {% if current_user.id != course.teacher_id %}
   <div class="course-content">
-        <table class="col-12 table table-hover table-bordered">
-          <thead>
-            <tr>
-              <th scope="col"><h4>Total Grade</h4></th>
+    <table class="col-12 table table-hover table-bordered">
+      <thead>
+        <tr>
+          <th scope="col"><h4>Total Grade</h4></th>
 
-              <th scope="col"><h4>{{ course_user.points }} / {{ current_assignment_points }}</h4></th>
+          <th scope="col"><h4>{{ course_user.points }} / {{ current_assignment_points }}</h4></th>
 
-              {% if course_user.points != 0 %}
-                <th scope="col"><h4>{{ course_user.grade }}</h4></th>
-              {% else %}
-                <th scope="col"><h4>{{ "0%" }}</h4></th>
-              {% endif %}
+          {% if course_user.points != 0 %}
+            <th scope="col"><h4>{{ course_user.grade }}</h4></th>
+          {% else %}
+            <th scope="col"><h4>{{ "0%" }}</h4></th>
+          {% endif %}
 
-            </tr>
-          </thead>
+        </tr>
+      </thead>
 
-          {% for key, value in assignment_points.items() %}
-            <thead>
-              <tr>
+      {% for key, value in assignment_points.items() %}
+        <thead>
+          <tr>
 
-                {% if key != "Instructions" %}
-                  <th scope="col"><h6>{{ key }}</h6></th>
-                {% else %}
-                  <th scope="col"><h6>Other</h6></th>
-                {% endif %}
+            {% if key != "Instructions" %}
+              <th scope="col"><h6>{{ key }}</h6></th>
+            {% else %}
+              <th scope="col"><h6>Other</h6></th>
+            {% endif %}
 
-                <th scope="col"><h6>{{ user_points[key] }} / {{ value }}</h6></th>
+            <th scope="col"><h6>{{ user_points[key] }} / {{ value }}</h6></th>
 
-                {% if user_points[key] != 0 %}
-                  <th scope="col"><h6>{{ '{:.2%}'.format(user_points[key]/value) }}</h6></th>
-                {% else %}
-                  <th scope="col"><h6>{{ "0%" }}</h6></th>
-                {% endif %}
+            {% if user_points[key] != 0 %}
+              <th scope="col"><h6>{{ '{:.2%}'.format(user_points[key]/value) }}</h6></th>
+            {% else %}
+              <th scope="col"><h6>{{ "0%" }}</h6></th>
+            {% endif %}
 
-              </tr>
-            </thead>
-          {% endfor %}
-        </table>
-        <table class="col-12 table table-hover table-bordered">
-          <thead>
-            <tr>
-              <th><h5>Assignment</h5></th>
-              <th><h5>Due Date</h5></th>
-              <th><h5>Points</h5></th>
-              <th><h5>Out of</h5></th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for i in range(assignments| length) %}
-              <tr>
-                <td class="assignment-link"><a href="{{ url_for('assignment', course_id=course.id, assignment_id=assignments[i].id) }}">{{ assignments[i].title }}</a></td>
-                <td>{{ assignments[i].duedate_ctime }}</td>
-                {% if user_latest_assignments[i] != 0 %}
-                  <td>{{ user_latest_assignments[i].points }}</td>
-                {% else %}
-                  <td>-</td>
-                {% endif %}
-                <td>{{ assignments[i].points }}</td>
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
+          </tr>
+        </thead>
+      {% endfor %}
+    </table>
+    <table class="col-12 table table-hover table-bordered">
+      <thead>
+        <tr>
+          <th><h5>Assignment</h5></th>
+          <th><h5>Due Date</h5></th>
+          <th><h5>Points</h5></th>
+          <th><h5>Out of</h5></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for i in range(assignments| length) %}
+          <tr>
+            <td class="assignment-link"><a href="{{ url_for('assignment', course_id=course.id, assignment_id=assignments[i].id) }}">{{ assignments[i].title }}</a></td>
+            <td>{{ assignments[i].duedate_ctime }}</td>
+            {% if user_latest_assignments[i] != 0 %}
+              <td>{{ user_latest_assignments[i].points }}</td>
+            {% else %}
+              <td>-</td>
+            {% endif %}
+            <td>{{ assignments[i].points }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
 {% elif current_user.id == course.teacher_id %}
   <div class="course-content">
+    <table class="col-12 table table-hover table-bordered">
+      <thead>
+        <tr>
+          <th scope="col"><h4>Total Grade</h4></th>
 
+          <th scope="col"><h4>{{ course_user.points }} / {{ current_assignment_points }}</h4></th>
+
+          {% if course_user.points != 0 %}
+            <th scope="col"><h4>{{ course_user.grade }}</h4></th>
+          {% else %}
+            <th scope="col"><h4>{{ "0%" }}</h4></th>
+          {% endif %}
+
+        </tr>
+      </thead>
+
+      {% for key, value in assignment_points.items() %}
+        <thead>
+          <tr>
+
+            {% if key != "Instructions" %}
+              <th scope="col"><h6>{{ key }}</h6></th>
+            {% else %}
+              <th scope="col"><h6>Other</h6></th>
+            {% endif %}
+
+            <th scope="col"><h6>{{ user_points[key] }} / {{ value }}</h6></th>
+
+            {% if user_points[key] != 0 %}
+              <th scope="col"><h6>{{ '{:.2%}'.format(user_points[key]/value) }}</h6></th>
+            {% else %}
+              <th scope="col"><h6>{{ "0%" }}</h6></th>
+            {% endif %}
+
+          </tr>
+        </thead>
+      {% endfor %}
+    </table>
+    <table class="col-12 table table-hover table-bordered">
+      <thead>
+        <tr>
+          <th><h5>Assignment</h5></th>
+          <th><h5>Due Date</h5></th>
+          <th><h5>Points</h5></th>
+          <th><h5>Out of</h5></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for i in range(assignments| length) %}
+          <tr>
+            <td class="assignment-link"><a href="{{ url_for('assignment', course_id=course.id, assignment_id=assignments[i].id) }}">{{ assignments[i].title }}</a></td>
+            <td>{{ assignments[i].duedate_ctime }}</td>
+            {% if user_latest_assignments[i] != 0 %}
+              <td>{{ user_latest_assignments[i].points }}</td>
+            {% else %}
+              <td>-</td>
+            {% endif %}
+            <td>{{ assignments[i].points }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
 {% endif %}
 {% endblock course_content %}

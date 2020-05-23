@@ -12,7 +12,7 @@
           <tr class="d-flex justify-content-between">
             <td class="assignment-link border-top-0"><a href="{{ url_for('student', course_id=course.id, student_id=students_list[i].id) }}">{{ students_list[i].first_name }} {{ students_list[i].last_name }}</a></td>
             {% if current_user.id == course.teacher_id %}
-              <td class="assignment-link border-top-0"><a href="#">View Grades</a></td>
+              <td class="assignment-link border-top-0"><a href="{{ url_for('student_grades', course_id=course.id, student_id=students_list[i].id) }}">View Grades</a></td>
             {% endif %}
           </tr>
         {% endfor %}
