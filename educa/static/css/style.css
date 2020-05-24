@@ -364,6 +364,22 @@ html, body {
   padding: 1rem 0 1rem 1.25rem;
   border-top: 1px solid #dee2e6;
 }
+/* Students List */
+.fancy-link:hover {
+  text-decoration: none;
+}
+
+.profile-img-small {
+  min-height: 35px;
+  max-height: 35px;
+  min-width: 35px;
+  max-width: 35px;
+  border-radius: 50% !important;
+
+  background-color: #fff;
+  border-radius: .25rem;
+  max-width: 100%;
+}
 
 /* Student Profile */
 .student-info-tab {

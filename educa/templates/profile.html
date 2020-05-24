@@ -5,7 +5,9 @@
   </div>
   <div class="profile-content">
     <div class="container">
+
       {% if edit %}
+
         <form action="" method="POST" enctype="multipart/form-data" novalidate>
           {{ form.hidden_tag() }}
           <div class="row pb-1">
@@ -98,7 +100,9 @@
             </div>
           </div>
         </form>
+
       {% else %}
+
         <div class="row pb-1">
           <div class="col-6 col-md-4 d-flex justify-content-end my-2">
             <img class="profile-img mx-5" src="{{ profile_image }}" alt="">
@@ -115,7 +119,7 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-12 bio-pad mb-3">
+          <div class="col-12 d-flex justify-content-center bio-pad mb-3">
             {{ current_user.biography }}
           </div>
           <div class="col-md-12 d-flex d-md-none flex-column align-items-center mt-2 mb-5">

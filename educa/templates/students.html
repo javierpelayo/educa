@@ -7,15 +7,34 @@
           <th scope="col" colspan="2">Name</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody class="border-right">
         {% for i in range(students_list| length) %}
-          <tr class="d-flex justify-content-between">
-            <td class="assignment-link border-top-0"><a href="{{ url_for('student', course_id=course.id, student_id=students_list[i].id) }}">{{ students_list[i].first_name }} {{ students_list[i].last_name }}</a></td>
-            {% if current_user.id == course.teacher_id %}
-              <td class="assignment-link border-top-0"><a href="{{ url_for('student_grades', course_id=course.id, student_id=students_list[i].id) }}">View Grades</a></td>
-            {% endif %}
+          <tr class="border-bottom">
+            <td class="row border-top-0">
+              <div class="col-6 d-flex justify-content-start align-items-center">
+                <img class="profile-img-small" src="{{ url_for('static', filename='profile_images/' + students_list[i].profile_image) }}" alt="">
+                <a class="fancy-link mx-2" href="{{ url_for('student', course_id=course.id, student_id=students_list[i].id) }}">{{ students_list[i].first_name }} {{ students_list[i].last_name }}</a>
+              </div>
+              <div class="col-6 d-flex justify-content-end align-items-center">
+                {% if current_user.id == course.teacher_id %}
+                  <a class="fancy-link mx-2" href="{{ url_for('student_assignments', course_id=course.id, student_id=students_list[i].id) }}">View Assignments</a>
+                  <a class="fancy-link mx-2" href="{{ url_for('student_grades', course_id=course.id, student_id=students_list[i].id) }}">View Grades</a>
+                {% endif %}
+              </div>
+            </div>
           </tr>
         {% endfor %}
+          <tr class="border-bottom">
+            <td class="row border-top-0">
+              <div class="col-6 d-flex justify-content-start align-items-center">
+                <img class="profile-img-small" src="{{ url_for('static', filename='profile_images/' + teacher.profile_image) }}">
+                <a class="fancy-link mx-2" href="{{ url_for('student', course_id=course.id, student_id=teacher.id) }}">{{ teacher.first_name }} {{ teacher.last_name }}</a>
+              </div>
+              <div class="col-6 d-flex justify-content-end align-items-center">
+                <h6 class="p-0 m-0">Teacher</h6>
+              </div>
+            </td>
+          </tr>
       </tbody>
     </table>
   </div>

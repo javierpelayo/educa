@@ -22,6 +22,7 @@ from educa.filters import autoversion, course_auth, teacher_auth
 import secrets
 from PIL import Image
 from datetime import datetime
+from time import time
 from collections import OrderedDict
 import os
 import json
@@ -253,15 +254,20 @@ def courses():
         course = Course.query.filter_by(code=add_course.code.data).first()
         if course:
             if course.join:
-                course_user = Course_User(user_id=current_user.id,
-                                        course_id=add_course.id.data)
-                db.session.add(course_user)
-                db.session.commit()
+                course_user = Course_User.query.filter_by(user_id=current_user.id).first()
+                if course_user:
+                    flash("You are already in this course", "primary")
+                    return redirect(url_for("courses"))
+                else:
+                    course_user = Course_User(user_id=current_user.id,
+                                            course_id=add_course.id.data)
+                    db.session.add(course_user)
+                    db.session.commit()
 
-                flash(f"Successfully added course: {course.title}!", "success")
-                return redirect(url_for('courses'))
+                    flash(f"Successfully added course: {course.title}!", "success")
+                    return redirect(url_for('courses'))
             else:
-                flash("Course is no longer open to new students.", "warning")
+                flash("Course is no longer open to new students.", "primary")
                 return redirect(url_for('courses'))
         else:
             flash(f"That course does not exist.", "warning")
@@ -296,6 +302,20 @@ def course(course_id):
     edit_course_form = UpdateCourseForm()
 
     if teacher and request.method == "POST" and delete:
+        course_users = Course_User.query.filter_by(course_id=course.id).all()
+        for course_user in course_users:
+            user_assignments = User_Assignment.query.filter_by(user_id=course_user.user_id).all()
+            # delete all user assignments that were turned in
+            for ua in user_assignments:
+                db.session.delete(ua)
+            # delete the course user
+            db.session.delete(course_user)
+
+        # delete all course assignments
+        assignments = Assignment.query.filter_by(course_id=course.id).all()
+        for assignment in assignments:
+            db.session.delete(assignment)
+
         db.session.delete(course)
         db.session.commit()
 
@@ -363,7 +383,7 @@ def assignments(course_id):
         return render_template('assignments.html',
                                 course=course,
                                 assignments=assignments,
-                                current_time=datetime.timestamp(datetime.utcnow()),
+                                current_time=time(),
                                 title=str(course.title) + " - Assignments")
 
 @app.route('/dashboard/courses/<int:course_id>/assignments/new', methods=["GET", "POST"])
@@ -484,7 +504,7 @@ def new_assignment(course_id):
         return render_template('new_assignment.html',
                                 course=course,
                                 assignmentform=assignmentform,
-                                title=str(course.title) + "- New Assignment")
+                                title=str(course.title) + " - New Assignment")
 
 @app.route('/dashboard/courses/<int:course_id>/assignments/<int:assignment_id>', methods=['GET', 'POST'])
 @login_required
@@ -515,7 +535,30 @@ def assignment(course_id, assignment_id):
         options = Option.query.filter_by(question_id=questions[x].id).all()
         options_dict[questions[x].title] = options
 
-    if current_user.id == course.teacher_id and request.method == "POST" and delete == "true":
+    if current_user.id == course.teacher_id and request.method == "POST" and delete:
+        course_assignments = Assignment.query.filter_by(course_id=course.id).all()
+        course_users = Course_User.query.filter_by(course_id=course.id).all()
+        total_assignment_points = 0
+
+        # get the total point count for assignments in course
+        for course_assignment in course_assignments:
+            total_assignment_points += course_assignment.points
+
+        # for every user in the course delete assignments that
+        # they turned in for this assignment & reflect the change
+        # to their grade
+        for course_user in course_users:
+            turned_in_assignments = User_Assignment.query.filter_by(user_id=course_user.user_id).all()
+            turned_in_assignments.sort(key=lambda a:a.created_time)
+            student_assignment = turned_in_assignments[-1]
+
+            course_user.points -= student_assignment.points
+            course_user.grade = '{:.2%}'.format(course_user.points/(total_assignment_points - assignment.points))
+
+            for tia in turned_in_assignments:
+                db.session.delete(tia)
+            db.session.commit()
+
         db.session.delete(assignment)
         for question in questions:
             db.session.delete(question)
@@ -568,7 +611,7 @@ def assignment(course_id, assignment_id):
 
                 course_user.points -= assignments_done[str(assignment.id)]
                 course_user.points += points
-                
+
                 assignments_done[str(assignment.id)] = points
         else:
             course_user.points += points
@@ -678,16 +721,20 @@ def grades(course_id):
 def students(course_id):
     course = Course.query.filter_by(id=course_id).first()
     course_students = Course_User.query.filter_by(course_id=course.id).all()
+    teacher = User_Account.query.filter_by(id=course.teacher_id).first()
     students_list = []
+
     for student in course_students:
         user = User_Account.query.filter_by(id=student.user_id).first()
         students_list.append(user)
+
 
     if request.method == "GET":
         return render_template("students.html",
                                 course=course,
                                 course_students=course_students,
                                 students_list=students_list,
+                                teacher=teacher,
                                 title=course.title + " - Students")
 
 @app.route('/dashboard/courses/<int:course_id>/students/<int:student_id>', methods=['GET'])
@@ -793,7 +840,7 @@ def student_grades_edit(course_id, student_id):
         db.session.commit()
 
         flash(f"Grade for {student.first_name} {student.last_name} updated successfully!", "success")
-        return redirect(url_for("student_grades_edit", course_id=course.id, student_id=student.id))
+        return redirect(url_for("student_grades", course_id=course.id, student_id=student.id))
     elif request.method == "GET":
         return render_template("grades_edit.html",
                                 course=course,
@@ -805,3 +852,11 @@ def student_grades_edit(course_id, student_id):
                                 current_assignment_points=current_assignment_points,
                                 header=f" - Grades for {student.first_name} {student.last_name}",
                                 title=f"Grades - {student.first_name} {student.last_name}")
+
+# view assignments that the user has turned in
+@app.route('/dashboard/courses/<int:course_id>/students/<int:student_id>/assignments', methods=['GET', 'POST'])
+@login_required
+@course_auth
+@teacher_auth
+def student_assignments(course_id, student_id):
+    pass

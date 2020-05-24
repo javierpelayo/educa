@@ -6,16 +6,23 @@
         <div class="col-6 col-md-4 d-flex justify-content-end my-2">
           <img class="profile-img mx-5" src="{{ profile_image }}" alt="">
         </div>
-        <div class="col-6 col-md-4 d-flex flex-column align-items-start my-4">
-            <h6 class="my-1">{{ user.first_name }} {{ user.last_name }}</h6>
-            <p class="my-1">{{ user.email }}</p>
-        </div>
+        {% if user.profession == "Student" %}
+          <div class="col-6 col-md-4 d-flex justify-content-start align-items-center my-4">
+              <h6 class="my-1">{{ user.first_name }} {{ user.last_name }}</h6>
+          </div>
+        {% else %}
+          <div class="col-6 col-md-4 d-flex flex-column align-items-start my-4">
+              <h6 class="my-1">{{ user.first_name }} {{ user.last_name }}</h6>
+              <p class="my-1">{{ user.email }}</p>
+              <p>Teacher of {{ course.title }}</p>
+          </div>
+        {% endif %}
         <div class="col-md-4 d-flex flex-column align-items-center my-5">
           <a class="btn btn-outline-primary" href="#"><i class="far fa-comment"></i> Message</a>
         </div>
     </div>
     <div class="row">
-      <div class="col-12 px-5">
+      <div class="col-12 d-flex justify-content-center px-5">
         <p>{{ user.biography }}</p>
       </div>
     </div>
