@@ -73,11 +73,18 @@ class NewCourseForm(FlaskForm):
                             validators=[DataRequired()])
     points = IntegerField('Points',
                         validators=[DataRequired()])
+    code = StringField('Code',
+                        validators=[DataRequired(), Length(min=4, max=36)])
+    join = RadioField("Allow Users to Join?",
+                        validators=[DataRequired()],
+                        choices=[('True', "Yes"), ('False', "No")])
     submit = SubmitField('Create')
 
 class AddCourseForm(FlaskForm):
-    code = StringField('Course Code',
+    course_id = IntegerField('Course ID',
                         validators=[DataRequired()])
+    code = StringField('Code',
+                        validators=[DataRequired(), Length(min=4, max=36)])
     submit = SubmitField('Add')
 
 class UpdateCourseForm(FlaskForm):
@@ -87,6 +94,11 @@ class UpdateCourseForm(FlaskForm):
                             validators=[DataRequired()])
     points = IntegerField('Points',
                         validators=[DataRequired()])
+    code = StringField('Code',
+                        validators=[DataRequired(), Length(min=4, max=36)])
+    join = RadioField("Allow Users to Join?",
+                        validators=[DataRequired()],
+                        choices=[('True', "Yes"), ('False', "No")])
     submit = SubmitField('Update')
 
 class UpdateSyllabusForm(FlaskForm):

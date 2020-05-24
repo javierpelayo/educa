@@ -236,8 +236,13 @@ def courses():
     for i in range(len(user_courses)):
         student_courses.append(Course.query.filter_by(id=user_courses[i].course_id).first())
 
+    # sort the courses by id for template rendering and consistency
+    teacher_courses.sort(key=lambda c:c.id)
+    student_courses.sort(key=lambda c:c.id)
+
     # For Students
     add_course = AddCourseForm()
+
     # For Teachers
     new_course = NewCourseForm()
 
@@ -246,33 +251,40 @@ def courses():
         course = Course(teacher_id=current_user.id,
                         title=new_course.title.data,
                         subject=new_course.subject.data,
-                        points=new_course.points.data)
+                        points=new_course.points.data,
+                        code=new_course.code.data,
+                        join=(new_course.join.data == "True"))
         db.session.add(course)
         db.session.commit()
         return redirect(url_for('courses'))
     elif add_course.validate_on_submit():
-        course = Course.query.filter_by(code=add_course.code.data).first()
+        course = Course.query.filter_by(id=add_course.course_id.data, code=add_course.code.data).first()
         if course:
             if course.join:
-                course_user = Course_User.query.filter_by(user_id=current_user.id).first()
+                course_user = Course_User.query.filter_by(user_id=current_user.id, course_id=course.id).first()
+
                 if course_user:
                     flash("You are already in this course", "primary")
                     return redirect(url_for("courses"))
                 else:
                     course_user = Course_User(user_id=current_user.id,
-                                            course_id=add_course.id.data)
+                                            course_id=add_course.course_id.data)
                     db.session.add(course_user)
                     db.session.commit()
 
                     flash(f"Successfully added course: {course.title}!", "success")
                     return redirect(url_for('courses'))
             else:
-                flash("Course is no longer open to new students.", "primary")
+                flash("Course is not open to new students.", "primary")
                 return redirect(url_for('courses'))
         else:
             flash(f"That course does not exist.", "warning")
             return redirect(url_for('courses'))
-    elif request.method == "POST" and new_course.errors or add_course.errors:
+    elif new_course.errors or add_course.errors:
+        #
+        # ERROR TESTING
+        #
+        flash("There was an error in adding that course.", "danger")
         return redirect(url_for('courses'))
 
     if request.method == "GET" and current_user.profession == "Teacher":
@@ -301,46 +313,42 @@ def course(course_id):
     delete = request.form.get('delete')
     edit_course_form = UpdateCourseForm()
 
-    if teacher and request.method == "POST" and delete:
-        course_users = Course_User.query.filter_by(course_id=course.id).all()
-        for course_user in course_users:
-            user_assignments = User_Assignment.query.filter_by(user_id=course_user.user_id).all()
-            # delete all user assignments that were turned in
-            for ua in user_assignments:
-                db.session.delete(ua)
-            # delete the course user
-            db.session.delete(course_user)
-
-        # delete all course assignments
-        assignments = Assignment.query.filter_by(course_id=course.id).all()
-        for assignment in assignments:
-            db.session.delete(assignment)
-
-        db.session.delete(course)
-        db.session.commit()
-
-        return redirect(url_for("course", course_id=course.id))
-    elif teacher and edit_course_form.validate_on_submit():
-        course.title = edit_course_form.title.data
-        course.subject = edit_course_form.subject.data
-        course.points = edit_course_form.points.data
-
-        db.session.commit()
-        flash("Course was updated successfully.", "success")
-        return redirect(url_for("course", course_id=course.id))
-    elif edit_course_form.errors:
-
-        flash(f"Could not update course due to a form error.", "danger")
-        return redirect(url_for("course", course_id=course.id))
-    elif request.method == "GET":
+    if request.method == "GET":
         edit_course_form.title.data = course.title
         edit_course_form.subject.data = course.subject
         edit_course_form.points.data = course.points
+        edit_course_form.code.data = course.code
+        edit_course_form.join.data = str(course.join)
 
         return render_template('course.html',
                                 course=course,
                                 edit_course_form=edit_course_form,
                                 title="Course - " + str(course.title))
+
+    if teacher and request.method == "POST" and delete:
+        course_users = Course_User.query.filter_by(course_id=course.id).all()
+
+        # Deletes all assignments, questions, options,
+        # user_assignments, course_users
+        db.session.delete(course)
+        db.session.commit()
+
+        flash("Course has been successfully deleted.", "success")
+        return redirect(url_for("courses"))
+    elif teacher and edit_course_form.validate_on_submit():
+        course.title = edit_course_form.title.data
+        course.subject = edit_course_form.subject.data
+        course.points = edit_course_form.points.data
+        course.code = edit_course_form.code.data
+        course.join = (edit_course_form.join.data == "True")
+
+        db.session.commit()
+
+        flash("Course was updated successfully.", "success")
+        return redirect(url_for("course", course_id=course.id))
+    elif edit_course_form.errors:
+        flash(f"Could not update course due to a form error.", "danger")
+        return redirect(url_for("course", course_id=course.id))
 
 @app.route('/dashboard/courses/<int:course_id>/edit_syllabus', methods=['GET', 'POST'])
 @login_required
@@ -525,7 +533,6 @@ def assignment(course_id, assignment_id):
     if user_assignments:
         user_assignments = sorted(user_assignments, key=lambda a:a.points)
         # Get the latest assignment submitted by the user
-        print(user_assignments)
         user_assignment = user_assignments[-1]
     else:
         user_assignment = ''
@@ -548,23 +555,30 @@ def assignment(course_id, assignment_id):
         # they turned in for this assignment & reflect the change
         # to their grade
         for course_user in course_users:
-            turned_in_assignments = User_Assignment.query.filter_by(user_id=course_user.user_id).all()
+            turned_in_assignments = User_Assignment.query.filter_by(user_id=course_user.user_id, assignment_id=assignment.id).all()
             turned_in_assignments.sort(key=lambda a:a.created_time)
+
+            # ERROR POSSIBLE IF ASSIGNMENT DOES NOT EXIST -------
             student_assignment = turned_in_assignments[-1]
 
-            course_user.points -= student_assignment.points
-            course_user.grade = '{:.2%}'.format(course_user.points/(total_assignment_points - assignment.points))
 
-            for tia in turned_in_assignments:
-                db.session.delete(tia)
-            db.session.commit()
+            if course_user.assignments_done and student_assignment:
+                assignments_done = json.loads(course_user.assignments_done)
+                del assignments_done[str(assignment.id)]
+                course_user.assignments_done = json.dumps(assignments_done)
 
+                # ERROR POSSIBLE IF assignment does not exist -------
+                course_user.points -= student_assignment.points
+
+                try:
+                    leftover_points = course_user.points/(total_assignment_points - assignment.points)
+                except ZeroDivisionError:
+                    leftover_points = 0
+
+                course_user.grade = '{:.2%}'.format(leftover_points)
+
+        # deletion of assignments cascades to questions, options and user_assignments
         db.session.delete(assignment)
-        for question in questions:
-            db.session.delete(question)
-        for question, options in options_dict.items():
-            for option in options:
-                db.session.delete(option)
         db.session.commit()
 
         flash('Assignment was deleted successfully!', 'success')
@@ -577,6 +591,7 @@ def assignment(course_id, assignment_id):
                 errors[key] = "This question requires an answer."
         return errors
     elif request.method == "POST":
+        # turning in assignment
         course_user = Course_User.query.filter_by(user_id=current_user.id, course_id=course.id).first()
         assignments = Assignment.query.filter_by(course_id=course.id).all()
         total_assignment_points = 0
@@ -606,7 +621,7 @@ def assignment(course_id, assignment_id):
             assignments_done = {}
 
         # if the assignment exists in the returned done assignments
-        if assignment.id in assignments_done:
+        if str(assignment.id) in assignments_done:
             if assignments_done[str(assignment.id)] < points:
 
                 course_user.points -= assignments_done[str(assignment.id)]
@@ -618,11 +633,15 @@ def assignment(course_id, assignment_id):
             assignments_done[str(assignment.id)] = points
 
         # convert back to json for db storage
-        assignments_done = json.dumps(assignments_done)
-        course_user.assignments_done = assignments_done
+        course_user.assignments_done = json.dumps(assignments_done)
 
         # update grade with any new points and assignments needed to turn in
-        course_user.grade = '{:.2%}'.format(course_user.points/total_assignment_points)
+        try:
+            leftover_points = course_user.points/total_assignment_points
+        except ZeroDivisionError:
+            leftover_points = 0
+
+        course_user.grade = '{:.2%}'.format(leftover_points)
 
         user_assignment = User_Assignment(user_id=current_user.id,
                                         assignment_id=assignment.id,
@@ -646,7 +665,6 @@ def assignment(course_id, assignment_id):
                                 redo=redo,
                                 title=str(course.title) + " - " + str(assignment.title))
     elif request.method == "GET":
-        print(user_assignment)
         return render_template('assignment.html',
                                 course=course,
                                 assignment=assignment,
@@ -836,7 +854,12 @@ def student_grades_edit(course_id, student_id):
                 db.session.add(user_assignment)
 
         course_user.assignments_done = json.dumps(user_assignments)
-        course_user.grade = '{:.2%}'.format(course_user.points/sum(assignment_points.values()))
+
+        if sum(assignment_points.values()) > 0:
+            course_user.grade = '{:.2%}'.format(course_user.points/sum(assignment_points.values()))
+        else:
+            course_user.grade = '{:.2%}'.format(0)
+
         db.session.commit()
 
         flash(f"Grade for {student.first_name} {student.last_name} updated successfully!", "success")

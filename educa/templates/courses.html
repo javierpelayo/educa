@@ -24,6 +24,20 @@
                 <div class="col my-2">
                   {{ new_course.points(class="form-control", placeholder="Max Points") }}
                 </div>
+                <div class="col my-2">
+                  {{ new_course.code(class="form-control", placeholder="Passcode (4-36 characters long)") }}
+                </div>
+                <div class="col d-flex flex-column align-items-center my-2">
+                  {{ new_course.join.label }}
+                  <div class="d-flex justify-content-center align-items-start">
+                    {% for field in new_course.join %}
+                      <div class="mx-1">
+                        {{ field(class="mx-1 mt-1") }}
+                        {{ field.label }}
+                      </div>
+                    {% endfor %}
+                  </div>
+                </div>
               </div>
               <div class="modal-footer">
                 {{ new_course.submit(class="btn btn-outline-primary") }}
@@ -47,10 +61,15 @@
           {{ add_course.hidden_tag() }}
           <div class="modal-body">
               <div class="col">
-                <h5>Paste Your Course Code</h5>
+                <h5>Paste Your Course Id & Code</h5>
+              </div>
+              <div class="col my-1">
+                {{ add_course.course_id(class="form-control", placeholder="Course ID") }}
+              </div>
+              <div class="col my-1">
+                {{ add_course.code(class="form-control", placeholder="Passcode") }}
               </div>
               <div class="col">
-                {{ add_course.code(class="form-control", placeholder="Course Code") }}
                 <small class="text-muted mt-1 ml-2">This should have been emailed to you by your professor.</small>
               </div>
           </div>
