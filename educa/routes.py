@@ -556,13 +556,11 @@ def assignment(course_id, assignment_id):
         # to their grade
         for course_user in course_users:
             turned_in_assignments = User_Assignment.query.filter_by(user_id=course_user.user_id, assignment_id=assignment.id).all()
-            turned_in_assignments.sort(key=lambda a:a.created_time)
 
-            # ERROR POSSIBLE IF ASSIGNMENT DOES NOT EXIST -------
-            student_assignment = turned_in_assignments[-1]
+            if turned_in_assignments:
+                turned_in_assignments.sort(key=lambda a:a.created_time)
+                student_assignment = turned_in_assignments[-1]
 
-
-            if course_user.assignments_done and student_assignment:
                 assignments_done = json.loads(course_user.assignments_done)
                 del assignments_done[str(assignment.id)]
                 course_user.assignments_done = json.dumps(assignments_done)
@@ -590,7 +588,7 @@ def assignment(course_id, assignment_id):
             if "question_" in key and value == "":
                 errors[key] = "This question requires an answer."
         return errors
-    elif request.method == "POST":
+    elif request.method == "POST" and current_user.profession == "Student":
         # turning in assignment
         course_user = Course_User.query.filter_by(user_id=current_user.id, course_id=course.id).first()
         assignments = Assignment.query.filter_by(course_id=course.id).all()
@@ -802,7 +800,7 @@ def student_grades(course_id, student_id):
                                 user_points=user_points,
                                 assignment_points=assignment_points,
                                 current_assignment_points=current_assignment_points,
-                                header=f" - Grades for {student.first_name} {student.last_name}",
+                                student=student,
                                 title=f"Grades - {student.first_name} {student.last_name}")
 
 @app.route('/dashboard/courses/<int:course_id>/students/<int:student_id>/grades/edit', methods=['GET', 'POST'])
@@ -862,7 +860,7 @@ def student_grades_edit(course_id, student_id):
 
         db.session.commit()
 
-        flash(f"Grade for {student.first_name} {student.last_name} updated successfully!", "success")
+        flash(f"Grades for {student.first_name} {student.last_name} updated successfully!", "success")
         return redirect(url_for("student_grades", course_id=course.id, student_id=student.id))
     elif request.method == "GET":
         return render_template("grades_edit.html",
@@ -873,13 +871,64 @@ def student_grades_edit(course_id, student_id):
                                 user_points=user_points,
                                 assignment_points=assignment_points,
                                 current_assignment_points=current_assignment_points,
-                                header=f" - Grades for {student.first_name} {student.last_name}",
+                                student=student,
                                 title=f"Grades - {student.first_name} {student.last_name}")
 
 # view assignments that the user has turned in
-@app.route('/dashboard/courses/<int:course_id>/students/<int:student_id>/assignments', methods=['GET', 'POST'])
+@app.route('/dashboard/courses/<int:course_id>/students/<int:student_id>/assignments', methods=['GET'])
 @login_required
 @course_auth
 @teacher_auth
 def student_assignments(course_id, student_id):
-    pass
+    course = Course.query.filter_by(id=course_id).first()
+    student = User_Account.query.filter_by(id=student_id).first()
+    assignments = course.assignments
+    assignments.sort(key=lambda a:a.duedate_time)
+    student_assignments = []
+
+    for assignment in assignments:
+        turned_in_assignments = User_Assignment.query.filter_by(user_id=student.id, assignment_id=assignment.id).all()
+        if turned_in_assignments:
+            turned_in_assignments.sort(key=lambda a:a.created_time)
+            student_assignments.append(turned_in_assignments[-1])
+        else:
+            # used to keep the index same as assignments
+            student_assignments.append(0)
+
+    if request.method == "GET":
+        return render_template("student_assignments.html",
+                                course=course,
+                                student=student,
+                                assignments=assignments,
+                                student_assignments=student_assignments,
+                                title=f"Assignments - {student.first_name} {student.last_name}")
+
+
+# view an individual student assignment
+@app.route('/dashboard/courses/<int:course_id>/students/<int:student_id>/assignments/<int:user_assignment_id>', methods=['GET'])
+@login_required
+@course_auth
+@teacher_auth
+def student_assignment(course_id, student_id, user_assignment_id):
+    course = Course.query.filter_by(id=course_id).first()
+    student = User_Account.query.filter_by(id=student_id).first()
+    user_assignment = User_Assignment.query.filter_by(id=user_assignment_id).first()
+
+    assignment = user_assignment.assignment
+    questions = assignment.questions
+    questions.sort(key=lambda q:q.id)
+    options_dict = {}
+
+    for question in questions:
+        options = question.options
+        options_dict[question.title] = options
+
+    if request.method == "GET":
+        return render_template("student_assignment.html",
+                                course=course,
+                                student=student,
+                                user_assignment=user_assignment,
+                                assignment=assignment,
+                                questions=questions,
+                                options_dict=options_dict,
+                                title=f"Assignment - {student.first_name} {student.last_name}")

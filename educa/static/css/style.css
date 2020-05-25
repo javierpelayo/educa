@@ -1,8 +1,8 @@
-html, body {
-  /* font-family: 'Montserrat', sans-serif; */
-   /* font-family: 'Open Sans', sans-serif; */
+/* html, body {
+  font-family: 'Montserrat', sans-serif;
+   font-family: 'Open Sans', sans-serif;
    height: 100%;
-}
+} */
 
 .cursor-pointer:hover {
   cursor: pointer;
@@ -91,11 +91,8 @@ html, body {
 }
 
 .card-click:hover {
-  text-decoration: none;
-}
-
-.card-click:hover {
   color: DodgerBlue;
+  text-decoration: none;
 }
 
 .card-shadow:hover {

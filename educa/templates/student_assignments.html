@@ -1,0 +1,33 @@
+{% extends "course_layout.html" %}
+{% block course_content %}
+<div class="course-content">
+  <div class="d-flex justify-content-center align-items-center my-2">
+    <h4>Assignments for {{ student.first_name }} {{ student.last_name }}</h4>
+  </div>
+  <table class="table table-hover border">
+    <thead>
+      <tr>
+        <th>Assignment</th>
+        <th>Date Turned In</th>
+        <th>Points</th>
+        <th>Out Of</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for i in range(assignments| length) %}
+        <tr>
+          <td><a class="fancy-link" href="{{ url_for('student_assignment', course_id=course.id, student_id=student.id, user_assignment_id=student_assignments[i].id) }}">{{ assignments[i].title }}</a></td>
+          {% if student_assignments[i] != 0 %}
+            <td>{{ student_assignments[i].created_ctime }}</td>
+            <td>{{ student_assignments[i].points }}</td>
+          {% else %}
+            <td>Not Turned In</td>
+            <td>-</td>
+          {% endif %}
+          <td>{{ assignments[i].points }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock course_content %}

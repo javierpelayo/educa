@@ -1,0 +1,60 @@
+{% extends "course_layout.html" %}
+{% block course_content %}
+  <div class="course-content">
+
+    <div class="assignment-title">
+      <h3>{{ assignment.title }} - {{ student.first_name }} {{ student.last_name }}</h3>
+    </div>
+    <div class="assignment-info">
+      <h5>Due: {{ assignment.duedate_ctime }}</h5>
+      <h5 class="ml-1">Points: {{ assignment.points }}</h5>
+      <h5 class="ml-1">Questions: {{ questions| length }}</h5>
+    </div>
+    <div class="assignment-instructions">
+      <h5>Instructions:</h5>
+      <p>{{ assignment.content| safe }}</p>
+    </div>
+
+    {% for i in range(questions| length) %}
+      <div class="questions">
+        {% if questions[i].answer == user_assignment.answers[i] %}
+          <div class="card border-success">
+        {% else %}
+          <div class="card border-danger">
+        {% endif %}
+            <div class="card-header">
+              <div class="d-flex justify-content-between align-items-center">
+                <h4>{{ questions[i].title }}</h4>
+                {% if questions[i].points > 1 %}
+                  <h5>{{ questions[i].points }} Points</h5>
+                {% else %}
+                  <h5>{{ questions[i].points }} Point</h5>
+                {% endif %}
+              </div>
+            </div>
+            <div class="card-body">
+              <h5 class="card-title">{{ questions[i].content| safe }}</h5>
+              {% if questions[i].type == "multiple_choice" %}
+                  {% for x in range(options_dict[questions[i].title]| length) %}
+                    <div class="options">
+                      <input id="question_{{ i }}_{{ x }}" type="radio" disabled>
+                      <label for="question_{{ i }}_{{ x }}">{{ options_dict[questions[i].title][x].content }}</label>
+                    </div>
+                  {% endfor %}
+                  {% if questions[i].answer == user_assignment.answers[i] %}
+                    <h6 class="text-success">Student Answer: {{ user_assignment.answers[i] }}</h6>
+                  {% else %}
+                    <h6 class="text-danger">Student Answer: {{ user_assignment.answers[i] }}</h6>
+                  {% endif %}
+              {% else %}
+                <div class="d-flex flex-column justify-content-start">
+                  <h6>Student Answer:</h6>
+                  <p>{{ user_assignment.answers[i]| safe }}</p>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+    {% endfor %}
+  </div>
+{% endblock course_content %}

@@ -1,6 +1,9 @@
 {% extends "course_layout.html" %}
 {% block course_content %}
   <div class="course-content">
+    <div class="d-flex justify-content-center align-items-center my-2">
+      <h4>Grades for {{ student.first_name }} {{ student.last_name }}</h4>
+    </div>
     <table class="col-12 table table-hover table-bordered">
       <thead>
         <tr>
