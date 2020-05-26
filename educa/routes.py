@@ -862,6 +862,7 @@ def student_grades_edit(course_id, student_id):
                 user_assignment = User_Assignment(user_id=student_id,
                                                 assignment_id=assignment.id,
                                                 points=value,
+                                                tries=assignment.tries,
                                                 type=assignment.type)
                 course_user.points += value
                 user_assignments[key] = value
