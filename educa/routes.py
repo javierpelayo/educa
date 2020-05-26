@@ -455,7 +455,6 @@ def new_assignment(course_id):
             q_id = qu_op_ids[2]
             o_id = qu_op_ids[3]
 
-            # creating list of key value tuples [(q_key, o_value)]
             question_option_ids.append((q_id, o_id))
 
         q_ids.sort()
@@ -480,6 +479,7 @@ def new_assignment(course_id):
                                 title=assignmentform.title.data,
                                 content=assignmentform.content.data,
                                 type=assignmentform.type.data,
+                                tries=assignmentform.tries.data,
                                 duedate_time=duedate_time,
                                 duedate_ctime=duedate_ctime)
         db.session.add(assignment)
@@ -531,6 +531,7 @@ def assignment(course_id, assignment_id):
 
     questions.sort(key=lambda q:q.id)
     user_assignments.sort(key=lambda a:a.points)
+    tries = len(user_assignments)
 
     if user_assignments:
         user_assignment = user_assignments[-1]
@@ -586,17 +587,12 @@ def assignment(course_id, assignment_id):
             if "question_" in key and value == "":
                 errors[key] = "This question requires an answer."
         return errors
-    elif request.method == "POST" and current_user.profession == "Student":
-        # turning in assignment
+    elif request.method == "POST" and current_user.profession == "Student" and tries < assignment.tries:
         course_user = Course_User.query.filter_by(user_id=current_user.id, course_id=course.id).first()
-        assignments = Assignment.query.filter_by(course_id=course.id).all()
         total_assignment_points = 0
         url = ""
         answers = []
         points = 0
-
-        for a in assignments:
-            total_assignment_points += a.points
 
         for key, value in request_form.items():
             if "question_" in key:
@@ -606,17 +602,11 @@ def assignment(course_id, assignment_id):
             if questions[i].answer == answers[i]:
                 points += questions[i].points
 
-        #
-        # Update the students grade during the course
-        #
-
-        # if the student has completed assignments
         if course_user.assignments_done:
             assignments_done = json.loads(course_user.assignments_done)
         else:
             assignments_done = {}
 
-        # if the assignment exists in the returned done assignments
         if str(assignment.id) in assignments_done:
             if assignments_done[str(assignment.id)] < points:
 
@@ -628,10 +618,14 @@ def assignment(course_id, assignment_id):
             course_user.points += points
             assignments_done[str(assignment.id)] = points
 
-        # convert back to json for db storage
+        # used for recalculating the course grade according
+        # to the assignments the student has turned in
+        for key in assignments_done:
+            a_done = Assignment.query.filter_by(id=int(key)).first()
+            total_assignment_points += a_done.points
+
         course_user.assignments_done = json.dumps(assignments_done)
 
-        # update grade with any new points and assignments needed to turn in
         try:
             leftover_points = course_user.points/total_assignment_points
         except ZeroDivisionError:
@@ -644,6 +638,7 @@ def assignment(course_id, assignment_id):
                                         url=url,
                                         answers=answers,
                                         points=points,
+                                        tries=tries+1,
                                         type=assignment.type)
 
         db.session.add(user_assignment)
@@ -651,15 +646,9 @@ def assignment(course_id, assignment_id):
 
         flash("Assignment turned in!", "success")
         return redirect(url_for("assignment", course_id=course.id, assignment_id=assignment.id))
-    elif request.method == "GET" and redo:
-        return render_template('assignment.html',
-                                course=course,
-                                assignment=assignment,
-                                user_assignment=user_assignment,
-                                questions=questions,
-                                options_dict=options_dict,
-                                redo=redo,
-                                title=str(course.title) + " - " + str(assignment.title))
+    elif request.method == "POST":
+        flash("You can no longer redo this assignment.", "danger")
+        return redirect(url_for("assignment", course_id=course.id, assignment_id=assignment.id))
     elif request.method == "GET":
         return render_template('assignment.html',
                                 course=course,
@@ -667,7 +656,9 @@ def assignment(course_id, assignment_id):
                                 user_assignment=user_assignment,
                                 questions=questions,
                                 options_dict=options_dict,
-                                title=str(course.title) + " - " + str(assignment.title))
+                                redo=redo,
+                                tries=tries,
+                                title=course.title + " - " + assignment.title)
 
 # used to gather information about
 # a user for grades template rendering

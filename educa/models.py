@@ -43,6 +43,7 @@ class User_Assignment(db.Model):
     url = db.Column(db.String(20))
     answers = db.Column(db.ARRAY(db.Text))
     points = db.Column(db.Integer)
+    tries = db.Column(db.Integer, nullable=False)
     type = type = db.Column(db.String(120), nullable=False)
     # used incase student resubmits / latest is the one that is graded
     created_time = db.Column(db.Float, nullable=False, default=time)
@@ -124,6 +125,7 @@ class Assignment(db.Model):
     content = db.Column(db.Text, nullable=False)
     points = db.Column(db.Integer, nullable=False)
     type = db.Column(db.String(120), nullable=False)
+    tries = db.Column(db.Integer, nullable=False)
     created_time = db.Column(db.Float, nullable=False, default=time)
     created_ctime = db.Column(db.String(120), nullable=False, default=time_readable)
     duedate_time = db.Column(db.Float)

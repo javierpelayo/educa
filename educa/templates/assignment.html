@@ -29,6 +29,7 @@
     <div class="assignment-info">
       <h5>Due: {{ assignment.duedate_ctime }}</h5>
       <h5 class="ml-1">Points: {{ assignment.points }}</h5>
+      <h5 class="ml-1">Tries: {{ assignment.tries }}</h5>
       <h5 class="ml-1">Questions: {{ questions| length }}</h5>
     </div>
     <div class="assignment-instructions">
@@ -36,7 +37,7 @@
       <p>{{ assignment.content| safe }}</p>
     </div>
 
-    {% if not user_assignment and assignment.type != "Instructions" %}
+    {% if (not user_assignment and assignment.type != "Instructions") or (redo and user_assignment.tries < assignment.tries) %}
       <form id="questions" class="form-group" action="{{ url_for('assignment', course_id=course.id, assignment_id=assignment.id) }}" method="POST">
         {% for i in range(questions| length) %}
           <div class="questions">
@@ -135,15 +136,13 @@
             </div>
         {% endfor %}
 
-
-        <!-- If redo is implemented again -->
-
-        <!-- <div class="d-flex flex-column align-items-center">
-          <p>The assignment with the best score will be submitted.</p>
-          <form class="form-group" action="" method="GET">
-            <button class="btn btn-primary my-2" type="submit" name="redo" value="true">Redo Assignment</button>
-          </form>
-        </div> -->
+        {% if tries < assignment.tries %}
+          <div class="d-flex flex-column align-items-center">
+            <form class="form-group" action="" method="GET">
+              <button class="btn btn-primary my-2" type="submit" name="redo" value="true">Redo Assignment</button>
+            </form>
+          </div>
+        {% endif %}
 
       {% endif %}
     {% endif %}
