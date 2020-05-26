@@ -55,10 +55,10 @@
                 <h5 class="card-title">{{ questions[i].content| safe }}</h5>
                 {% if questions[i].type == "multiple_choice" %}
                   <div id="question_{{ i }}">
-                    {% for x in range(options_dict[questions[i].title]| length) %}
+                    {% for x in range(options_dict[questions[i].id|string]| length) %}
                       <div class="options">
-                        <input id="question_{{ i }}_{{ x }}" type="radio" name="question_{{ i }}" value="{{ options_dict[questions[i].title][x].content }}">
-                        <label for="question_{{ i }}_{{ x }}">{{ options_dict[questions[i].title][x].content }}</label>
+                        <input id="question_{{ i }}_{{ x }}" type="radio" name="question_{{ i }}" value="{{ options_dict[questions[i].id|string][x].content }}">
+                        <label for="question_{{ i }}_{{ x }}">{{ options_dict[questions[i].id|string][x].content }}</label>
                       </div>
                     {% endfor %}
                   </div>
@@ -112,10 +112,10 @@
                   <h5 class="card-title">{{ questions[i].content| safe }}</h5>
                   {% if questions[i].type == "multiple_choice" %}
                     <div>
-                      {% for x in range(options_dict[questions[i].title]| length) %}
+                      {% for x in range(options_dict[questions[i].id|string]| length) %}
                         <div class="options">
                           <input id="question_{{ i }}_{{ x }}" type="radio" disabled>
-                          <label for="question_{{ i }}_{{ x }}">{{ options_dict[questions[i].title][x].content }}</label>
+                          <label for="question_{{ i }}_{{ x }}">{{ options_dict[questions[i].id|string][x].content }}</label>
                         </div>
                       {% endfor %}
                       {% if questions[i].answer == user_assignment.answers[i] %}

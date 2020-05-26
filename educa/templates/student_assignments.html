@@ -16,11 +16,12 @@
     <tbody>
       {% for i in range(assignments| length) %}
         <tr>
-          <td><a class="fancy-link" href="{{ url_for('student_assignment', course_id=course.id, student_id=student.id, user_assignment_id=student_assignments[i].id) }}">{{ assignments[i].title }}</a></td>
           {% if student_assignments[i] != 0 %}
+            <td><a class="fancy-link" href="{{ url_for('student_assignment', course_id=course.id, student_id=student.id, user_assignment_id=student_assignments[i].id) }}">{{ assignments[i].title }}</a></td>
             <td>{{ student_assignments[i].created_ctime }}</td>
             <td>{{ student_assignments[i].points }}</td>
           {% else %}
+            <td>{{ assignments[i].title }}</td>
             <td>Not Turned In</td>
             <td>-</td>
           {% endif %}

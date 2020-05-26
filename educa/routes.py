@@ -528,19 +528,19 @@ def assignment(course_id, assignment_id):
     user_assignments = User_Assignment.query.filter_by(user_id=current_user.id, assignment_id=assignment.id).all()
     questions = Question.query.filter_by(assignment_id=assignment.id).all()
     options_dict = {}
-    questions.sort(key=lambda q: q.id)
+
+    questions.sort(key=lambda q:q.id)
+    user_assignments.sort(key=lambda a:a.points)
 
     if user_assignments:
-        user_assignments = sorted(user_assignments, key=lambda a:a.points)
-        # Get the latest assignment submitted by the user
         user_assignment = user_assignments[-1]
     else:
         user_assignment = ''
 
-    # get all options
-    for x in range(len(questions)):
-        options = Option.query.filter_by(question_id=questions[x].id).all()
-        options_dict[questions[x].title] = options
+    # get all options for each question
+    for question in questions:
+        options = question.options
+        options_dict[str(question.id)] = options
 
     if current_user.id == course.teacher_id and request.method == "POST" and delete:
         course_assignments = Assignment.query.filter_by(course_id=course.id).all()
@@ -565,7 +565,6 @@ def assignment(course_id, assignment_id):
                 del assignments_done[str(assignment.id)]
                 course_user.assignments_done = json.dumps(assignments_done)
 
-                # ERROR POSSIBLE IF assignment does not exist -------
                 course_user.points -= student_assignment.points
 
                 try:
@@ -582,7 +581,6 @@ def assignment(course_id, assignment_id):
         flash('Assignment was deleted successfully!', 'success')
         return redirect(url_for("assignments", course_id=course.id))
     elif "ajax" in request_form and request.method == "POST":
-        # error handling
         errors = {}
         for key, value in request_form.items():
             if "question_" in key and value == "":
@@ -675,9 +673,8 @@ def assignment(course_id, assignment_id):
 # a user for grades template rendering
 def user_grades(course, user_id):
     course_user = Course_User.query.filter_by(user_id=user_id, course_id=course.id).first()
-
     assignments = Assignment.query.filter_by(course_id=course.id).all()
-    assignments = sorted(assignments, key=lambda a:a.duedate_time)
+    assignments.sort(key=lambda a:a.duedate_time)
 
     user_latest_assignments = []
 
@@ -689,7 +686,7 @@ def user_grades(course, user_id):
     for assignment in assignments:
         user_assignments = User_Assignment.query.filter_by(user_id=user_id, assignment_id=assignment.id).all()
         if user_assignments:
-            user_assignments = sorted(user_assignments, key=lambda ua:ua.created_time)
+            user_assignments.sort(key=lambda ua:ua.created_time)
             user_latest_assignments.append(user_assignments[-1])
         else:
             # used to keep the index the same as the assignment,
@@ -816,33 +813,61 @@ def student_grades_edit(course_id, student_id):
     user_points, assignment_points,
     current_assignment_points) = user_grades(course, student_id)
 
-    if request.method == "POST":
-        request_form = request.form.to_dict()
+    request_form = request.form.to_dict()
+
+    if 'ajax' in request_form and request.method == "POST":
+        errors = {}
+        for key, value in request_form.items():
+            if "assignment_" in key:
+                try:
+                    int(value)
+                except:
+                    if value != "-":
+                        errors[key] = "Not a valid integer or hyphen."
+        return errors
+    elif request.method == "POST":
         assignments_form = {}
+        a_points = 0
 
         for key, value in request_form.items():
             print(f"{key} : {value}")
             if "assignment_" in key:
                 id = key.split("_")
                 id = id[1]
-                assignments_form[id] = int(value)
+                try:
+                    assignments_form[id] = int(value)
+                except:
+                    assignments_form[id] = value
 
         user_assignments = json.loads(course_user.assignments_done)
         for key, value in assignments_form.items():
-            assignment = Assignment.query.filter_by(id=key).first()
-            user_assignment = User_Assignment.query.filter_by(assignment_id=key).all()
+            assignment = Assignment.query.filter_by(id=int(key)).first()
+            user_assignment = User_Assignment.query.filter_by(assignment_id=int(key)).all()
 
             if user_assignment:
                 user_assignment.sort(key=lambda a:a.created_time)
-                user_assignment = user_assignment[-1]
-                user_assignment.points = value
 
-                # error
-                course_user.points -= user_assignments[key]
-                course_user.points += value
+                if value != "-":
+                    a_points += assignment.points
+                    user_assignment = user_assignment[-1]
+                    user_assignment.points = value
 
-                user_assignments[key] = value
-            else:
+                    course_user.points -= user_assignments[key]
+                    course_user.points += value
+
+                    user_assignments[key] = value
+                else:
+                    course_user.points -= user_assignments[key]
+
+                    del user_assignments[key]
+
+                    # deletes all user_assignments turned in for this assignment
+                    for ua in user_assignment:
+                        db.session.delete(ua)
+
+
+            elif value != "-":
+                a_points += assignment.points
                 user_assignment = User_Assignment(user_id=student_id,
                                                 assignment_id=assignment.id,
                                                 points=value,
@@ -853,14 +878,17 @@ def student_grades_edit(course_id, student_id):
 
         course_user.assignments_done = json.dumps(user_assignments)
 
-        if sum(assignment_points.values()) > 0:
-            course_user.grade = '{:.2%}'.format(course_user.points/sum(assignment_points.values()))
+        Assignment.query
+
+        # grades should be based on assignments they have turned in
+        if a_points > 0:
+            course_user.grade = '{:.2%}'.format(course_user.points/a_points)
         else:
             course_user.grade = '{:.2%}'.format(0)
 
         db.session.commit()
 
-        flash(f"Grades for {student.first_name} {student.last_name} updated successfully!", "success")
+        flash(f"Grades for {student.first_name} {student.last_name} have been updated.", "success")
         return redirect(url_for("student_grades", course_id=course.id, student_id=student.id))
     elif request.method == "GET":
         return render_template("grades_edit.html",
@@ -921,7 +949,7 @@ def student_assignment(course_id, student_id, user_assignment_id):
 
     for question in questions:
         options = question.options
-        options_dict[question.title] = options
+        options_dict[str(question.id)] = options
 
     if request.method == "GET":
         return render_template("student_assignment.html",

@@ -44,7 +44,7 @@
     </table>
 
     <!-- EDITABLE -->
-    <form action="" method="POST">
+    <form id="grades" action="" method="POST">
       <table class="col-12 table table-hover table-bordered">
         <thead>
           <tr>
@@ -61,11 +61,21 @@
               <td>{{ assignments[i].duedate_ctime }}</td>
               {% if user_latest_assignments[i] != 0 %}
 
-                <td><input class="form-control" type="text" name="assignment_{{ assignments[i].id }}" value="{{ user_latest_assignments[i].points }}"></td>
+                <td>
+                  <input id="assignment_{{ assignments[i].id }}" class="form-control" type="text" name="assignment_{{ assignments[i].id }}" value="{{ user_latest_assignments[i].points }}">
+                  <div class="invalid-feedback">
+                    <small id="assignment_{{ assignments[i].id }}_error"></small>
+                  </div>
+                </td>
 
               {% else %}
 
-                <td><input class="form-control" type="text" name="assignment_{{ assignments[i].id }}" value="-"></td>
+                <td>
+                  <input id="assignment_{{ assignments[i].id }}" class="form-control" type="text" name="assignment_{{ assignments[i].id }}" value="-">
+                  <div class="invalid-feedback">
+                    <small id="assignment_{{ assignments[i].id }}_error"></small>
+                  </div>
+                </td>
 
               {% endif %}
               <td>{{ assignments[i].points }}</td>
@@ -78,4 +88,5 @@
       </div>
     </form>
   </div>
+  <script type="text/javascript" src="{{ url_for('static', filename='js/grades_edit.js')|autoversion }}"></script>
 {% endblock course_content %}

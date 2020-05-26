@@ -25,6 +25,7 @@ class Course_User(db.Model):
     course_id = db.Column(db.Integer, db.ForeignKey('course.id', ondelete='CASCADE'), primary_key=True)
     points = db.Column(db.Integer, default=0)
     grade = db.Column(db.String(120))
+    # saved as (Assignment, Points)
     assignments_done = db.Column(db.JSON)
     course = db.relationship('Course', backref=db.backref('course_users', passive_deletes=True))
 
