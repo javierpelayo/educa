@@ -7,7 +7,7 @@ from wtforms import (StringField, PasswordField,
                     SelectField, FieldList,
                     HiddenField)
 from flask_login import current_user
-from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
+from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError, NumberRange
 from educa.models import User_Account
 from educa.filters import autoversion
 from . import bcrypt
@@ -72,7 +72,7 @@ class NewCourseForm(FlaskForm):
     subject = StringField('Subject',
                             validators=[DataRequired()])
     points = IntegerField('Points',
-                        validators=[DataRequired()])
+                        validators=[NumberRange(max=10000)])
     code = StringField('Code',
                         validators=[DataRequired(), Length(min=4, max=36)])
     join = RadioField("Allow Users to Join?",
@@ -82,7 +82,7 @@ class NewCourseForm(FlaskForm):
 
 class AddCourseForm(FlaskForm):
     course_id = IntegerField('Course ID',
-                        validators=[DataRequired()])
+                        validators=[NumberRange(max=100000000)])
     code = StringField('Code',
                         validators=[DataRequired(), Length(min=4, max=36)])
     submit = SubmitField('Add')
@@ -93,7 +93,7 @@ class UpdateCourseForm(FlaskForm):
     subject = StringField('Subject',
                             validators=[DataRequired()])
     points = IntegerField('Points',
-                        validators=[DataRequired()])
+                        validators=[NumberRange(max=10000)])
     code = StringField('Code',
                         validators=[DataRequired(), Length(min=4, max=36)])
     join = RadioField("Allow Users to Join?",
@@ -119,8 +119,10 @@ class AssignmentForm(FlaskForm):
                                         ('Lab', 'Lab'),
                                         ('HW', 'HW')])
     content = TextAreaField('Content', validators=[DataRequired()])
-    points = IntegerField('Points')
-    tries = IntegerField('Tries')
+    points = IntegerField('Points',
+                            validators=[NumberRange(max=500)])
+    tries = IntegerField('Tries',
+                            validators=[NumberRange(max=10)])
 
     date_input = DateField('Due Date', format='%m/%d/%Y')
     hour = SelectField('Hour', choices=due_hour)

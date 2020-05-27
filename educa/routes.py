@@ -33,6 +33,10 @@ import json
 def too_many_requests(e):
     return render_template("error/429.html"), 429
 
+@app.errorhandler(500)
+def interal_500(e):
+    return render_template('error/429.html'), 500
+
 # INTRODUCTION PAGES
 
 @app.route('/')
@@ -394,6 +398,40 @@ def assignments(course_id):
                                 current_time=time(),
                                 title=str(course.title) + " - Assignments")
 
+def new_assignment_error_handler(assignmentform, request_form):
+    errors = {}
+    assignmentform.validate()
+    question_total_points = 0
+
+    for key, value in assignmentform.errors.items():
+        if key == "date_input":
+            errors[key] = "Not a valid date value. ex: 01/25/2020"
+        else:
+            errors[key] = value[0];
+
+    for key, value in request_form.items():
+        if "qOption_" in key and value == "":
+            errors[key] = "This field is required."
+        elif "question_points" in key:
+            try:
+                question_total_points += int(value)
+            except ValueError:
+                errors[key] = "Not a valid integer value."
+        elif "question_answer" not in key and "question_" in key and value == "":
+            errors[key] = "This field is required."
+
+    try:
+        a_points = int(request_form["points"])
+    except ValueError:
+        a_points = 0
+
+    if question_total_points > a_points:
+        for key, value in request_form.items():
+            if "question_points" in key:
+                errors[key] = f"Total question points exceeds assignment points: {a_points}"
+
+    return errors
+
 @app.route('/dashboard/courses/<int:course_id>/assignments/new', methods=["GET", "POST"])
 @login_required
 @course_auth
@@ -405,35 +443,21 @@ def new_assignment(course_id):
 
     request_form = request.form.to_dict()
 
-    # form error handling through ajax POST request
     if 'ajax' in request_form and request.method == "POST":
-        assignmentform.validate()
-        for key, value in assignmentform.errors.items():
-            if key == "date_input":
-                errors[key] = "Not a valid date value. ex: 01/25/2020"
-            else:
-                errors[key] = value[0];
-
-        for key, value in request_form.items():
-            if "qOption_" in key and value == "":
-                errors[key] = "This field is required."
-            elif "question_points" in key:
-                try:
-                    int(value)
-                except ValueError:
-                    errors[key] = "Not a valid integer value."
-            elif "question_answer" not in key and "question_" in key and value == "":
-                errors[key] = "This field is required."
-        return errors
-
+        return new_assignment_error_handler(assignmentform, request_form)
     if request.method == "POST":
+
+        # If user maliciously bypasses the ajax request
+        errors = new_assignment_error_handler(assignmentform, request_form)
+        if errors:
+            flash("There was an error in creating the assignment.", "danger")
+            return redirect(url_for("assignments", course_id=course.id))
+
         questions = {}
         options = {}
         q_ids = []
         question_option_ids = []
         question_amt = 0
-
-        # GET ASSIGNMENT QUESTIONS/OPTIONS
 
         # separate the questions from the options
         for key, value in request_form.items():
@@ -459,8 +483,6 @@ def new_assignment(course_id):
 
         q_ids.sort()
         question_amt = len(q_ids)
-
-        # CREATE ASSIGNMENT/QUESTIONS/OPTIONS
 
         date_input = assignmentform.date_input.data.strftime('%m/%d/%Y').split("/")
         hour = int(assignmentform.hour.data)
@@ -791,6 +813,24 @@ def student_grades(course_id, student_id):
                                 student=student,
                                 title=f"Grades - {student.first_name} {student.last_name}")
 
+def grades_edit_error_handler(request_form, course):
+    errors = {}
+    total_points = 0
+
+    for key, value in request_form.items():
+        if "assignment_" in key:
+            try:
+                total_points += int(value)
+            except:
+                if value != "-":
+                    errors[key] = "Not a valid integer or hyphen."
+    if total_points > course.points:
+        for key, value in request_form.items():
+            if "assignment_" in key:
+                errors[key] = f"Total assignment points exceeds the course points: {course.points}"
+
+    return errors
+
 @app.route('/dashboard/courses/<int:course_id>/students/<int:student_id>/grades/edit', methods=['GET', 'POST'])
 @login_required
 @course_auth
@@ -807,16 +847,15 @@ def student_grades_edit(course_id, student_id):
     request_form = request.form.to_dict()
 
     if 'ajax' in request_form and request.method == "POST":
-        errors = {}
-        for key, value in request_form.items():
-            if "assignment_" in key:
-                try:
-                    int(value)
-                except:
-                    if value != "-":
-                        errors[key] = "Not a valid integer or hyphen."
-        return errors
+        return grades_edit_error_handler(request_form, course)
     elif request.method == "POST":
+
+        # if user maliciously bypasses the ajax request
+        errors = grades_edit_error_handler(request_form, course)
+        if errors:
+            flash("There was an error in updating the grades.", "danger")
+            return redirect("student_grades", course_id=course.id, student_id=student.id)
+
         assignments_form = {}
         a_points = 0
 
@@ -833,7 +872,7 @@ def student_grades_edit(course_id, student_id):
         user_assignments = json.loads(course_user.assignments_done)
         for key, value in assignments_form.items():
             assignment = Assignment.query.filter_by(id=int(key)).first()
-            user_assignment = User_Assignment.query.filter_by(assignment_id=int(key)).all()
+            user_assignment = User_Assignment.query.filter_by(user_id=student.id, assignment_id=int(key)).all()
 
             if user_assignment:
                 user_assignment.sort(key=lambda a:a.created_time)
