@@ -330,7 +330,6 @@ def course(course_id):
                                 title="Course - " + str(course.title))
 
     if teacher and request.method == "POST" and delete:
-        course_users = Course_User.query.filter_by(course_id=course.id).all()
 
         # Deletes all assignments, questions, options,
         # user_assignments, course_users
@@ -407,8 +406,7 @@ def new_assignment_error_handler(assignmentform, request_form):
         if key == "date_input":
             errors[key] = "Not a valid date value. ex: 01/25/2020"
         else:
-            errors[key] = value[0];
-
+            errors[key] = value[0]
     for key, value in request_form.items():
         if "qOption_" in key and value == "":
             errors[key] = "This field is required."
@@ -854,7 +852,7 @@ def student_grades_edit(course_id, student_id):
         errors = grades_edit_error_handler(request_form, course)
         if errors:
             flash("There was an error in updating the grades.", "danger")
-            return redirect("student_grades", course_id=course.id, student_id=student.id)
+            return redirect(url_for("student_grades", course_id=course.id, student_id=student.id))
 
         assignments_form = {}
         a_points = 0

@@ -26,7 +26,6 @@ def course_auth(f):
         course = Course.query.filter_by(id=kwargs['course_id']).first()
         course_user = Course_User.query.filter_by(user_id=current_user.id, course_id=course.id).first()
 
-        # check if user is in course if not redirect
         if current_user.id != course.teacher_id:
             if not course_user:
                 return redirect(url_for("courses"))

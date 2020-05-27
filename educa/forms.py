@@ -106,6 +106,7 @@ class UpdateSyllabusForm(FlaskForm):
     submit = SubmitField('Submit')
 
 class AssignmentForm(FlaskForm):
+    # refactor
     due_hour = [('0','12 a.m.'), ('1','1 a.m.'), ('2', '2 a.m.'), ('3', '3 a.m.'), ('4', '4 a.m.'), ('5', '5 a.m.'),
                 ('6', '6 a.m.'), ('7', '7 a.m.'), ('8', '8 a.m.'), ('9', '9 a.m.'), ('10', '10 a.m.'),
                 ('11', '11 a.m.'), ('12', '12 p.m.'), ('13', '1 p.m.'), ('14', '2 p.m.'), ('15', '3 p.m.'),

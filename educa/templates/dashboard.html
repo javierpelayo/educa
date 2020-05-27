@@ -26,7 +26,7 @@
           </button>
         </div>
         <div class="collapse navdrop d-md-none" id="navDropdown">
-          <a href="{{ url_for('profile') }}">Profile</a>
+          <a class="d-flex align-items-center" href="{{ url_for('profile') }}">Profile</a>
           <a href="{{ url_for('courses') }}">Courses</a>
           <a href="#">Deadline</a>
           <a href="#">Inbox</a>
@@ -37,7 +37,7 @@
             <span class="sidenav-text">EDUCA</span>
           </a>
           <a class="sidenav-item r-border-yellow" href="{{ url_for('profile') }}">
-            <i class="fas fa-user"></i>
+            <i class="fas fa-user-circle"></i>
             <span class="sidenav-text">Profile</span>
           </a>
           <a class="sidenav-item r-border-green" href="{{ url_for('courses') }}">
