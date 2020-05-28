@@ -27,6 +27,12 @@ from collections import OrderedDict
 import os
 import json
 
+# Global Dictionaries
+@app.context_processor
+def inject_pf_image():
+    profile_image = url_for('static', filename="profile_images/" + current_user.profile_image)
+    return dict(profile_image=profile_image)
+
 # ERROR ROUTES
 
 @app.errorhandler(429)
@@ -555,6 +561,7 @@ def assignment(course_id, assignment_id):
 
     if user_assignments:
         user_assignment = user_assignments[-1]
+        tries = user_assignment.tries
     else:
         user_assignment = ''
 

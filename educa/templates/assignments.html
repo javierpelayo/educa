@@ -1,7 +1,8 @@
 {% extends "course_layout.html" %}
 {% block course_content %}
   <div class="course-content">
-      <table class="table table-hover text-center border">
+    <div class="container-table mb-3">
+      <table class="table-e text-center">
         <thead>
           <tr>
             <th scope="col">Title</th>
@@ -28,9 +29,19 @@
           {% endfor %}
         </tbody>
       </table>
+    </div>
     {% if current_user.id == course.teacher_id %}
       <div class="d-flex justify-content-center my-1">
-        <a class="btn btn-outline-primary" href="/dashboard/courses/{{ course.id }}/assignments/new">New Assignment</a>
+        <a class="btn btn-primary" href="{{ url_for('new_assignment', course_id=course.id) }}">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-file-plus icons-vis" width="1em" height="1em" viewBox="0 3 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z"/>
+            <polyline points="14 3 14 8 19 8" />
+            <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+            <line x1="12" y1="11" x2="12" y2="17" />
+            <line x1="9" y1="14" x2="15" y2="14" />
+          </svg>
+          New Assignment
+        </a>
       </div>
     {% endif %}
   </div>

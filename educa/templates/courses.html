@@ -6,11 +6,18 @@
       <div id="new_modal" class="modal fade" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-dialog-centered" role="document">
           <div class="modal-content">
-            <div class="modal-header">
-              <h2 class="ml-3">Create New Course</h2>
-              <button type="button" class="close" data-dismiss="modal">
-                <span>&times;</span>
-              </button>
+            <div class="modal-header bg-primary text-white border-0">
+              <div class="col-11 d-flex justify-content-center">
+                <h2 class="ml-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 3 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-book-open icons-vis"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+                  New Course
+                </h2>
+              </div>
+              <div class="col-1">
+                <button type="button" class="x-close" data-dismiss="modal">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+              </div>
             </div>
             <form class="needs-validation form-group mb-0" method="POST" novalidate>
               {{ new_course.hidden_tag() }}
@@ -39,8 +46,8 @@
                   </div>
                 </div>
               </div>
-              <div class="modal-footer">
-                {{ new_course.submit(class="btn btn-outline-primary") }}
+              <div class="modal-footer d-flex justify-content-center">
+                {{ new_course.submit(class="btn btn-primary") }}
               </div>
             </form>
           </div>
@@ -51,11 +58,18 @@
   <div id="add_modal" class="modal fade" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
-        <div class="modal-header">
-          <h2 class="ml-3">Add Course</h2>
-          <button type="button" class="close" data-dismiss="modal">
-            <span>&times;</span>
-          </button>
+        <div class="modal-header bg-primary text-white border-0">
+          <div class="col-11 d-flex justify-content-center">
+            <h2 class="ml-4">
+              <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 3 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-book-open icons-vis"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+              Add Course
+            </h2>
+          </div>
+          <div class="col-1">
+            <button type="button" class="x-close" data-dismiss="modal">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+          </div>
         </div>
         <form class="form-group" action="" method="POST">
           {{ add_course.hidden_tag() }}
@@ -126,9 +140,21 @@
             <div class="card-body d-flex align-items-center justify-content-center">
                 <form action="" method="GET">
                   {% if current_user.profession == 'Teacher' %}
-                    <button id="new" class="btn-link noSelect" type="button" data-toggle="modal" data-target="#new_modal"><i class="fas fa-plus"></i></button>
+                    <button id="new" class="btn-link noSelect" type="button" data-toggle="modal" data-target="#new_modal">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="1.5em" height="1.5em" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z"/>
+                        <line x1="12" y1="5" x2="12" y2="19" />
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                      </svg>
+                    </button>
                   {% else %}
-                    <button id="add" class="btn-link" type="button" data-toggle="modal" data-target="#add_modal"><i class="fas fa-plus"></i></button>
+                    <button id="add" class="btn-link" type="button" data-toggle="modal" data-target="#add_modal">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="1.5em" height="1.5em" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z"/>
+                        <line x1="12" y1="5" x2="12" y2="19" />
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                      </svg>
+                    </button>
                   {% endif %}
                 </form>
             </div>

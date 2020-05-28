@@ -4,87 +4,100 @@
     <div class="d-flex justify-content-center align-items-center my-2">
       <h4>Grades for {{ student.first_name }} {{ student.last_name }}</h4>
     </div>
-    <table class="col-12 table table-hover">
-      <thead>
-        <tr>
-          <th scope="col"><h4>Total Grade</h4></th>
-
-          <th scope="col"><h4>{{ course_user.points }} / {{ current_assignment_points }}</h4></th>
-
-          {% if course_user.points != 0 %}
-            <th scope="col"><h4>{{ course_user.grade }}</h4></th>
-          {% else %}
-            <th scope="col"><h4>{{ "0%" }}</h4></th>
-          {% endif %}
-
-        </tr>
-      </thead>
-
-      {% for key, value in assignment_points.items() %}
+    <div class="container-table">
+      <table class="col-12 table-e">
         <thead>
           <tr>
+            <th scope="col"><h4>
+              <svg height="1em" width="1em" xmlns="http://www.w3.org/2000/svg" viewBox="0 30 512 512"><path class="icons" d="M396.8 352h22.4c6.4 0 12.8-6.4 12.8-12.8V108.8c0-6.4-6.4-12.8-12.8-12.8h-22.4c-6.4 0-12.8 6.4-12.8 12.8v230.4c0 6.4 6.4 12.8 12.8 12.8zm-192 0h22.4c6.4 0 12.8-6.4 12.8-12.8V140.8c0-6.4-6.4-12.8-12.8-12.8h-22.4c-6.4 0-12.8 6.4-12.8 12.8v198.4c0 6.4 6.4 12.8 12.8 12.8zm96 0h22.4c6.4 0 12.8-6.4 12.8-12.8V204.8c0-6.4-6.4-12.8-12.8-12.8h-22.4c-6.4 0-12.8 6.4-12.8 12.8v134.4c0 6.4 6.4 12.8 12.8 12.8zM496 400H48V80c0-8.84-7.16-16-16-16H16C7.16 64 0 71.16 0 80v336c0 17.67 14.33 32 32 32h464c8.84 0 16-7.16 16-16v-16c0-8.84-7.16-16-16-16zm-387.2-48h22.4c6.4 0 12.8-6.4 12.8-12.8v-70.4c0-6.4-6.4-12.8-12.8-12.8h-22.4c-6.4 0-12.8 6.4-12.8 12.8v70.4c0 6.4 6.4 12.8 12.8 12.8z"/></svg>
+              Total Grade
+            </h4></th>
 
-            {% if key != "Instructions" %}
-              <th scope="col"><h6>{{ key }}</h6></th>
+            <th scope="col"><h4>{{ course_user.points }} / {{ current_assignment_points }}</h4></th>
+
+            {% if course_user.points != 0 %}
+              <th scope="col"><h4>{{ course_user.grade }}</h4></th>
             {% else %}
-              <th scope="col"><h6>Other</h6></th>
-            {% endif %}
-
-            <th scope="col"><h6>{{ user_points[key] }} / {{ value }}</h6></th>
-
-            {% if user_points[key] != 0 %}
-              <th scope="col"><h6>{{ '{:.2%}'.format(user_points[key]/value) }}</h6></th>
-            {% else %}
-              <th scope="col"><h6>{{ "0%" }}</h6></th>
+              <th scope="col"><h4>{{ "0%" }}</h4></th>
             {% endif %}
 
           </tr>
         </thead>
-      {% endfor %}
-    </table>
 
-    <!-- EDITABLE -->
-    <form id="grades" action="" method="POST">
-      <table class="col-12 table table-hover">
-        <thead>
-          <tr>
-            <th><h5>Assignment</h5></th>
-            <th><h5>Due Date</h5></th>
-            <th><h5>Points</h5></th>
-            <th><h5>Out of</h5></th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for i in range(assignments| length) %}
+        {% for key, value in assignment_points.items() %}
+          <thead>
             <tr>
-              <td class="assignment-link"><a href="{{ url_for('assignment', course_id=course.id, assignment_id=assignments[i].id) }}">{{ assignments[i].title }}</a></td>
-              <td>{{ assignments[i].duedate_ctime }}</td>
-              {% if user_latest_assignments[i] != 0 %}
 
-                <td>
-                  <input id="assignment_{{ assignments[i].id }}" class="form-control" type="text" name="assignment_{{ assignments[i].id }}" value="{{ user_latest_assignments[i].points }}">
-                  <div class="invalid-feedback">
-                    <small id="assignment_{{ assignments[i].id }}_error"></small>
-                  </div>
-                </td>
-
+              {% if key != "Instructions" %}
+                <th scope="col"><h6>{{ key }}</h6></th>
               {% else %}
-
-                <td>
-                  <input id="assignment_{{ assignments[i].id }}" class="form-control" type="text" name="assignment_{{ assignments[i].id }}" value="-">
-                  <div class="invalid-feedback">
-                    <small id="assignment_{{ assignments[i].id }}_error"></small>
-                  </div>
-                </td>
-
+                <th scope="col"><h6>Other</h6></th>
               {% endif %}
-              <td>{{ assignments[i].points }}</td>
+
+              <th scope="col"><h6>{{ user_points[key] }} / {{ value }}</h6></th>
+
+              {% if user_points[key] != 0 %}
+                <th scope="col"><h6>{{ '{:.2%}'.format(user_points[key]/value) }}</h6></th>
+              {% else %}
+                <th scope="col"><h6>{{ "0%" }}</h6></th>
+              {% endif %}
+
             </tr>
-          {% endfor %}
-        </tbody>
+          </thead>
+        {% endfor %}
       </table>
+    </div>
+    <div class="container-table my-5">
+      <!-- EDITABLE -->
+      <form id="grades" action="" method="POST">
+        <table class="col-12 table-e">
+          <thead>
+            <tr>
+              <th><h5>
+                <svg class="icons-vis" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg" viewBox="0 60 512 512"><path class="icons" d="M464 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V80c0-26.51-21.49-48-48-48zm-6 400H54a6 6 0 0 1-6-6V86a6 6 0 0 1 6-6h404a6 6 0 0 1 6 6v340a6 6 0 0 1-6 6zm-42-92v24c0 6.627-5.373 12-12 12H204c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h200c6.627 0 12 5.373 12 12zm0-96v24c0 6.627-5.373 12-12 12H204c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h200c6.627 0 12 5.373 12 12zm0-96v24c0 6.627-5.373 12-12 12H204c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h200c6.627 0 12 5.373 12 12zm-252 12c0 19.882-16.118 36-36 36s-36-16.118-36-36 16.118-36 36-36 36 16.118 36 36zm0 96c0 19.882-16.118 36-36 36s-36-16.118-36-36 16.118-36 36-36 36 16.118 36 36zm0 96c0 19.882-16.118 36-36 36s-36-16.118-36-36 16.118-36 36-36 36 16.118 36 36z"/>
+                </svg>
+                Assignment
+              </h5></th>
+              <th><h5>
+                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 3 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock icons-vis"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                Due Date
+              </h5></th>
+              <th><h5>Points</h5></th>
+              <th><h5>Out of</h5></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for i in range(assignments| length) %}
+              <tr>
+                <td class="assignment-link"><a href="{{ url_for('assignment', course_id=course.id, assignment_id=assignments[i].id) }}">{{ assignments[i].title }}</a></td>
+                <td>{{ assignments[i].duedate_ctime }}</td>
+                {% if user_latest_assignments[i] != 0 %}
+
+                  <td>
+                    <input id="assignment_{{ assignments[i].id }}" class="form-control" type="text" name="assignment_{{ assignments[i].id }}" value="{{ user_latest_assignments[i].points }}">
+                    <div class="invalid-feedback">
+                      <small id="assignment_{{ assignments[i].id }}_error"></small>
+                    </div>
+                  </td>
+
+                {% else %}
+
+                  <td>
+                    <input id="assignment_{{ assignments[i].id }}" class="form-control" type="text" name="assignment_{{ assignments[i].id }}" value="-">
+                    <div class="invalid-feedback">
+                      <small id="assignment_{{ assignments[i].id }}_error"></small>
+                    </div>
+                  </td>
+
+                {% endif %}
+                <td>{{ assignments[i].points }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+    </div>
       <div class="d-flex justify-content-center">
-        <button class="btn btn-outline-purple" type="submit">Submit Changes</button>
+        <button class="btn btn-primary" type="submit">Update Grades</button>
       </div>
     </form>
   </div>

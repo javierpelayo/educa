@@ -4,6 +4,55 @@
    height: 100%;
 } */
 
+/* -- Elements - Universal */
+
+/* -- Overriding Bootstrap */
+
+.form-control {
+  border-radius: 1.25rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control:focus {
+  color: #495057;
+  background-color: #fff;
+  border-color: #ced4da;
+  outline: 0;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075)
+}
+
+.btn:hover {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+/* -- CLASSES */
+
+/* Universal */
+
+.x-close {
+  padding: 0;
+  background-color: transparent;
+  border: 0;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  font-size: 1.5rem;
+  color: #ffffff;
+}
+
+.x-close:hover {
+  color: #e00029;
+  text-decoration: none;
+}
+
+.icons {
+  fill: currentColor;
+}
+
+.icons-vis {
+  overflow: visible
+}
+
 .cursor-pointer:hover {
   cursor: pointer;
 }
@@ -32,14 +81,11 @@
   max-height: 125px;
   min-width: 125px;
   max-width: 125px;
+  background-size: 125px 125px;
   border-radius: 50% !important;
-
-  padding: .25rem;
-  background-color: #fff;
-  border: 3px solid #dee2e6;
-  border-radius: .25rem;
-  max-width: 100%;
-  height: auto;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.075) !important;
+  margin-left: 3rem;
+  margin-right: 3rem;
 }
 
 .profile-content {
@@ -163,9 +209,26 @@
   padding: .85rem 0 .65rem 0;
 }
 
+.profile-img-sidenav {
+  min-height: 1em;
+  max-height: 1em;
+  min-width: 1em;
+  max-width: 1em;
+  background-size: 1em 1em;
+  border-radius: 50% !important;
+
+  border-radius: .25rem;
+}
+
 /* BUTTON EXTRA COLORS */
 .btn-outline-purple {
   color: #6E2594;
+  border: 1px solid #6E2594;
+}
+
+.btn-purple {
+  color: #ffffff;
+  background-color: #6E2594;
   border: 1px solid #6E2594;
 }
 
@@ -178,6 +241,12 @@
   cursor: pointer;
   color: #ffffff;
   background-color: #EBBAB9;
+}
+
+.btn-purple:hover {
+  cursor: pointer;
+  color: #ffffff;
+  background-color: #6E2594;
 }
 
 .btn-outline-purple:hover {
@@ -395,4 +464,38 @@
 
 .student-info-selected {
   border-top: 1px solid #000000;
+}
+
+/* Grades */
+
+.container-table {
+  padding: 2rem;
+  background-color: #fffdfa;
+  border-radius: 1.25rem;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075)
+}
+
+.container-table:hover {
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1)
+}
+
+.table-e {
+  width: 100%;
+  color: #353535;
+  /* color: #212529; */
+}
+
+.table-e th {
+  padding: .75rem;
+  vertical-align: top;
+  border-bottom: 2px solid #AFCBFF;
+}
+.table-e td {
+  padding: .75rem;
+  vertical-align: top;
+  border-top: 1px solid #AFCBFF;
+}
+
+.table-e thead th {
+  vertical-align: bottom;
 }

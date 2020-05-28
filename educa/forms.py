@@ -75,7 +75,7 @@ class NewCourseForm(FlaskForm):
                         validators=[NumberRange(max=10000)])
     code = StringField('Code',
                         validators=[DataRequired(), Length(min=4, max=36)])
-    join = RadioField("Allow Users to Join?",
+    join = RadioField("Allow Users to Join",
                         validators=[DataRequired()],
                         choices=[('True', "Yes"), ('False', "No")])
     submit = SubmitField('Create')
