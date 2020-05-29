@@ -212,13 +212,11 @@ a {
   outline: none !important;
   padding: 0;
   font-size: 2rem;
-  transition: font-size .5s;
-  -webkit-backface-visibility: hidden;
-  -webkit-transform: translateZ(0) scale(1.0, 1.0);
+  transition: transform .4s;
 }
 
 .add-course-btn:hover {
-  font-size: 2.25rem;
+  transform: scale(1.25);
   color: #3B7DB4;
 }
 
@@ -236,26 +234,22 @@ a {
 
 .card-course {
   position: relative;
-  display: -ms-flexbox;
   display: flex;
-  -ms-flex-direction: column;
   flex-direction: column;
   min-width: 0;
-  top: 0;
   word-wrap: break-word;
   background-color: #022B43;
   background-clip: border-box;
   border-radius: .5rem;
+  top: 0px;
   width: 18rem;
   height: 18rem;
-  transition: width .5s, height .5s, top .5s;
+  transition: transform .5s;
 }
 
 .card-course:hover {
-  top: -.125rem;
-  width: 18.25rem;
-  height: 18.25rem;
-  box-shadow:0 0 1rem rgba(0,0,0,.15);
+  transform: scale(1.025) rotate(4deg);
+  box-shadow: 0 0 1rem rgba(0,0,0,.15);
 }
 
 .card-course-body {
@@ -355,22 +349,22 @@ a {
   padding: 1.25rem 0 1.25rem 0;
 }
 
+.sidenav-brand:hover {
+  color: #ffffff;
+}
+
 .sidenav-item {
   display: flex;
   flex-direction: column;
   align-items: center;
   color: #ffffff;
   padding: 1rem 0 .75rem 0;
-  transition: font-size .5s, padding .5s;
+  transition: transform .5s;
 }
 
-.sidenav-brand:hover {
-  color: #ffffff;
-}
 .sidenav-item:hover {
+  transform: scale(1.2) ;
   color: #ffffff;
-  font-size: 2.25rem;
-  padding: .85rem 0 .65rem 0;
 }
 
 .profile-img-sidenav {
