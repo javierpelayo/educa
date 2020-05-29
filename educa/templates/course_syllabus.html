@@ -1,11 +1,11 @@
 {% extends "course_layout.html" %}
 {% block course_content %}
-<div class="course-content mt-2">
+<div class="dashboard-content mt-2">
   <form class="needs-validation form-group" action="" method="POST" novalidate>
     {{ syllabusform.hidden_tag() }}
     {{ syllabusform.syllabus(class="syllabus-textarea") }}
     <div class="d-flex justify-content-center mt-2 mb-5">
-      {{ syllabusform.submit(class="btn btn-primary") }}
+      {{ syllabusform.submit(class="btn btn-blue") }}
     </div>
   </form>
 </div>

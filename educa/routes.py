@@ -27,10 +27,13 @@ from collections import OrderedDict
 import os
 import json
 
-# Global Dictionaries
+# Global Jinja Vars
 @app.context_processor
 def inject_pf_image():
-    profile_image = url_for('static', filename="profile_images/" + current_user.profile_image)
+    try:
+        profile_image = url_for('static', filename="profile_images/" + current_user.profile_image)
+    except:
+        profile_image = url_for('static', filename="profile_images/default.png")
     return dict(profile_image=profile_image)
 
 # ERROR ROUTES
@@ -39,9 +42,15 @@ def inject_pf_image():
 def too_many_requests(e):
     return render_template("error/429.html"), 429
 
+@app.errorhandler(404)
+def not_found_error(e):
+    db.session.rollback()
+    return render_template("error/404.html"), 404
+
 @app.errorhandler(500)
-def interal_500(e):
-    return render_template('error/429.html'), 500
+def interal_error(e):
+    db.session.rollback()
+    return render_template('error/500.html'), 500
 
 # INTRODUCTION PAGES
 

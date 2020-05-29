@@ -5,11 +5,23 @@
     <div id="edit_modal" class="modal fade" tabindex="-1" role="dialog">
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-          <div class="modal-header">
-            <h2 class="ml-3">Edit Course</h2>
-            <button type="button" class="close" data-dismiss="modal">
-              <span>&times;</span>
-            </button>
+          <div class="modal-header bg-yellow border-0">
+            <div class="col-11 d-flex justify-content-center">
+              <h2 class="ml-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-edit" width="1em" height="1em" viewBox="0 2 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                  <path stroke="none" d="M0 0h24v24H0z"/>
+                  <path d="M9 7 h-3a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-3" />
+                  <path d="M9 15h3l8.5 -8.5a1.5 1.5 0 0 0 -3 -3l-8.5 8.5v3" />
+                  <line x1="16" y1="5" x2="19" y2="8" />
+                </svg>
+                Edit Course
+              </h2>
+            </div>
+            <div class="col-1">
+              <button type="button" class="x-close" data-dismiss="modal">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              </button>
+            </div>
           </div>
           <form class="needs-validation form-group mb-0" method="POST" novalidate>
             {{ edit_course_form.hidden_tag() }}
@@ -39,7 +51,7 @@
               </div>
             </div>
             <div class="modal-footer d-flex justify-content-center">
-              {{ edit_course_form.submit(class="btn btn-outline-primary") }}
+              {{ edit_course_form.submit(class="btn btn-yellow") }}
             </div>
           </form>
         </div>
@@ -49,28 +61,35 @@
     <div id="delete_modal" class="modal fade" tabindex="-1" role="dialog">
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-          <div class="modal-header">
-            <h2 class="ml-3">Delete Course</h2>
-            <button type="button" class="close" data-dismiss="modal">
-              <span>&times;</span>
-            </button>
+          <div class="modal-header bg-red border-0">
+            <div class="col-11 d-flex justify-content-center">
+              <h2 class="ml-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 3 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 icons-vis"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                Delete Course
+              </h2>
+            </div>
+            <div class="col-1">
+              <button type="button" class="x-close" data-dismiss="modal">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              </button>
+            </div>
           </div>
           <form class="form-group" action="" method="POST">
             <div class="modal-body d-flex justify-content-center align-items-center m-0">
-              <p class="mx-2">Are you sure you wish to delete this course?</p>
-              <button class="btn btn-outline-danger mb-0" type="submit" name="delete" value="true">Yes</button>
-              <button class="mx-1 btn btn-outline-warning mb-0" type="button" data-dismiss="modal">No</button>
+              <p class="mx-2 pt-3">Are you sure you wish to delete this course?</p>
+              <button class="btn btn-red mb-0" type="submit" name="delete" value="true">Yes</button>
+              <button class="mx-1 btn btn-yellow mb-0" type="button" data-dismiss="modal">No</button>
             </div>
           </form>
         </div>
       </div>
     </div>
   {% endif %}
-  <div class="course-content">
+  <div class="dashboard-content">
     {{ course.syllabus|safe }}
     {% if course.teacher_id == current_user.id %}
       <div class="d-flex justify-content-center my-5">
-        <a class="btn btn-primary mx-2 mb-5" href="{{ url_for('course_syllabus', course_id=course.id) }}">
+        <a class="btn btn-blue mx-2 mb-5" href="{{ url_for('course_syllabus', course_id=course.id) }}">
           <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-edit" width="1em" height="1em" viewBox="0 2 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <path stroke="none" d="M0 0h24v24H0z"/>
             <path d="M9 7 h-3a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-3" />
@@ -79,7 +98,7 @@
           </svg>
           Edit Syllabus
         </a>
-        <button class="btn btn-warning mx-2 mb-5" type="button" data-toggle="modal" data-target="#edit_modal">
+        <button class="btn btn-yellow mx-2 mb-5" type="button" data-toggle="modal" data-target="#edit_modal">
           <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-edit" width="1em" height="1em" viewBox="0 2 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <path stroke="none" d="M0 0h24v24H0z"/>
             <path d="M9 7 h-3a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-3" />
@@ -88,7 +107,7 @@
           </svg>
           Edit Course
         </button>
-        <button class="btn btn-danger mx-2 mb-5" type="button" data-toggle="modal" data-target="#delete_modal">
+        <button class="btn btn-red mx-2 mb-5" type="button" data-toggle="modal" data-target="#delete_modal">
           <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 3 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 icons-vis"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
           Delete Course
         </button>

@@ -1,6 +1,6 @@
 {% extends "course_layout.html" %}
 {% block course_content %}
-  <div class="course-content">
+  <div class="dashboard-content">
     {% if current_user.profession == "Teacher" %}
       <div class="d-flex justify-content-center align-items-center my-2">
         <h4>Grades for {{ student.first_name }} {{ student.last_name }}</h4>
@@ -84,7 +84,7 @@
     </div>
     {% if current_user.id == course.teacher_id %}
       <div class="d-flex justify-content-center">
-        <a class="btn btn-primary" href="{{ url_for('student_grades_edit', course_id=course.id, student_id=course_user.user_id) }}">
+        <a class="btn btn-blue" href="{{ url_for('student_grades_edit', course_id=course.id, student_id=course_user.user_id) }}">
           <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-edit" width="1em" height="1em" viewBox="0 2 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <path stroke="none" d="M0 0h24v24H0z"/>
             <path d="M9 7 h-3a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-3" />

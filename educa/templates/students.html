@@ -1,17 +1,17 @@
 {% extends "course_layout.html" %}
 {% block course_content %}
-  <div class="course-content">
+  <div class="dashboard-content">
     <div class="container-table">
-      <table class="table-e">
+      <table class="col-12 table-e">
         <thead>
-          <tr>
-            <th scope="col" colspan="2">Name</th>
+          <tr class="px-0">
+            <th scope="col">Name</th>
           </tr>
         </thead>
-        <tbody class="border-right">
+        <tbody>
           {% for i in range(students_list| length) %}
-            <tr class="border-bottom">
-              <td class="row border-top-0">
+            <tr class="">
+              <td class="row border-top-0 border-bottom-green mx-0">
                 <div class="col-6 d-flex justify-content-start align-items-center">
                   <img class="profile-img-small" src="{{ url_for('static', filename='profile_images/' + students_list[i].profile_image) }}" alt="">
                   <a class="fancy-link mx-2" href="{{ url_for('student', course_id=course.id, student_id=students_list[i].id) }}">{{ students_list[i].first_name }} {{ students_list[i].last_name }}</a>
@@ -32,8 +32,8 @@
               </div>
             </tr>
           {% endfor %}
-            <tr class="border-bottom">
-              <td class="row border-top-0">
+            <tr>
+              <td class="row border-0 mx-0">
                 <div class="col-6 d-flex justify-content-start align-items-center">
                   <img class="profile-img-small" src="{{ url_for('static', filename='profile_images/' + teacher.profile_image) }}">
                   <a class="fancy-link mx-2" href="{{ url_for('student', course_id=course.id, student_id=teacher.id) }}">{{ teacher.first_name }} {{ teacher.last_name }}</a>

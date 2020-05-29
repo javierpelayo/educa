@@ -1,6 +1,6 @@
 {% extends "course_layout.html" %}
 {% block course_content %}
-  <div class="course-content">
+  <div class="dashboard-content">
     <div class="container">
       <div class="row pb-1">
         <div class="col-6 col-md-4 d-flex justify-content-end my-2">
@@ -18,7 +18,7 @@
           </div>
         {% endif %}
         <div class="col-md-4 d-flex flex-column align-items-center my-5">
-          <a class="btn btn-outline-primary" href="#">
+          <a class="btn btn-blue" href="#">
             <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 3 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-send icons-vis"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
             Message
           </a>
@@ -46,7 +46,7 @@
     <!-- Assignments -->
     <div id="assignments_list" class="">
       {% for assignment in assignments_user %}
-        <div class="row border-bottom">
+        <div class="row border-bottom-green">
           <div class="col-12 d-flex align-items-center student-info">
             <h6 class="m-3">{{ assignment.assignment.title }}</h6>
           </div>
@@ -57,7 +57,7 @@
     <!-- Courses -->
     <div id="courses_list" class="d-none">
       {% for course in courses_user %}
-        <div class="row border-bottom">
+        <div class="row border-bottom-green">
           <div class="col-12 d-flex align-items-center student-info">
             <h6 class="m-3">{{ course.course.title }}</h6>
           </div>

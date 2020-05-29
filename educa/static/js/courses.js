@@ -1,13 +1,12 @@
-const BLUE = "#007bff";
-const RED = "#dc3545";
-const YELLOW = "#ffc107";
-const GREEN = "#28a745";
-const PURPLE = "#6E2594";
-const PINK = "#EBBAB9";
+const BLUE = "#3F88C5";
+const RED = "#D00814";
+const YELLOW = "#FEBA2C";
+const GREEN = "#136F63";
+const NAVY = "#022B43";
 let i = 0;
 
-let colors = [BLUE, RED, YELLOW, GREEN, PURPLE, PINK]
-let courseHeaders = document.querySelectorAll(".card-title-header");
+let colors = [YELLOW, RED, GREEN, BLUE]
+let courseHeaders = document.querySelectorAll(".card-course-header");
 
 courseHeaders.forEach(function(item, index, array){
   if (i > colors.length-1) {
