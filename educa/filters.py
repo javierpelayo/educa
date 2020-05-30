@@ -40,6 +40,7 @@ def teacher_auth(f):
     def identify(*args, **kwargs):
         course = Course.query.filter_by(id=kwargs['course_id']).first()
         if current_user.id != course.teacher_id:
+            flash("You do not have permission to access this page.", "warning")
             return redirect(url_for('courses'))
 
         return f(*args, **kwargs)

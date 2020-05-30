@@ -33,6 +33,19 @@ a {
 
 /* -UNIVERSAL */
 
+.drop-btn {
+  color: #D00814;
+  border: none;
+  background: none;
+  outline: none !important;
+  padding: 0;
+  font-size: 1rem;
+}
+
+.drop-btn:hover {
+  color: #B7050F;
+}
+
 .border-bottom-green {
   border-bottom: 1px solid #136F63;
 }

@@ -763,13 +763,30 @@ def students(course_id):
     course_students = Course_User.query.filter_by(course_id=course.id).all()
     teacher = User_Account.query.filter_by(id=course.teacher_id).first()
     students_list = []
+    drop = request.form.get("drop")
 
     for student in course_students:
         user = User_Account.query.filter_by(id=student.user_id).first()
         students_list.append(user)
 
+    if request.method == "POST" and drop:
+        for course_user in course_students:
+            if course_user.user_id == int(drop):
+                assignments = Assignment.query.filter_by(course_id=course.id).all()
+                for a in assignments:
+                    user_assignments = User_Assignment.query.filter_by(user_id=course_user.user_id, assignment_id=a.id).all()
+                    for ua in user_assignments:
+                        db.session.delete(ua)
 
-    if request.method == "GET":
+                dropped = list(course.dropped)
+                dropped.append(drop)
+                course.dropped = dropped
+                db.session.delete(course_user)
+
+        db.session.commit()
+        flash("User has been dropped from course.", "success")
+        return redirect(url_for("students", course_id=course.id))
+    elif request.method == "GET":
         return render_template("students.html",
                                 course=course,
                                 course_students=course_students,

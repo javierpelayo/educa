@@ -111,9 +111,9 @@ class Course(db.Model):
     syllabus = db.Column(db.Text)
     code = db.Column(db.String(120))
     join = db.Column(db.Boolean, nullable=False, default=False)
+    dropped = db.Column(db.ARRAY(db.Text), default=[])
     assignments = db.relationship('Assignment', backref='course', passive_deletes=True)
     lectures = db.relationship('Lecture', backref='course', passive_deletes=True)
-    dropped = db.Column(db.ARRAY(db.Text))
 
     def __repr__(self):
         return f"Course('{self.id}', '{self.teacher_id}', '{self.title}', '{self.subject}', '{self.points}')"
