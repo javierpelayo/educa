@@ -84,6 +84,34 @@
         </div>
       </div>
     </div>
+  {% else %}
+    <!-- MODAL DROP COURSE -->
+    <div id="drop_modal" class="modal fade" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header bg-red border-0">
+            <div class="col-11 d-flex justify-content-center">
+              <h2 class="ml-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 3 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 icons-vis"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                Drop Course
+              </h2>
+            </div>
+            <div class="col-1">
+              <button type="button" class="x-close" data-dismiss="modal">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              </button>
+            </div>
+          </div>
+          <form class="form-group" action="" method="POST">
+            <div class="modal-body d-flex justify-content-center align-items-center m-0">
+              <p class="mx-2 pt-3">Are you sure you wish to drop this course?</p>
+              <button class="btn btn-red mb-0" type="submit" name="drop" value="true">Yes</button>
+              <button class="mx-1 btn btn-yellow mb-0" type="button" data-dismiss="modal">No</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
   {% endif %}
   <div class="dashboard-content">
     {{ course.syllabus|safe }}
@@ -110,6 +138,13 @@
         <button class="btn btn-red mx-2 mb-5" type="button" data-toggle="modal" data-target="#delete_modal">
           <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 3 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 icons-vis"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
           Delete Course
+        </button>
+      </div>
+    {% else %}
+      <div class="d-flex justify-content-center my-5">
+        <button class="btn btn-red mx-2 mb-5" type="button" data-toggle="modal" data-target="#drop_modal">
+          <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 3 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 icons-vis"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+          Drop Course
         </button>
       </div>
     {% endif %}

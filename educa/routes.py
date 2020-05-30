@@ -328,10 +328,22 @@ def course(course_id):
     course = Course.query.filter_by(id=course_id).first()
     teacher = (course.teacher_id == current_user.id)
 
-    if not teacher:
+    drop = request.form.get('drop')
+
+    if not teacher and request.method == "GET":
         return render_template('course.html',
                                 course=course,
                                 title="Course - " + str(course.title))
+
+    elif not teacher and request.method == "POST" and drop:
+        course_user = Course_User.query.filter_by(course_id=course.id, user_id=current_user.id).first()
+        for a in current_user.assignments:
+            db.session.delete(a)
+        db.session.delete(course_user)
+        db.session.commit()
+        
+        flash("You have dropped this course.", "success")
+        return redirect(url_for("courses"))
 
     delete = request.form.get('delete')
     edit_course_form = UpdateCourseForm()
@@ -368,7 +380,7 @@ def course(course_id):
 
         flash("Course was updated successfully.", "success")
         return redirect(url_for("course", course_id=course.id))
-    elif edit_course_form.errors:
+    elif teacher and edit_course_form.errors:
         flash(f"Could not update course due to a form error.", "danger")
         return redirect(url_for("course", course_id=course.id))
 
@@ -776,7 +788,7 @@ def students(course_id):
     if request.method == "POST" and drop:
         for course_user in course_students:
             if course_user.user_id == int(drop):
-                assignments = Assignment.query.filter_by(course_id=course.id).all(
+                assignments = Assignment.query.filter_by(course_id=course.id).all()
                 for a in assignments:
                     user_assignments = User_Assignment.query.filter_by(user_id=course_user.user_id, assignment_id=a.id).all()
                     for ua in user_assignments:

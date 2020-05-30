@@ -229,7 +229,7 @@ a {
 }
 
 .add-course-btn:hover {
-  transform: scale(1.25);
+  transform: scale(1.125);
   color: #3B7DB4;
 }
 
