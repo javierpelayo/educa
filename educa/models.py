@@ -113,6 +113,7 @@ class Course(db.Model):
     join = db.Column(db.Boolean, nullable=False, default=False)
     assignments = db.relationship('Assignment', backref='course', passive_deletes=True)
     lectures = db.relationship('Lecture', backref='course', passive_deletes=True)
+    dropped = db.Column(db.ARRAY(db.Text))
 
     def __repr__(self):
         return f"Course('{self.id}', '{self.teacher_id}', '{self.title}', '{self.subject}', '{self.points}')"

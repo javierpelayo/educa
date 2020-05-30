@@ -3,6 +3,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 import os
@@ -26,6 +27,7 @@ else:
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 #DB wraps around our app instance
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 

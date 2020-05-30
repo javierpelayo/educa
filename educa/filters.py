@@ -28,6 +28,7 @@ def course_auth(f):
 
         if current_user.id != course.teacher_id:
             if not course_user:
+                flash("You are not in this course.", "warning")
                 return redirect(url_for("courses"))
         return f(*args, **kwargs)
 
