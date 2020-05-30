@@ -279,6 +279,10 @@ def courses():
     elif add_course.validate_on_submit():
         course = Course.query.filter_by(id=add_course.course_id.data, code=add_course.code.data).first()
         if course:
+            if str(current_user.id) in list(course.dropped):
+                flash("You were dropped from this course and can no longer join.", "warning")
+                return redirect(url_for("courses"))
+
             if course.join:
                 course_user = Course_User.query.filter_by(user_id=current_user.id, course_id=course.id).first()
 
@@ -772,7 +776,7 @@ def students(course_id):
     if request.method == "POST" and drop:
         for course_user in course_students:
             if course_user.user_id == int(drop):
-                assignments = Assignment.query.filter_by(course_id=course.id).all()
+                assignments = Assignment.query.filter_by(course_id=course.id).all(
                 for a in assignments:
                     user_assignments = User_Assignment.query.filter_by(user_id=course_user.user_id, assignment_id=a.id).all()
                     for ua in user_assignments:
