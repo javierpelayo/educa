@@ -33,6 +33,22 @@ a {
 
 /* -UNIVERSAL */
 
+.red-text {
+  color: #D00814;
+}
+
+.blue-text {
+  color: #3F88C5;
+}
+
+.green-text {
+  color: #136F63;
+}
+
+.yellow-text {
+  color: #FEBA2C;
+}
+
 .drop-btn {
   color: #D00814;
   border: none;
@@ -332,13 +348,14 @@ a {
 
 @media (min-width: 768px) {
   .sidenav {
-    height: 100%;
-    width: 5rem;
-    position: fixed;
-    display: block;
-    z-index: 1;
+    margin: 0;
     top: 0;
     left: 0;
+    height: 100%;
+    width: 5rem;
+    z-index: 1;
+    position: fixed;
+    display: block;
     background-color: #022B43 !important;
     border-right: 2px solid #D00814;
     overflow-x: hidden;

@@ -1,8 +1,18 @@
 // Create an Ajax object request
 let request = new XMLHttpRequest();
 let form = document.querySelector("#questions");
+let file = document.querySelector("#assignment");
+let filename = document.querySelector("#filename");
 
 function fn(){
+
+  // once file is uploaded
+    // change the text inside small tag
+  file.addEventListener('change', () => {
+    console.log(file.files)
+    filename.textContent = file.files[0].name;
+  });
+
   if (form) {
     form.addEventListener("submit", function(event) {
       // get the amount of questions
@@ -88,7 +98,7 @@ function fn(){
 
       // prevent request from being sent through HTML Form
       event.preventDefault();
-    });  
+    });
   }
 }
 

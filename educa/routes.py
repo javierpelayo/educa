@@ -341,8 +341,8 @@ def course(course_id):
             db.session.delete(a)
         db.session.delete(course_user)
         db.session.commit()
-        
-        flash("You have dropped this course.", "success")
+
+        flash("You have dropped the course.", "success")
         return redirect(url_for("courses"))
 
     delete = request.form.get('delete')
@@ -413,18 +413,21 @@ def assignments(course_id):
     course = Course.query.filter_by(id=course_id).first()
     assignments = Assignment.query.filter_by(course_id=course_id).all()
     assignments = sorted(assignments, key=lambda a: a.duedate_time)
+    user_assignments = []
 
-    course_user = Course_User.query.filter_by(user_id=current_user.id, course_id=course.id).first()
-
-    # check if user is in course if not redirect
-    if current_user.id != course.teacher_id:
-        if not course_user:
-            return redirect(url_for("courses"))
+    for a in assignments:
+        user_assignment = User_Assignment.query.filter_by(assignment_id=a.id).all()
+        if user_assignment:
+            user_assignment.sort(key=lambda a:a.created_time)
+            user_assignments.append(user_assignment[-1])
+        else:
+            user_assignments.append(0)
 
     if request.method == "GET":
         return render_template('assignments.html',
                                 course=course,
                                 assignments=assignments,
+                                user_assignments=user_assignments,
                                 current_time=time(),
                                 title=str(course.title) + " - Assignments")
 
@@ -565,10 +568,40 @@ def new_assignment(course_id):
                                 assignmentform=assignmentform,
                                 title=str(course.title) + " - New Assignment")
 
+def assignment_error_handler(request_form):
+    errors = {}
+    for key, value in request_form.items():
+        if "question_" in key and value == "":
+            errors[key] = "This question requires an answer."
+
+    return errors
+
+def save_assignment(file):
+    random_hex = secrets.token_hex(8)
+    _, f_ext = os.path.splitext(file.filename)
+    fn = random_hex + f_ext
+    file_path = os.path.join(app.root_path,
+                                'static/assignments',
+                                fn)
+    file.save(file_path)
+
+    return fn
+
+def delete_assignment(fn):
+    file_path = os.path.join(app.root_path,
+                                'static/assignments',
+                                fn)
+    os.remove(file_path)
+
+
+# NO CSRF
 @app.route('/dashboard/courses/<int:course_id>/assignments/<int:assignment_id>', methods=['GET', 'POST'])
 @login_required
 @course_auth
 def assignment(course_id, assignment_id):
+
+    file = request.files.get("file")
+    upload = request.form.get("upload")
 
     redo = request.args.get("redo")
     delete = request.form.get("delete")
@@ -595,7 +628,11 @@ def assignment(course_id, assignment_id):
         options = question.options
         options_dict[str(question.id)] = options
 
-    if current_user.id == course.teacher_id and request.method == "POST" and delete:
+    if request.method == "POST" and upload and assignment.type == "Instructions":
+        # check that file size is less than 500 kb
+        save_assignment(file)
+        return redirect(url_for("assignment", course_id=course.id, assignment_id=assignment.id))
+    elif current_user.id == course.teacher_id and request.method == "POST" and delete:
         course_assignments = Assignment.query.filter_by(course_id=course.id).all()
         course_users = Course_User.query.filter_by(course_id=course.id).all()
         total_assignment_points = 0
@@ -634,12 +671,14 @@ def assignment(course_id, assignment_id):
         flash('Assignment was deleted successfully!', 'success')
         return redirect(url_for("assignments", course_id=course.id))
     elif "ajax" in request_form and request.method == "POST":
-        errors = {}
-        for key, value in request_form.items():
-            if "question_" in key and value == "":
-                errors[key] = "This question requires an answer."
-        return errors
+        return assignment_error_handler(request_form)
     elif request.method == "POST" and current_user.profession == "Student" and tries < assignment.tries:
+
+        errors = assignment_error_handler(request_form)
+        if errors:
+            flash("There was an error in turning in that assignment.", "danger")
+            return redirect(url_for('assignments', course_id=course.id))
+
         course_user = Course_User.query.filter_by(user_id=current_user.id, course_id=course.id).first()
         total_assignment_points = 0
         url = ""
@@ -653,6 +692,11 @@ def assignment(course_id, assignment_id):
         for i in range(len(answers)):
             if questions[i].answer == answers[i]:
                 points += questions[i].points
+
+        if assignment.points == points:
+            tries = assignment.tries
+        else:
+            tries += 1
 
         if course_user.assignments_done:
             assignments_done = json.loads(course_user.assignments_done)
@@ -690,7 +734,7 @@ def assignment(course_id, assignment_id):
                                         url=url,
                                         answers=answers,
                                         points=points,
-                                        tries=tries+1,
+                                        tries=tries,
                                         type=assignment.type)
 
         db.session.add(user_assignment)
@@ -705,6 +749,7 @@ def assignment(course_id, assignment_id):
         return render_template('assignment.html',
                                 course=course,
                                 assignment=assignment,
+                                current_time=time(),
                                 user_assignment=user_assignment,
                                 questions=questions,
                                 options_dict=options_dict,

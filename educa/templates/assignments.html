@@ -7,6 +7,7 @@
           <tr>
             <th scope="col">Title</th>
             <th scope="col">Due Date</th>
+            <th scope="col">Status</th>
           </tr>
         </thead>
         <tbody>
@@ -14,18 +15,67 @@
 
               <!-- ADD IF statement for table-success
               if current_user has submitted the assignment -->
-
-              {% if assignments[i].duedate_time > current_time %}
-                <tr class="">
-                  <td class="assignment-link"><a href="/dashboard/courses/{{ course.id }}/assignments/{{ assignments[i].id }}">{{ assignments[i].title }}</a></td>
-                  <td>{{ assignments[i].duedate_ctime }}</td>
-                </tr>
-              {% elif assignments[i].duedate_time <= current_time %}
-                <tr class="table-danger">
-                  <td class="assignment-link"><a href="/dashboard/courses/{{ course.id }}/assignments/{{ assignments[i].id }}">{{ assignments[i].title }}</a></td>
-                  <td>{{ assignments[i].duedate_ctime }}</td>
-                </tr>
-              {% endif %}
+              <tr class="">
+                <td class="assignment-link"><a href="/dashboard/courses/{{ course.id }}/assignments/{{ assignments[i].id }}">{{ assignments[i].title }}</a></td>
+                <td>{{ assignments[i].duedate_ctime }}</td>
+                {% if current_user.profession != "Teacher" %}
+                  {% if user_assignments[i] != 0 %}
+                    <td class="green-text">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-file-check icons-vis" width="1rem" height="1rem" viewBox="0 4 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z"/>
+                        <polyline points="14 3 14 8 19 8" />
+                        <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+                        <path d="M9 15l2 2l4 -4" />
+                      </svg>
+                      Turned In
+                    </td>
+                  {% else %}
+                    {% if assignments[i].duedate_time < current_time %}
+                      <td class="red-text">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-lock icons-vis" width="1rem" height="1rem" viewBox="0 4 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                          <path stroke="none" d="M0 0h24v24H0z"/>
+                          <rect x="5" y="11" width="14" height="10" rx="2" />
+                          <circle cx="12" cy="16" r="1" />
+                          <path d="M8 11v-4a4 4 0 0 1 8 0v4" />
+                        </svg>
+                        Locked
+                      </td>
+                    {% else %}
+                      <td class="blue-text">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-lock-open icons-vis" width="1rem" height="1rem" viewBox="0 4 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                          <path stroke="none" d="M0 0h24v24H0z"/>
+                          <rect x="5" y="11" width="14" height="10" rx="2" />
+                          <circle cx="12" cy="16" r="1" />
+                          <path d="M8 11v-5a4 4 0 0 1 8 0" />
+                        </svg>
+                        Open
+                      </td>
+                    {% endif %}
+                  {% endif %}
+                {% else %}
+                  {% if assignments[i].duedate_time < current_time %}
+                    <td class="red-text">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-lock icons-vis" width="1rem" height="1rem" viewBox="0 4 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z"/>
+                        <rect x="5" y="11" width="14" height="10" rx="2" />
+                        <circle cx="12" cy="16" r="1" />
+                        <path d="M8 11v-4a4 4 0 0 1 8 0v4" />
+                      </svg>
+                      Locked
+                    </td>
+                  {% else %}
+                    <td class="blue-text">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-lock-open icons-vis" width="1rem" height="1rem" viewBox="0 4 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z"/>
+                        <rect x="5" y="11" width="14" height="10" rx="2" />
+                        <circle cx="12" cy="16" r="1" />
+                        <path d="M8 11v-5a4 4 0 0 1 8 0" />
+                      </svg>
+                      Open
+                    </td>
+                  {% endif %}
+                {% endif %}
+              </tr>
           {% endfor %}
         </tbody>
       </table>

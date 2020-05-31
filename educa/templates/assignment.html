@@ -9,7 +9,7 @@
           <div class="col-11 d-flex justify-content-center">
             <h2 class="ml-4">
               <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 3 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 icons-vis"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-              Delete Course
+              Delete Assignment
             </h2>
           </div>
           <div class="col-1">
@@ -43,8 +43,29 @@
       <h5>Instructions:</h5>
       <p>{{ assignment.content| safe }}</p>
     </div>
-
-    {% if (not user_assignment and assignment.type != "Instructions") or (redo and user_assignment.tries < assignment.tries) %}
+    {% if assignment.duedate_time < current_time %}
+      <div class="d-flex  my-5">
+        <p>This assignment is now locked.</p>
+      </div>
+    {% elif assignment.type == "Instructions" and current_user.profession != "Teacher" %}
+      <form action="" method="POST" enctype="multipart/form-data">
+        <div class="d-flex flex-column align-items-center">
+          <input class="d-none" id="assignment" type="file" name="file">
+          <label class="btn btn-green" for="assignment">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-cloud-upload" width="1em" height="1em" viewBox="0 2 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path stroke="none" d="M0 0h24v24H0z"/>
+              <path d="M7 18a4.6 4.4 0 0 1 0 -9h0a5 4.5 0 0 1 11 2h1a3.5 3.5 0 0 1 0 7h-1" />
+              <polyline points="9 15 12 12 15 15" />
+              <line x1="12" y1="12" x2="12" y2="21" />
+            </svg>
+            Upload File
+          </label>
+          <small id="filename"></small>
+          <small class="mb-1 yellow-text">Only jpg, png or pdf file types allowed.</small>
+          <button class="btn btn-blue my-3" type="submit" name="upload" value="true">Submit</button>
+        </div>
+      </form>
+    {% elif not user_assignment or (redo and user_assignment.tries < assignment.tries) %}
       <form id="questions" class="form-group" action="{{ url_for('assignment', course_id=course.id, assignment_id=assignment.id) }}" method="POST">
         {% for i in range(questions| length) %}
           <div class="questions">

@@ -25,6 +25,7 @@ else:
     app.config['SQLALCHEMY_DATABASE_URI'] = ''
 # dont track SQLALCHEMY object mods
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['MAX_CONTENT_LENGTH'] = 500 * 1024
 #DB wraps around our app instance
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)

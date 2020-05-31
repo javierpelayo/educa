@@ -26,7 +26,7 @@ class Course_User(db.Model):
     points = db.Column(db.Integer, default=0)
     grade = db.Column(db.String(120))
     # saved as (Assignment, Points)
-    assignments_done = db.Column(db.JSON)
+    assignments_done = db.Column(db.JSON, default="{}")
     course = db.relationship('Course', backref=db.backref('course_users', passive_deletes=True))
 
     def __repr__(self):
