@@ -47,7 +47,7 @@
       <div class="d-flex  my-5">
         <p>This assignment is now locked.</p>
       </div>
-    {% elif assignment.type == "Instructions" and current_user.profession != "Teacher" %}
+    {% elif assignment.type == "Instructions" and current_user.profession != "Teacher" and user_assignment.tries < assignment.tries%}
       <form action="" method="POST" enctype="multipart/form-data">
         <div class="d-flex flex-column align-items-center">
           <input class="d-none" id="assignment" type="file" name="file">
@@ -61,7 +61,7 @@
             Upload File
           </label>
           <small id="filename"></small>
-          <small class="mb-1 yellow-text">Only jpg, png or pdf file types allowed.</small>
+          <small class="mb-1 yellow-text">Only jpg, png or pdf file types allowed. Max file size is 500kb.</small>
           <button class="btn btn-blue my-3" type="submit" name="upload" value="true">Submit</button>
         </div>
       </form>

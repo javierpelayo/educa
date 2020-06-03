@@ -40,7 +40,7 @@ class User_Assignment(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user_account.id'))
     assignment_id = db.Column(db.Integer, db.ForeignKey('assignment.id', ondelete='CASCADE'))
     # if student uploads assignment
-    url = db.Column(db.String(20))
+    filename = db.Column(db.String(20))
     answers = db.Column(db.ARRAY(db.Text))
     points = db.Column(db.Integer)
     tries = db.Column(db.Integer, nullable=False)

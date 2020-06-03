@@ -12,6 +12,31 @@ a {
 
 /* --Overriding-Bootstrap */
 
+.page-not-found {
+  background-image: url("/static/images/404.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  height:100vh;
+}
+.too-many-requests {
+  background-image: url("/static/images/429.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  height:100vh;
+}
+.file-too-large {
+  background-image: url("/static/images/413.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  height:100vh;
+}
+.internal-server-error {
+  background-image: url("/static/images/500.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  height:100vh;
+}
+
 .form-control {
   border-radius: 1.25rem;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;

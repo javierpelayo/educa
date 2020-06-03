@@ -26,6 +26,7 @@ from time import time
 from collections import OrderedDict
 import os
 import json
+import magic
 
 # Global Jinja Vars
 @app.context_processor
@@ -44,13 +45,16 @@ def too_many_requests(e):
 
 @app.errorhandler(404)
 def not_found_error(e):
-    db.session.rollback()
     return render_template("error/404.html"), 404
 
 @app.errorhandler(500)
 def interal_error(e):
     db.session.rollback()
     return render_template('error/500.html'), 500
+
+@app.errorhandler(413)
+def request_entity_too_large(e):
+    return render_template('error/413.html'), 413
 
 # INTRODUCTION PAGES
 
@@ -629,8 +633,37 @@ def assignment(course_id, assignment_id):
         options_dict[str(question.id)] = options
 
     if request.method == "POST" and upload and assignment.type == "Instructions":
-        # check that file size is less than 500 kb
-        save_assignment(file)
+        if tries < assignment.tries:
+            accepted_types = ["PDF", "PNG", "JPG", "JPEG"]
+            type = magic.from_buffer(file.read(2048))
+            if any(at in type for at in accepted_types):
+
+                # update course_user
+
+                filename = save_assignment(file)
+                for ua in user_assignments:
+                    delete_assignment(ua.filename)
+                    db.session.delete(ua)
+
+                user_assignment = User_Assignment(user_id=current_user.id,
+                                                assignment_id=assignment.id,
+                                                filename=filename,
+                                                tries=tries+1,
+                                                points=0,
+                                                type=assignment.type)
+
+                db.session.add(user_assignment)
+                db.session.commit()
+                flash("Assignment has been successfully submitted.", "success")
+                return redirect(url_for('assignment', course_id=course.id, assignment_id=assignment.id))
+            else:
+                flash("That file type is not allowed.", "warning")
+                return redirect(url_for("assignment", course_id=course.id, assignment_id=assignment.id))
+        else:
+            flash("You have already reached your max tries.", "warning")
+            return redirect(url_for('assignments', course_id=course.id))
+
+
         return redirect(url_for("assignment", course_id=course.id, assignment_id=assignment.id))
     elif current_user.id == course.teacher_id and request.method == "POST" and delete:
         course_assignments = Assignment.query.filter_by(course_id=course.id).all()
@@ -676,7 +709,7 @@ def assignment(course_id, assignment_id):
 
         errors = assignment_error_handler(request_form)
         if errors:
-            flash("There was an error in turning in that assignment.", "danger")
+            flash("There was an error in turning that assignment in.", "danger")
             return redirect(url_for('assignments', course_id=course.id))
 
         course_user = Course_User.query.filter_by(user_id=current_user.id, course_id=course.id).first()
