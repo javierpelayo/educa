@@ -2,7 +2,7 @@ from flask import (render_template, request,
                     redirect, url_for,
                     session, logging,
                     current_app, sessions, flash,
-                    jsonify, Response)
+                    jsonify, Response, send_file)
 from . import app, db, bcrypt, limiter
 from educa.forms import (RegistrationForm,
                         LoginForm,
@@ -27,8 +27,187 @@ from collections import OrderedDict
 import os
 import json
 import magic
+import copy
 
-# Global Jinja Vars
+# Profile Picture Functionality
+def save_picture(form_picture):
+    print(form_picture)
+    random_hex = secrets.token_hex(8)
+    _, f_ext = os.path.splitext(form_picture.filename)
+    picture_fn = random_hex + f_ext
+    picture_path = os.path.join(app.root_path,
+                                'static/profile_images',
+                                picture_fn)
+
+    # Resize image using PILLOW
+    output_size = (200,200)
+    i = Image.open(form_picture)
+    i.thumbnail(output_size)
+    i.save(picture_path)
+
+    return picture_fn
+
+# Free up space
+def delete_picture():
+    pic = current_user.profile_image
+    if pic != "default.png":
+        picture_path = os.path.join(app.root_path,
+                                    'static/profile_images',
+                                    pic)
+        os.remove(picture_path)
+
+def save_assignment(file):
+    random_hex = secrets.token_hex(8)
+    _, f_ext = os.path.splitext(file.filename)
+    fn = random_hex + f_ext
+    file_path = os.path.join(app.root_path,
+                                'static/assignments',
+                                fn)
+    file.save(file_path)
+
+    accepted_types = ["PDF", "PNG", "JPG", "JPEG"]
+    with open(file_path, 'rb') as f:
+        type = magic.from_buffer(f.read(2048))
+    if any(at in type for at in accepted_types):
+        return fn
+
+    os.remove(file_path)
+    return
+
+def delete_assignment(fn):
+    file_path = os.path.join(app.root_path,
+                                'static/assignments',
+                                fn)
+    os.remove(file_path)
+
+def calculate_grade(course_user, assignment, points):
+    total_assignment_points = 0
+    if course_user.assignments_done:
+        assignments_done = json.loads(course_user.assignments_done)
+    else:
+        assignments_done = {}
+
+    if str(assignment.id) in assignments_done:
+        if assignments_done[str(assignment.id)] < points:
+
+            course_user.points -= assignments_done[str(assignment.id)]
+            course_user.points += points
+
+            assignments_done[str(assignment.id)] = points
+    else:
+        course_user.points += points
+        assignments_done[str(assignment.id)] = points
+
+    # used for recalculating the course grade according
+    # to the assignments the student has turned in
+    for key in assignments_done:
+        a_done = Assignment.query.filter_by(id=int(key)).first()
+        total_assignment_points += a_done.points
+
+    course_user.assignments_done = json.dumps(assignments_done)
+
+    try:
+        leftover_points = course_user.points/total_assignment_points
+    except ZeroDivisionError:
+        leftover_points = 0
+
+    course_user.grade = '{:.2%}'.format(leftover_points)
+
+# used to gather information about
+# a user for grades template rendering
+def user_grades(course, user_id):
+    course_user = Course_User.query.filter_by(user_id=user_id, course_id=course.id).first()
+    assignments = Assignment.query.filter_by(course_id=course.id).all()
+    assignments.sort(key=lambda a:a.duedate_time)
+
+    user_latest_assignments = []
+
+    # OrderedDict is for the template so it renders as shown here
+    user_points = OrderedDict([("Exam/Quiz", 0), ("Lab", 0), ("HW", 0), ("Instructions", 0)])
+    assignment_points = OrderedDict([("Exam/Quiz", 0), ("Lab", 0), ("HW", 0), ("Instructions", 0)])
+
+    # get all user assignments and add the points for each assignment type
+    for assignment in assignments:
+        user_assignments = User_Assignment.query.filter_by(user_id=user_id, assignment_id=assignment.id).all()
+        if user_assignments:
+            user_assignments.sort(key=lambda ua:ua.created_time)
+            user_latest_assignments.append(user_assignments[-1])
+        else:
+            # used to keep the index the same as the assignment,
+            # a 0 means they haven't turned it in
+            user_latest_assignments.append(0)
+        assignment_points[assignment.type] += assignment.points
+
+    # add how much the student scored for each assignment and its type
+    for user_assignment in user_latest_assignments:
+        if user_assignment != 0:
+            user_points[user_assignment.type] += user_assignment.points
+
+    current_assignment_points = sum(assignment_points.values())
+
+    return (course_user, assignments, user_latest_assignments,
+            user_points, assignment_points, current_assignment_points)
+
+
+def assignment_error_handler(request_form):
+    errors = {}
+    for key, value in request_form.items():
+        if "question_" in key and value == "":
+            errors[key] = "This question requires an answer."
+
+    return errors
+
+def new_assignment_error_handler(assignmentform, request_form):
+    errors = {}
+    assignmentform.validate()
+    question_total_points = 0
+
+    for key, value in assignmentform.errors.items():
+        if key == "date_input":
+            errors[key] = "Not a valid date value. ex: 01/25/2020"
+        else:
+            errors[key] = value[0]
+    for key, value in request_form.items():
+        if "qOption_" in key and value == "":
+            errors[key] = "This field is required."
+        elif "question_points" in key:
+            try:
+                question_total_points += int(value)
+            except ValueError:
+                errors[key] = "Not a valid integer value."
+        elif "question_answer" not in key and "question_" in key and value == "":
+            errors[key] = "This field is required."
+
+    try:
+        a_points = int(request_form["points"])
+    except ValueError:
+        a_points = 0
+
+    if question_total_points > a_points:
+        for key, value in request_form.items():
+            if "question_points" in key:
+                errors[key] = f"Total question points exceeds assignment points: {a_points}"
+
+    return errors
+
+def grades_edit_error_handler(request_form, course):
+    errors = {}
+    total_points = 0
+
+    for key, value in request_form.items():
+        if "assignment_" in key:
+            try:
+                total_points += int(value)
+            except:
+                if value != "-":
+                    errors[key] = "Not a valid integer or hyphen."
+    if total_points > course.points:
+        for key, value in request_form.items():
+            if "assignment_" in key:
+                errors[key] = f"Total assignment points exceeds the course points: {course.points}"
+
+    return errors
+
 @app.context_processor
 def inject_pf_image():
     try:
@@ -36,8 +215,6 @@ def inject_pf_image():
     except:
         profile_image = url_for('static', filename="profile_images/default.png")
     return dict(profile_image=profile_image)
-
-# ERROR ROUTES
 
 @app.errorhandler(429)
 def too_many_requests(e):
@@ -56,7 +233,10 @@ def interal_error(e):
 def request_entity_too_large(e):
     return render_template('error/413.html'), 413
 
-# INTRODUCTION PAGES
+@app.route('/download/<string:filename>', methods=['GET'])
+def download_file(filename):
+    file_path = os.path.join(app.root_path, 'static/assignments', filename)
+    return send_file(file_path, as_attachment=True)
 
 @app.route('/')
 @app.route('/home')
@@ -70,32 +250,6 @@ def about():
 @app.route('/packages')
 def packages():
     return render_template("packages.html", title="Packages")
-
-
-####### TEST ROUTE / REMOVE IN PRODUCTION #######
-@app.route('/test')
-def test():
-    return render_template("test.html", title="Test")
-
-@app.route('/process', methods=['POST'])
-def process():
-    email = request.form.get('email')
-    name = request.form.get('name')
-    print(email)
-    print(name)
-    if name and email:
-        # reverses the name
-        new_name = name[::-1]
-
-        # no need to call jsonify since flask
-        # parses out dictionaries as JSON
-        return {'name': new_name}
-    else:
-        return redirect(url_for('about'))
-    print("error")
-    return {'error': 'Missing Data!'}
-
-##################################################
 
 # REGISTER / LOGIN / LOGOUT
 
@@ -156,32 +310,6 @@ def logout():
 @login_required
 def dashboard():
     return redirect(url_for('courses'))
-
-
-# Profile Picture Functionality
-def save_picture(form_picture):
-    random_hex = secrets.token_hex(8)
-    _, f_ext = os.path.splitext(form_picture.filename)
-    picture_fn = random_hex + f_ext
-    picture_path = os.path.join(app.root_path,
-                                'static/profile_images',
-                                picture_fn)
-
-    # Resize image using PILLOW
-    output_size = (200,200)
-    i = Image.open(form_picture)
-    i.thumbnail(output_size)
-    i.save(picture_path)
-
-    return picture_fn
-
-def delete_picture():
-    pic = current_user.profile_image
-    if pic != "default.png":
-        picture_path = os.path.join(app.root_path,
-                                    'static/profile_images',
-                                    pic)
-        os.remove(picture_path)
 
 @app.route('/dashboard/profile', methods=['GET', 'POST'])
 @login_required
@@ -420,7 +548,7 @@ def assignments(course_id):
     user_assignments = []
 
     for a in assignments:
-        user_assignment = User_Assignment.query.filter_by(assignment_id=a.id).all()
+        user_assignment = User_Assignment.query.filter_by(user_id=current_user.id, assignment_id=a.id).all()
         if user_assignment:
             user_assignment.sort(key=lambda a:a.created_time)
             user_assignments.append(user_assignment[-1])
@@ -434,39 +562,6 @@ def assignments(course_id):
                                 user_assignments=user_assignments,
                                 current_time=time(),
                                 title=str(course.title) + " - Assignments")
-
-def new_assignment_error_handler(assignmentform, request_form):
-    errors = {}
-    assignmentform.validate()
-    question_total_points = 0
-
-    for key, value in assignmentform.errors.items():
-        if key == "date_input":
-            errors[key] = "Not a valid date value. ex: 01/25/2020"
-        else:
-            errors[key] = value[0]
-    for key, value in request_form.items():
-        if "qOption_" in key and value == "":
-            errors[key] = "This field is required."
-        elif "question_points" in key:
-            try:
-                question_total_points += int(value)
-            except ValueError:
-                errors[key] = "Not a valid integer value."
-        elif "question_answer" not in key and "question_" in key and value == "":
-            errors[key] = "This field is required."
-
-    try:
-        a_points = int(request_form["points"])
-    except ValueError:
-        a_points = 0
-
-    if question_total_points > a_points:
-        for key, value in request_form.items():
-            if "question_points" in key:
-                errors[key] = f"Total question points exceeds assignment points: {a_points}"
-
-    return errors
 
 @app.route('/dashboard/courses/<int:course_id>/assignments/new', methods=["GET", "POST"])
 @login_required
@@ -572,64 +667,6 @@ def new_assignment(course_id):
                                 assignmentform=assignmentform,
                                 title=str(course.title) + " - New Assignment")
 
-def assignment_error_handler(request_form):
-    errors = {}
-    for key, value in request_form.items():
-        if "question_" in key and value == "":
-            errors[key] = "This question requires an answer."
-
-    return errors
-
-def save_assignment(file):
-    random_hex = secrets.token_hex(8)
-    _, f_ext = os.path.splitext(file.filename)
-    fn = random_hex + f_ext
-    file_path = os.path.join(app.root_path,
-                                'static/assignments',
-                                fn)
-    file.save(file_path)
-
-    return fn
-
-def delete_assignment(fn):
-    file_path = os.path.join(app.root_path,
-                                'static/assignments',
-                                fn)
-    os.remove(file_path)
-
-def calculate_grade(course_user, assignment, points):
-    total_assignment_points = 0
-    if course_user.assignments_done:
-        assignments_done = json.loads(course_user.assignments_done)
-    else:
-        assignments_done = {}
-
-    if str(assignment.id) in assignments_done:
-        if assignments_done[str(assignment.id)] < points:
-
-            course_user.points -= assignments_done[str(assignment.id)]
-            course_user.points += points
-
-            assignments_done[str(assignment.id)] = points
-    else:
-        course_user.points += points
-        assignments_done[str(assignment.id)] = points
-
-    # used for recalculating the course grade according
-    # to the assignments the student has turned in
-    for key in assignments_done:
-        a_done = Assignment.query.filter_by(id=int(key)).first()
-        total_assignment_points += a_done.points
-
-    course_user.assignments_done = json.dumps(assignments_done)
-
-    try:
-        leftover_points = course_user.points/total_assignment_points
-    except ZeroDivisionError:
-        leftover_points = 0
-
-    course_user.grade = '{:.2%}'.format(leftover_points)
-
 # NO CSRF
 @app.route('/dashboard/courses/<int:course_id>/assignments/<int:assignment_id>', methods=['GET', 'POST'])
 @login_required
@@ -666,13 +703,11 @@ def assignment(course_id, assignment_id):
 
     if request.method == "POST" and upload and assignment.type == "Instructions":
         if tries < assignment.tries:
-            accepted_types = ["PDF", "PNG", "JPG", "JPEG"]
-            type = magic.from_buffer(file.read(2048))
-            if any(at in type for at in accepted_types):
-                course_user = Course_User.query.filter_by(user_id=current_user.id, course_id=course.id).first()
-                calculate_grade(course_user, assignment, 0)
+            course_user = Course_User.query.filter_by(user_id=current_user.id, course_id=course.id).first()
+            filename = save_assignment(file)
 
-                filename = save_assignment(file)
+            if filename:
+                calculate_grade(course_user, assignment, 0)
                 for ua in user_assignments:
                     delete_assignment(ua.filename)
                     db.session.delete(ua)
@@ -690,7 +725,7 @@ def assignment(course_id, assignment_id):
                 return redirect(url_for('assignment', course_id=course.id, assignment_id=assignment.id))
             else:
                 flash("That file type is not allowed.", "warning")
-                return redirect(url_for("assignment", course_id=course.id, assignment_id=assignment.id))
+                return redirect(url_for('assignment', course_id=course.id, assignment_id=assignment.id))
         else:
             flash("You have already reached your max tries.", "warning")
             return redirect(url_for('assignments', course_id=course.id))
@@ -791,41 +826,6 @@ def assignment(course_id, assignment_id):
                                 redo=redo,
                                 tries=tries,
                                 title=course.title + " - " + assignment.title)
-
-# used to gather information about
-# a user for grades template rendering
-def user_grades(course, user_id):
-    course_user = Course_User.query.filter_by(user_id=user_id, course_id=course.id).first()
-    assignments = Assignment.query.filter_by(course_id=course.id).all()
-    assignments.sort(key=lambda a:a.duedate_time)
-
-    user_latest_assignments = []
-
-    # OrderedDict is for the template so it renders as shown here
-    user_points = OrderedDict([("Exam/Quiz", 0), ("Lab", 0), ("HW", 0), ("Instructions", 0)])
-    assignment_points = OrderedDict([("Exam/Quiz", 0), ("Lab", 0), ("HW", 0), ("Instructions", 0)])
-
-    # get all user assignments and add the points for each assignment type
-    for assignment in assignments:
-        user_assignments = User_Assignment.query.filter_by(user_id=user_id, assignment_id=assignment.id).all()
-        if user_assignments:
-            user_assignments.sort(key=lambda ua:ua.created_time)
-            user_latest_assignments.append(user_assignments[-1])
-        else:
-            # used to keep the index the same as the assignment,
-            # a 0 means they haven't turned it in
-            user_latest_assignments.append(0)
-        assignment_points[assignment.type] += assignment.points
-
-    # add how much the student scored for each assignment and its type
-    for user_assignment in user_latest_assignments:
-        if user_assignment != 0:
-            user_points[user_assignment.type] += user_assignment.points
-
-    current_assignment_points = sum(assignment_points.values())
-
-    return (course_user, assignments, user_latest_assignments,
-            user_points, assignment_points, current_assignment_points)
 
 @app.route('/dashboard/courses/<int:course_id>/grades', methods=['GET'])
 @login_required
@@ -939,24 +939,6 @@ def student_grades(course_id, student_id):
                                 current_assignment_points=current_assignment_points,
                                 student=student,
                                 title=f"Grades - {student.first_name} {student.last_name}")
-
-def grades_edit_error_handler(request_form, course):
-    errors = {}
-    total_points = 0
-
-    for key, value in request_form.items():
-        if "assignment_" in key:
-            try:
-                total_points += int(value)
-            except:
-                if value != "-":
-                    errors[key] = "Not a valid integer or hyphen."
-    if total_points > course.points:
-        for key, value in request_form.items():
-            if "assignment_" in key:
-                errors[key] = f"Total assignment points exceeds the course points: {course.points}"
-
-    return errors
 
 @app.route('/dashboard/courses/<int:course_id>/students/<int:student_id>/grades/edit', methods=['GET', 'POST'])
 @login_required

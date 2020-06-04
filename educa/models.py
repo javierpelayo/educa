@@ -51,7 +51,7 @@ class User_Assignment(db.Model):
     assignment = db.relationship('Assignment', backref=db.backref('user_assignments', passive_deletes=True))
 
     def __repr__(self):
-        return f"User_Assignment('{self.user_id}', '{self.assignment_id}', '{self.url}', '{self.answers}', '{self.points}')"
+        return f"User_Assignment('{self.user_id}', '{self.assignment_id}', '{self.filename}', '{self.answers}', '{self.points}')"
 
 # UserMixin adds classes used to represent users for login
 # SECTION 1. User Schema
