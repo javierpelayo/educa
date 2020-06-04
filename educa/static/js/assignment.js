@@ -8,10 +8,12 @@ function fn(){
 
   // once file is uploaded
     // change the text inside small tag
-  file.addEventListener('change', () => {
-    console.log(file.files)
-    filename.textContent = file.files[0].name;
-  });
+  if (file) {
+    file.addEventListener('change', () => {
+      console.log(file.files)
+      filename.textContent = file.files[0].name;
+    });
+  }
 
   if (form) {
     form.addEventListener("submit", function(event) {

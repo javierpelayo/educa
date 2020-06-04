@@ -597,6 +597,38 @@ def delete_assignment(fn):
                                 fn)
     os.remove(file_path)
 
+def calculate_grade(course_user, assignment, points):
+    total_assignment_points = 0
+    if course_user.assignments_done:
+        assignments_done = json.loads(course_user.assignments_done)
+    else:
+        assignments_done = {}
+
+    if str(assignment.id) in assignments_done:
+        if assignments_done[str(assignment.id)] < points:
+
+            course_user.points -= assignments_done[str(assignment.id)]
+            course_user.points += points
+
+            assignments_done[str(assignment.id)] = points
+    else:
+        course_user.points += points
+        assignments_done[str(assignment.id)] = points
+
+    # used for recalculating the course grade according
+    # to the assignments the student has turned in
+    for key in assignments_done:
+        a_done = Assignment.query.filter_by(id=int(key)).first()
+        total_assignment_points += a_done.points
+
+    course_user.assignments_done = json.dumps(assignments_done)
+
+    try:
+        leftover_points = course_user.points/total_assignment_points
+    except ZeroDivisionError:
+        leftover_points = 0
+
+    course_user.grade = '{:.2%}'.format(leftover_points)
 
 # NO CSRF
 @app.route('/dashboard/courses/<int:course_id>/assignments/<int:assignment_id>', methods=['GET', 'POST'])
@@ -637,8 +669,8 @@ def assignment(course_id, assignment_id):
             accepted_types = ["PDF", "PNG", "JPG", "JPEG"]
             type = magic.from_buffer(file.read(2048))
             if any(at in type for at in accepted_types):
-
-                # update course_user
+                course_user = Course_User.query.filter_by(user_id=current_user.id, course_id=course.id).first()
+                calculate_grade(course_user, assignment, 0)
 
                 filename = save_assignment(file)
                 for ua in user_assignments:
@@ -714,7 +746,6 @@ def assignment(course_id, assignment_id):
 
         course_user = Course_User.query.filter_by(user_id=current_user.id, course_id=course.id).first()
         total_assignment_points = 0
-        url = ""
         answers = []
         points = 0
 
@@ -731,40 +762,11 @@ def assignment(course_id, assignment_id):
         else:
             tries += 1
 
-        if course_user.assignments_done:
-            assignments_done = json.loads(course_user.assignments_done)
-        else:
-            assignments_done = {}
-
-        if str(assignment.id) in assignments_done:
-            if assignments_done[str(assignment.id)] < points:
-
-                course_user.points -= assignments_done[str(assignment.id)]
-                course_user.points += points
-
-                assignments_done[str(assignment.id)] = points
-        else:
-            course_user.points += points
-            assignments_done[str(assignment.id)] = points
-
-        # used for recalculating the course grade according
-        # to the assignments the student has turned in
-        for key in assignments_done:
-            a_done = Assignment.query.filter_by(id=int(key)).first()
-            total_assignment_points += a_done.points
-
-        course_user.assignments_done = json.dumps(assignments_done)
-
-        try:
-            leftover_points = course_user.points/total_assignment_points
-        except ZeroDivisionError:
-            leftover_points = 0
-
-        course_user.grade = '{:.2%}'.format(leftover_points)
+        calculate_grade(course_user, assignment, points)
 
         user_assignment = User_Assignment(user_id=current_user.id,
                                         assignment_id=assignment.id,
-                                        url=url,
+                                        filename="",
                                         answers=answers,
                                         points=points,
                                         tries=tries,
@@ -971,6 +973,8 @@ def student_grades_edit(course_id, student_id):
 
     request_form = request.form.to_dict()
 
+    # unnecessary ajax if check
+
     if 'ajax' in request_form and request.method == "POST":
         return grades_edit_error_handler(request_form, course)
     elif request.method == "POST":
@@ -1004,14 +1008,17 @@ def student_grades_edit(course_id, student_id):
 
                 if value != "-":
                     a_points += assignment.points
-                    user_assignment = user_assignment[-1]
-                    user_assignment.points = value
+                    user_assignment[-1].points = value
 
                     course_user.points -= user_assignments[key]
                     course_user.points += value
 
                     user_assignments[key] = value
                 else:
+                    if assignment.type == "Instructions":
+                        for a in user_assignment:
+                            delete_assignment(a.filename)
+
                     course_user.points -= user_assignments[key]
 
                     del user_assignments[key]
