@@ -44,8 +44,7 @@ function loaded() {
     });
 
     let dataQuery = Object.keys(data).map(key => key + '=' + encodeURIComponent(data[key])).join('&');
-    dataQuery += '&ajax=true';
-
+    dataQuery += "&ajax=true";
     // pass data as a query string(flask converts it into an immutable multi_dict)
     request.send(dataQuery);
 

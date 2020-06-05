@@ -574,15 +574,13 @@ def new_assignment(course_id):
 
     request_form = request.form.to_dict()
 
-    if 'ajax' in request_form and request.method == "POST":
+    if "ajax" in request_form and request.method == "POST":
         return new_assignment_error_handler(assignmentform, request_form)
     if request.method == "POST":
-
-        # If user maliciously bypasses the ajax request
         errors = new_assignment_error_handler(assignmentform, request_form)
         if errors:
-            flash("There was an error in creating the assignment.", "danger")
-            return redirect(url_for("assignments", course_id=course.id))
+            flash("There was an error in creating that assignment.", "danger")
+            return redirect(url_for('new_assignment', course_id=course.id))
 
         questions = {}
         options = {}
@@ -770,14 +768,14 @@ def assignment(course_id, assignment_id):
 
         flash('Assignment was deleted successfully!', 'success')
         return redirect(url_for("assignments", course_id=course.id))
-    elif "ajax" in request_form and request.method == "POST":
+    if "ajax" in request_form and request.method == "POST":
         return assignment_error_handler(request_form)
     elif request.method == "POST" and current_user.profession == "Student" and tries < assignment.tries:
 
         errors = assignment_error_handler(request_form)
         if errors:
-            flash("There was an error in turning that assignment in.", "danger")
-            return redirect(url_for('assignments', course_id=course.id))
+            flash("There was an error in submitting this assignment.", "danger")
+            return redirect(url_for('assignment', course_id=course.id, assignment_id=assignment.id))
 
         course_user = Course_User.query.filter_by(user_id=current_user.id, course_id=course.id).first()
         total_assignment_points = 0
@@ -955,16 +953,14 @@ def student_grades_edit(course_id, student_id):
 
     request_form = request.form.to_dict()
 
-    # unnecessary ajax if check
-
-    if 'ajax' in request_form and request.method == "POST":
+    if "ajax" in request_form and request.method == "POST":
         return grades_edit_error_handler(request_form, course)
     elif request.method == "POST":
-
-        # if user maliciously bypasses the ajax request
         errors = grades_edit_error_handler(request_form, course)
+
+        # used if user bypasses ajax
         if errors:
-            flash("There was an error in updating the grades.", "danger")
+            flash("Student grades could not be updated.", "danger")
             return redirect(url_for("student_grades", course_id=course.id, student_id=student.id))
 
         assignments_form = {}

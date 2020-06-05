@@ -57,7 +57,6 @@ function fn(){
       // if it is done do something
       request.onreadystatechange = function() {
         if (request.readyState == 4 && request.status == 200) {
-          console.log("REQUEST SENT")
           errors = JSON.parse(request.responseText);
 
           // if the request has an error
@@ -94,7 +93,8 @@ function fn(){
       });
 
       let dataQuery = Object.keys(data).map(key => key + '=' + encodeURIComponent(data[key])).join('&');
-      dataQuery += '&ajax=true';
+      dataQuery += "&ajax=true";
+
       // pass data as a query string(flask converts it into an immutable multi_dict)
       request.send(dataQuery);
 

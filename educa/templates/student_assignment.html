@@ -14,47 +14,52 @@
       <h5>Instructions:</h5>
       <p>{{ assignment.content| safe }}</p>
     </div>
-
-    {% for i in range(questions| length) %}
-      <div class="questions">
-        {% if questions[i].answer == user_assignment.answers[i] %}
-          <div class="card border-success">
-        {% else %}
-          <div class="card border-danger">
-        {% endif %}
-            <div class="card-header">
-              <div class="d-flex justify-content-between align-items-center">
-                <h4>{{ questions[i].title }}</h4>
-                {% if questions[i].points > 1 %}
-                  <h5>{{ questions[i].points }} Points</h5>
+    {% if assignment.type == "Instructions" %}
+      <div class="d-flex justify-content-center">
+        <a class="fancy-link" href="{{ url_for('download_file', filename=user_assignment.filename) }}">Download Submitted Assignment</a>
+      </div>
+    {% else %}
+      {% for i in range(questions| length) %}
+        <div class="questions">
+          {% if questions[i].answer == user_assignment.answers[i] %}
+            <div class="card border-success">
+          {% else %}
+            <div class="card border-danger">
+          {% endif %}
+              <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                  <h4>{{ questions[i].title }}</h4>
+                  {% if questions[i].points > 1 %}
+                    <h5>{{ questions[i].points }} Points</h5>
+                  {% else %}
+                    <h5>{{ questions[i].points }} Point</h5>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="card-body">
+                <h5 class="card-title">{{ questions[i].content| safe }}</h5>
+                {% if questions[i].type == "multiple_choice" %}
+                    {% for x in range(options_dict[questions[i].id|string]| length) %}
+                      <div class="options">
+                        <input id="question_{{ i }}_{{ x }}" type="radio" disabled>
+                        <label for="question_{{ i }}_{{ x }}">{{ options_dict[questions[i].id|string][x].content }}</label>
+                      </div>
+                    {% endfor %}
+                    {% if questions[i].answer == user_assignment.answers[i] %}
+                      <h6 class="text-success">Student Answer: {{ user_assignment.answers[i] }}</h6>
+                    {% else %}
+                      <h6 class="text-danger">Student Answer: {{ user_assignment.answers[i] }}</h6>
+                    {% endif %}
                 {% else %}
-                  <h5>{{ questions[i].points }} Point</h5>
+                  <div class="d-flex flex-column justify-content-start">
+                    <h6>Student Answer:</h6>
+                    <p>{{ user_assignment.answers[i]| safe }}</p>
+                  </div>
                 {% endif %}
               </div>
             </div>
-            <div class="card-body">
-              <h5 class="card-title">{{ questions[i].content| safe }}</h5>
-              {% if questions[i].type == "multiple_choice" %}
-                  {% for x in range(options_dict[questions[i].id|string]| length) %}
-                    <div class="options">
-                      <input id="question_{{ i }}_{{ x }}" type="radio" disabled>
-                      <label for="question_{{ i }}_{{ x }}">{{ options_dict[questions[i].id|string][x].content }}</label>
-                    </div>
-                  {% endfor %}
-                  {% if questions[i].answer == user_assignment.answers[i] %}
-                    <h6 class="text-success">Student Answer: {{ user_assignment.answers[i] }}</h6>
-                  {% else %}
-                    <h6 class="text-danger">Student Answer: {{ user_assignment.answers[i] }}</h6>
-                  {% endif %}
-              {% else %}
-                <div class="d-flex flex-column justify-content-start">
-                  <h6>Student Answer:</h6>
-                  <p>{{ user_assignment.answers[i]| safe }}</p>
-                </div>
-              {% endif %}
-            </div>
           </div>
-        </div>
-    {% endfor %}
+      {% endfor %}
+    {% endif %}
   </div>
 {% endblock course_content %}
