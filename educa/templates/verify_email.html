@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="token-container">
+        <div class="token-card text-center shadow-sm">
+            <p class="">An email has been sent to <span class="blue-text">{{ email }}</span>, please check it to confirm your account.</p>
+            <p class="m-0">Click <a class="fancy-link" href="{{ url_for('resend_email_message', email=email) }}">here</a> to resend the confirmation link.</p>
+        </div>
+    </div>
+{% endblock content %}

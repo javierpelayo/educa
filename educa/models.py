@@ -1,7 +1,8 @@
 from datetime import datetime
 from time import time
-from . import db, login_manager
+from . import app, db, login_manager
 from flask_login import UserMixin
+import jwt
 
 # gets the user from the db and logs them in/ties it with their session
 @login_manager.user_loader
@@ -57,6 +58,23 @@ class User_Assignment(db.Model):
 # SECTION 1. User Schema
 class User_Account(db.Model, UserMixin):
     __tablename__ = 'user_account'
+
+    def get_token(self, expires_in=None):
+        payload = {'user': self.id}
+        if expires_in:
+            payload['exp'] = time() + expires_in
+        return jwt.encode(payload,
+                        app.config["SECRET_KEY"],
+                        algorithm='HS256').decode('utf-8')
+    
+    @staticmethod
+    def verify_token(token):
+        try:
+            id = jwt.decode(token, app.config["SECRET_KEY"], algorithms=['HS256'])['user']
+        except:
+            return
+        return User_Account.query.get(id)
+
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(20), nullable=False)
     last_name = db.Column(db.String(20), nullable=False)
@@ -65,6 +83,7 @@ class User_Account(db.Model, UserMixin):
     biography = db.Column(db.Text)
     profile_image = db.Column(db.String(20), nullable=False, default='default.png')
     password = db.Column(db.String(60), nullable=False)
+    confirmed = db.Column(db.Boolean, nullable=False, default=False)
     messages = db.relationship('Message', backref='user')
     conversations = db.relationship('Conversation',
                         secondary=conversation_user,

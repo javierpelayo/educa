@@ -1,0 +1,9 @@
+<p>Dear {{ user.first_name }} {{ user.last_name }},</p>
+<p>
+    To verify your email
+    <a href="{{ url_for('verify_email', token=token, _external=True) }}">
+        click here
+    </a>.
+</p>
+<p>Alternatively, you can paste the following link in your browser's address bar:</p>
+<p>{{ url_for('verify_email', token=token, _external=True) }}</p>

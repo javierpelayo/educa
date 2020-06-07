@@ -38,6 +38,20 @@ class RegistrationForm(FlaskForm):
         if user:
             raise ValidationError('A user with that email already exists.')
 
+# not implemented
+class ResetPasswordRequestForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    submit = SubmitField('Request')    
+
+class ResetPasswordForm(FlaskForm):
+    password = PasswordField('Password',
+                            validators=[DataRequired(),
+                            Length(min=6, max=20, message="Password must be between 6 and 20 characters long.")])
+    confirm_password = PasswordField('Confirm Password',
+                            validators=[DataRequired(),
+                            EqualTo('password')])
+    submit = SubmitField('Change Password')
+
 class LoginForm(FlaskForm):
     email = StringField('Email',
                         validators=[DataRequired(),

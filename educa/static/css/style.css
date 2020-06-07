@@ -1,8 +1,6 @@
-/* html, body {
-  font-family: 'Montserrat', sans-serif;
-   font-family: 'Open Sans', sans-serif;
+html, body {
    height: 100%;
-} */
+}
 
 a {
   color: #3F88C5;
@@ -57,6 +55,27 @@ a {
 /* --CLASSES */
 
 /* -UNIVERSAL */
+
+.token-container {
+  width: 100%;
+  height: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+  display: flex;
+  align-items: start;
+  justify-content: center;
+}
+
+.token-card {
+  margin-top: 7rem;
+  padding: 3rem;
+  color: #022B43;
+  background-color: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  border-radius: .5rem;
+}
 
 .red-text {
   color: #D00814;

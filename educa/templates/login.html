@@ -47,11 +47,11 @@
         </div>
       </div>
       <div class="d-flex justify-content-center my-4">
-        {{ form.submit(class="btn btn-primary") }}
+        {{ form.submit(class="btn btn-blue") }}
       </div>
   </form>
   <div class="border-top pt-3 row justify-content-center">
-    <small class="text-muted">Forgot Your Password? <a href="#">Reset</a></small>
+    <small class="text-muted">Forgot Your Password? <a href="{{ url_for('reset_password_request') }}">Reset</a></small>
   </div>
   <div class="row justify-content-center">
     <small class="text-muted mb-5">Don't Have An Account? <a href="{{ url_for('register') }}">Register</a></small>

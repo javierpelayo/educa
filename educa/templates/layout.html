@@ -56,7 +56,22 @@
         <!--  -->
       </div>
     </nav>
-    <!-- Pages that inherit this template -->
+    <div class="container mx-auto">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="mx-2 p-2">
+              {% for category, message in messages %}
+                  <div class="alert alert-{{ category }} alert-dismissible fade show text-center" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                    {{ message }}
+                  </div>
+              {% endfor %}
+            </div>
+        {% endif %}
+      {% endwith %}
+    </div>
     {% block content %}{% endblock %}
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
