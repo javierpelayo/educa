@@ -4,35 +4,20 @@ html, body {
 
 a {
   color: #3F88C5;
+  text-decoration: none;
 }
 
 /* --Elements */
 
 /* --Overriding-Bootstrap */
 
-.page-not-found {
-  background-image: url("/static/images/404.png");
-  background-repeat: no-repeat;
-  background-size: cover;
-  height:100vh;
+.navbar-dark .navbar-toggler {
+  color: #ffffff;
+  border-color: #ffffff;
 }
-.too-many-requests {
-  background-image: url("/static/images/429.png");
-  background-repeat: no-repeat;
-  background-size: cover;
-  height:100vh;
-}
-.file-too-large {
-  background-image: url("/static/images/413.png");
-  background-repeat: no-repeat;
-  background-size: cover;
-  height:100vh;
-}
-.internal-server-error {
-  background-image: url("/static/images/500.png");
-  background-repeat: no-repeat;
-  background-size: cover;
-  height:100vh;
+
+.navbar-dark .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3e%3cpath stroke='#ffffff' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
 }
 
 .form-control {
@@ -56,6 +41,14 @@ a {
 
 /* -UNIVERSAL */
 
+.mt-7 {
+  margin-top: 7rem;
+}
+
+.mb-7 {
+  margin-bottom: 7rem;
+}
+
 .token-container {
   width: 100%;
   height: 100%;
@@ -73,7 +66,7 @@ a {
   padding: 3rem;
   color: #022B43;
   background-color: #ffffff;
-  border: 1px solid rgba(0, 0, 0, 0.125);
+  border: 2px solid #FEBA2C;
   border-radius: .5rem;
 }
 
@@ -187,6 +180,10 @@ a {
  background-color: #022B43;
 }
 
+.bg-navy a {
+  color: #ffffff;
+}
+
 .x-close {
   padding: 0;
   background-color: transparent;
@@ -217,6 +214,33 @@ a {
 
 .extra-margin {
   margin-top: 10rem;
+}
+
+/* -ERRORS */
+
+.page-not-found {
+  background-image: url("/static/images/404.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  height:100vh;
+}
+.too-many-requests {
+  background-image: url("/static/images/429.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  height:100vh;
+}
+.file-too-large {
+  background-image: url("/static/images/413.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  height:100vh;
+}
+.internal-server-error {
+  background-image: url("/static/images/500.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  height:100vh;
 }
 
 /* -FLASH-MESSAGES-COURSE */
