@@ -185,10 +185,10 @@ class Lecture(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     course_id = db.Column(db.Integer, db.ForeignKey('course.id', ondelete='CASCADE'))
     title = db.Column(db.String(120), nullable=False)
+    url = db.Column(db.Text, nullable=False)
     description = db.Column(db.Text)
     created_time = db.Column(db.Float, nullable=False, default=time)
     created_ctime = db.Column(db.String(120), nullable=False, default=time_readable)
-    url = db.Column(db.String(20), nullable=False)
 
     def __repr__(self):
         return f"Lecture('{self.id}', '{self.course_id}', '{self.title}', '{self.description}', '{self.url}')"

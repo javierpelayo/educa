@@ -142,3 +142,9 @@ class AssignmentForm(FlaskForm):
     date_input = DateField('Due Date', format='%m/%d/%Y')
     hour = SelectField('Hour', choices=due_hour)
     minute = SelectField('Minute', choices=due_minute)
+
+class NewLectureForm(FlaskForm):
+    title = StringField('Title', validators=[DataRequired()])
+    url = StringField('Video Url', validators=[DataRequired()])
+    description = TextAreaField('Video Url', validators=[DataRequired()])
+    submit = SubmitField('Submit')

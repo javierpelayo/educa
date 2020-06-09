@@ -1,0 +1,13 @@
+{% extends "course_layout.html" %}
+{% block course_content %}
+    <div class="dashboard-content">
+        <div class="d-flex flex-column align-items-center mt-2 mb-4 p-2">
+            <iframe width="75%" src="{{ lecture.url }}" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <div class="pl-5 pr-5 my-2">
+                <p>
+                    {{ lecture.description| safe }}
+                </p>
+            </div>
+        </div>
+    </div>
+{% endblock course_content %}

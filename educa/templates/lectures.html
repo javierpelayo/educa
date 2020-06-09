@@ -1,0 +1,55 @@
+{% extends "course_layout.html" %}
+{% block course_content %}
+    <div class="dashboard-content">
+        <div class="container-table mb-3">
+            <table class="table-e text-center">
+                <thead>
+                    <tr>
+                        <th scope="col">Title</th>
+                        <th scope="col">Upload Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for lecture in lectures %}
+                        <tr>
+                            <td><a class="fancy-link" href="{{ url_for('lecture', course_id=course.id, lecture_id=lecture.id) }}">{{ lecture.title }}</a></td>
+                            <td>{{ lecture.created_ctime }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% if not lectures %}
+            <div class="text-center my-5">
+                <p class="yellow-text">
+                    No lectures have been uploaded for this course 
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icons-vis" width="1em" height="1em" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z"/>
+                        <circle cx="12" cy="12" r="9" />
+                        <line x1="9" y1="10" x2="9.01" y2="10" />
+                        <line x1="15" y1="10" x2="15.01" y2="10" />
+                        <path d="M9.5 15.25a3.5 3.5 0 0 1 5 0" />
+                    </svg>                                  
+                </p>
+            </div>
+        {% endif %}
+        {% if current_user.id == course.teacher_id %}
+            <div class="d-flex justify-content-center my-5">
+                <a class="btn btn-green" href="{{ url_for('new_lecture', course_id=course.id) }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icons-vis" width="1em" height="1em" viewBox="-1 3 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z"/>
+                        <rect x="4" y="4" width="16" height="16" rx="2" />
+                        <line x1="8" y1="4" x2="8" y2="20" />
+                        <line x1="16" y1="4" x2="16" y2="20" />
+                        <line x1="4" y1="8" x2="8" y2="8" />
+                        <line x1="4" y1="16" x2="8" y2="16" />
+                        <line x1="4" y1="12" x2="20" y2="12" />
+                        <line x1="16" y1="8" x2="20" y2="8" />
+                        <line x1="16" y1="16" x2="20" y2="16" />
+                    </svg>                  
+                    New Lecture
+                </a>
+            </div>
+        {% endif %}
+    </div>
+{% endblock course_content %}

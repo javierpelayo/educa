@@ -3,6 +3,10 @@ html, body {
    font-family: 'Arimo', sans-serif;
 }
 
+iframe {
+  height: 100%;
+}
+
 a {
   color: #3F88C5;
   text-decoration: none;

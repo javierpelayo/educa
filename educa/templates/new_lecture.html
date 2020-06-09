@@ -1,0 +1,52 @@
+{% extends "course_layout.html" %}
+{% block course_content %}
+    <div class="dashboard-content">
+        <div class="text-center mb-4 mt-2">
+            <h1 class="display-5">New Lecture</h1>
+        </div>
+        <form class="needs-validation" action="" method="POST" novalidate>
+            {{ form.hidden_tag() }}
+            <div class="form-group d-flex flex-column align-items-center">
+                <div class="col-10 col-lg-8 mb-3">
+                    {% if form.title.errors %}
+                        {{ form.title(class="form-control is-invalid", placeholder="Lecture Title") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.title.errors %}
+                                <small>{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.title(class="form-control", placeholder="Lecture Title") }}
+                    {% endif %}
+                </div>
+                <div class="col-10 col-lg-8 mb-3">
+                    {% if form.url.errors %}
+                        {{ form.url(class="form-control is-invalid", placeholder="Youtube URL") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.url.errors %}
+                                <small>{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.url(class="form-control", placeholder="Youtube URL") }}
+                    {% endif %}
+                </div>
+                <div class="col-10 col-lg-8">
+                    {% if form.description.errors %}
+                        {{ form.description(class="form-control is-invalid", placeholder="Lecture Description") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.description.errors %}
+                                <small>{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.description(class="form-control", placeholder="Lecture Description") }}
+                    {% endif %}
+                </div>
+                <div class="d-flex justify-content-center mt-5 mb-3">
+                    {{ form.submit(class="btn btn-blue") }}
+                </div>
+            </div>
+        </form>
+    </div> 
+{% endblock course_content %}
