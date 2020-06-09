@@ -1,5 +1,6 @@
 html, body {
    height: 100%;
+   font-family: 'Arimo', sans-serif;
 }
 
 a {
@@ -113,6 +114,10 @@ a {
 
 .border-bottom-red {
   border-bottom: 2px solid #D00814;
+}
+
+.border-bottom-yellow {
+  border-bottom: 2px solid #FEBA2C;
 }
 
 .btn-blue {

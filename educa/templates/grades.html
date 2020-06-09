@@ -3,7 +3,7 @@
   <div class="dashboard-content">
     {% if current_user.profession == "Teacher" %}
       <div class="d-flex justify-content-center align-items-center my-2">
-        <h4>Grades for {{ student.first_name }} {{ student.last_name }}</h4>
+        <h4>Grades for {{ student.first_name }} {{ student.last_name }} ID#{{ student.id }}</h4>
       </div>
     {% endif %}
     <div class="container-table">

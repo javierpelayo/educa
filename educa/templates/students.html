@@ -41,22 +41,22 @@
               <td class="row border-top-0 border-bottom-green mx-0">
                 <div class="col-6 d-flex justify-content-start align-items-center">
                   <img class="profile-img-small" src="{{ url_for('static', filename='profile_images/' + students_list[i].profile_image) }}" alt="">
-                  <a class="fancy-link mx-2" href="{{ url_for('student', course_id=course.id, student_id=students_list[i].id) }}">{{ students_list[i].first_name }} {{ students_list[i].last_name }}</a>
+                  <a class="fancy-link text-nowrap mx-2" href="{{ url_for('student', course_id=course.id, student_id=students_list[i].id) }}">{{ students_list[i].first_name }} {{ students_list[i].last_name }} ID#{{ students_list[i].id }}</a>
                 </div>
                 <div class="col-6 d-flex justify-content-end align-items-center">
                   {% if current_user.id == course.teacher_id %}
                     <a class="text-center fancy-link mx-2" href="{{ url_for('student_assignments', course_id=course.id, student_id=students_list[i].id) }}">
                       <svg height="1em" width="1em" xmlns="http://www.w3.org/2000/svg" viewBox="0 30 512 512"><path class="icons" d="M464 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V80c0-26.51-21.49-48-48-48zm-6 400H54a6 6 0 0 1-6-6V86a6 6 0 0 1 6-6h404a6 6 0 0 1 6 6v340a6 6 0 0 1-6 6zm-42-92v24c0 6.627-5.373 12-12 12H204c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h200c6.627 0 12 5.373 12 12zm0-96v24c0 6.627-5.373 12-12 12H204c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h200c6.627 0 12 5.373 12 12zm0-96v24c0 6.627-5.373 12-12 12H204c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h200c6.627 0 12 5.373 12 12zm-252 12c0 19.882-16.118 36-36 36s-36-16.118-36-36 16.118-36 36-36 36 16.118 36 36zm0 96c0 19.882-16.118 36-36 36s-36-16.118-36-36 16.118-36 36-36 36 16.118 36 36zm0 96c0 19.882-16.118 36-36 36s-36-16.118-36-36 16.118-36 36-36 36 16.118 36 36z"/>
                       </svg>
-                      Assignments
+                      <span class="d-none d-lg-inline">Assignments</span>
                     </a>
                     <a class="fancy-link mx-2" href="{{ url_for('student_grades', course_id=course.id, student_id=students_list[i].id) }}">
                       <svg height="1em" width="1em" xmlns="http://www.w3.org/2000/svg" viewBox="0 30 512 512"><path class="icons" d="M396.8 352h22.4c6.4 0 12.8-6.4 12.8-12.8V108.8c0-6.4-6.4-12.8-12.8-12.8h-22.4c-6.4 0-12.8 6.4-12.8 12.8v230.4c0 6.4 6.4 12.8 12.8 12.8zm-192 0h22.4c6.4 0 12.8-6.4 12.8-12.8V140.8c0-6.4-6.4-12.8-12.8-12.8h-22.4c-6.4 0-12.8 6.4-12.8 12.8v198.4c0 6.4 6.4 12.8 12.8 12.8zm96 0h22.4c6.4 0 12.8-6.4 12.8-12.8V204.8c0-6.4-6.4-12.8-12.8-12.8h-22.4c-6.4 0-12.8 6.4-12.8 12.8v134.4c0 6.4 6.4 12.8 12.8 12.8zM496 400H48V80c0-8.84-7.16-16-16-16H16C7.16 64 0 71.16 0 80v336c0 17.67 14.33 32 32 32h464c8.84 0 16-7.16 16-16v-16c0-8.84-7.16-16-16-16zm-387.2-48h22.4c6.4 0 12.8-6.4 12.8-12.8v-70.4c0-6.4-6.4-12.8-12.8-12.8h-22.4c-6.4 0-12.8 6.4-12.8 12.8v70.4c0 6.4 6.4 12.8 12.8 12.8z"/></svg>
-                      Grades
+                      <span class="d-none d-lg-inline">Grades</span>
                     </a>
                     <button id="{{ students_list[i].id }}" class="drop-btn" type="button" data-toggle="modal" data-target="#drop_modal">
                       <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 3 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 icons-vis"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                      Drop
+                      <span class="d-none d-lg-inline">Drop</span>
                     </a>
                   {% endif %}
                 </div>

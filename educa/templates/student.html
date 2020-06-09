@@ -8,7 +8,7 @@
         </div>
         {% if user.profession == "Student" %}
           <div class="col-6 col-md-4 d-flex justify-content-start align-items-center my-4">
-              <h6 class="my-1">{{ user.first_name }} {{ user.last_name }}</h6>
+              <h6 class="my-1">{{ user.first_name }} {{ user.last_name }} ID#{{ user.id }}</h6>
           </div>
         {% else %}
           <div class="col-6 col-md-4 d-flex flex-column align-items-start my-4">
