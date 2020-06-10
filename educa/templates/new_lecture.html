@@ -1,13 +1,10 @@
 {% extends "course_layout.html" %}
 {% block course_content %}
     <div class="dashboard-content">
-        <div class="text-center mb-4 mt-2">
-            <h1 class="display-5">New Lecture</h1>
-        </div>
         <form class="needs-validation" action="" method="POST" novalidate>
             {{ form.hidden_tag() }}
             <div class="form-group d-flex flex-column align-items-center">
-                <div class="col-10 col-lg-8 mb-3">
+                <div class="col-10 col-lg-8 mb-3 mt-2">
                     {% if form.title.errors %}
                         {{ form.title(class="form-control is-invalid", placeholder="Lecture Title") }}
                         <div class="invalid-feedback">

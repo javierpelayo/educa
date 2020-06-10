@@ -1205,7 +1205,8 @@ def lectures(course_id):
         return render_template("lectures.html",
                                 course=course,
                                 lectures=lectures,
-                                title=f"{course.title} - Lectures")
+                                title=f"{course.title} - Lectures",
+                                header=" \ Lectures")
 
 
 @app.route('/dashboard/courses/<int:course_id>/lectures/new', methods=['GET', 'POST'])
@@ -1237,7 +1238,8 @@ def new_lecture(course_id):
         return render_template("new_lecture.html",
                                 course=course,
                                 form=form,
-                                title=f"{course.title} - New Lecture")
+                                title=f"{course.title} - New Lecture",
+                                header=" \ New Lecture")
 
 @app.route('/dashboard/courses/<int:course_id>/lectures/<int:lecture_id>', methods=['GET', 'POST'])
 @login_required
@@ -1252,3 +1254,23 @@ def lecture(course_id, lecture_id):
                                 lecture=lecture,
                                 title=f"{course.title} - Lecture",
                                 header=" \ " + lecture.title)
+
+@app.route('/dashboard/deadlines', methods=['GET'])
+@login_required
+def deadlines():
+    courses = Course_User.query.filter_by(user_id=current_user.id).all()
+    user_assignments = User_Assignment.query.filter_by(user_id=current_user.id).all()
+    user_assignments = [ua.id for ua in user_assignments]
+    assignments_due = []
+    for course in courses:
+        assignments = Assignment.query.filter_by(course_id=course.course_id).order_by(Assignment.duedate_time).all()[::-1]
+        for assignment in assignments:
+            if assignment.id not in user_assignments:
+                assignments_due.append(assignment)
+
+    return render_template("deadlines.html",
+                            assignments=assignments_due,
+                            title="Deadlines")
+
+@app.route('/dashboard/inbox', methods=['GET', 'POST'])
+@login_required

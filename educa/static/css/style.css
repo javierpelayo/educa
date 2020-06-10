@@ -3,10 +3,6 @@ html, body {
    font-family: 'Arimo', sans-serif;
 }
 
-iframe {
-  height: 100%;
-}
-
 a {
   color: #3F88C5;
   text-decoration: none;
@@ -45,6 +41,29 @@ a {
 /* --CLASSES */
 
 /* -UNIVERSAL */
+.embed-padding {
+  padding: 2rem 2rem 1rem 2rem;
+}
+
+@media (min-width: 768px) {
+  .embed-padding {
+    padding: 2rem 5rem 2rem 5rem;
+  }
+}
+
+.embed-container {
+  overflow: hidden;
+  padding-top: 56.25%;
+  position: relative;
+}
+ 
+.embed-container iframe {
+   height: 100%;
+   top: 0;
+   left: 0;
+   position: absolute;
+   width: 100%;
+}
 
 .mt-7 {
   margin-top: 7rem;

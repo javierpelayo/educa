@@ -1,0 +1,40 @@
+{% extends "dashboard.html" %}
+{% block content_dash %}
+    <div class="dashboard-header">
+        <h1>Deadlines</h1>
+    </div>
+    <div class="ml-1 ml-md-5">
+        <div class="container-table pl-3">
+            <table class="col-12 table-e text-center">
+                <thead>
+                    <tr>
+                        <th scope="col">
+                            Name
+                        </th>
+                        <th scope="col">
+                            Due Date
+                        </th>
+                        <th scope="col">
+                            Course
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for assignment in assignments %}
+                        <tr>
+                            <td>
+                                <a class="fancy-link" href="{{ url_for('assignment', course_id=assignment.course.id, assignment_id=assignment.id) }}">{{ assignment.title }}</a>
+                            </td>
+                            <td>
+                                {{ assignment.duedate_ctime }}
+                            </td>
+                            <td>
+                                {{ assignment.course.title }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock content_dash %}
