@@ -1274,3 +1274,24 @@ def deadlines():
 
 @app.route('/dashboard/inbox', methods=['GET', 'POST'])
 @login_required
+def inbox():
+    conversations = current_user.conversations.sort(key=lambda c:c.created_time)
+    convos = []
+
+    print(request.form.to_dict())
+
+    if conversations:
+        for i in range(len(conversations)):
+            users = conversation_user.query.filter_by(conversation_id=conversations[i].conversation_id).with_entities(conversation_user.user).all()
+            convos[i]["names"] = ", ".join([user.first_name for user in users])
+
+            msg = Message.query.filter_by(conversation_id=conversations[i].conversation_id).order_by(Message.created_time).all()[-1]
+            convos[i]["msg"] = msg
+            convos[i]["date"] = msg.created_ctime
+            convos[i]["conversation_id"] = conversations[i].conversation_id
+    
+    convos = [{"names": "Javier, Carlos, Stacy", "msg": "Hi there, I'm contacting you to join the school club.", "date": "May 20th 1999", "conversation_id": "1"}]
+
+    return render_template("conversation.html",
+                            conversations=convos,
+                            title="Inbox")
