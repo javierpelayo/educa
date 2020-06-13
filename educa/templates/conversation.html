@@ -24,12 +24,12 @@
             {% endif %}
         </div>
         {% if conversation %}
-            <div class="msg-field">
-                <form action="">
-                    <textarea class="msg-input"></textarea>
-                    <button class="btn btn-green" type="submit">Send</button>
-                </form>
-            </div>
+            <form class="msg-field" action="">
+                <div class="msg-container">
+                    <textarea class="msg-input" placeholder="Type your message here."></textarea>
+                    <button class="btn btn-green red-text" type="submit">Send</button>
+                </div>
+            </form>
         {% endif %}
     </div>
 {% endblock convo %}

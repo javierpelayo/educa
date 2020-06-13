@@ -14,7 +14,8 @@ from educa.forms import (RegistrationForm,
                         UpdateCourseForm,
                         UpdateSyllabusForm,
                         AssignmentForm,
-                        NewLectureForm)
+                        NewLectureForm,
+                        NewConversationForm)
 from educa.models import *
 from flask_login import (login_user,
                         current_user,
@@ -1272,13 +1273,9 @@ def deadlines():
                             assignments=assignments_due,
                             title="Deadlines")
 
-@app.route('/dashboard/inbox', methods=['GET', 'POST'])
-@login_required
-def inbox():
+def inbox_info():
     conversations = current_user.conversations.sort(key=lambda c:c.created_time)
     convos = []
-
-    print(request.form.to_dict())
 
     if conversations:
         for i in range(len(conversations)):
@@ -1292,6 +1289,76 @@ def inbox():
     
     convos = [{"names": "Javier, Carlos, Stacy", "msg": "Hi there, I'm contacting you to join the school club.", "date": "May 20th 1999", "conversation_id": "1"}]
 
+    return convos
+
+@app.route('/dashboard/inbox', methods=['GET', 'POST'])
+@login_required
+def inbox():
+    conversations = inbox_info()
+    delete = request.form.get("delete")
+
+    if request.method == "POST" and delete:
+        convos_del = request.form.to_dict()
+
+        db.session.delete(conversations)
+
     return render_template("conversation.html",
-                            conversations=convos,
+                            conversations=conversations,
                             title="Inbox")
+
+@app.route('/dashboard/inbox/conversation/new', methods=['GET', 'POST'])
+@login_required
+def new_conversation():
+    conversations = inbox_info()
+    # user that we will msg
+    recipient = request.args.get("recipient_id")
+    if recipient:
+        recipient = User_Account.query.filter_by(id=int(recipient)).first()
+
+    form = NewConversationForm()
+
+    if request.method == "POST" and form.validate_on_submit():
+
+        return redirect(url_for("inbox"))
+
+        message = request.form.get("message")
+        conversation_id = request.form.get("convo_id")
+
+        for convo in current_user.conversations:
+            convo_recipient = conversation_user.query.filter_by(conversation_id=convo.id).first()
+            if convo_recipient:
+                break
+
+        # if no convo with recipient, create one
+        if not conversation_id and not convo_recipient:
+            title = request.form.get("title")
+            recipient = request.form.get("recipient")
+            conversation = Conversation(title=title)
+
+            db.session.add(conversation)
+            db.session.commit()
+
+            conversation_user = conversation_user(user_id=current_user.id, conversation_id=conversation.id)
+            conversation_recipient = conversation_user(user_id=int(recipient), conversation_id=conversation.id)
+
+            message = Message(conversation_id=conversation.id,
+                                user_id=current_user.id,
+                                content=message)
+            
+            db.session.add(conversation_user)
+            db.session.add(conversation_recipient)
+            db.session.add(message)
+            db.session.commit()
+
+            return redirect(url_for("conversation", convo_id=conversation.id))
+
+    return render_template("new_conversation.html",
+                        conversations=conversations,
+                        recipient=recipient,
+                        form=form,
+                        title="New Conversation")
+
+@app.route('/dashboard/inbox/conversation/<int:convo_id>', methods=['GET', 'POST'])
+@login_required
+def conversation(convo_id):
+    pass

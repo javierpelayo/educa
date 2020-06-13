@@ -148,3 +148,9 @@ class NewLectureForm(FlaskForm):
     url = StringField('Video Url', validators=[DataRequired()])
     description = TextAreaField('Video Url', validators=[DataRequired()])
     submit = SubmitField('Submit')
+
+class NewConversationForm(FlaskForm):
+    title = StringField('Conversation Title', validators=[DataRequired()])
+    recipient = HiddenField()
+    message = TextAreaField('Message', validators=[DataRequired()])
+    submit = SubmitField('Submit')
