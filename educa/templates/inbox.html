@@ -20,7 +20,7 @@
             </div>
             {% if conversations %}
             <!-- Form is for deletion -->
-                <form style="overflow-y: auto;" class="" id="convo_id" action="" method="POST">
+                <form class="delete-convo" id="convo_id" action="{{ url_for('inbox') }}" method="POST">
                     {% for i in range(conversations| length) %}
                         <a class="inbox-convos-content" href="{{ url_for('conversation', convo_id=conversations[i]['conversation_id'])| int }}">
                             <div>

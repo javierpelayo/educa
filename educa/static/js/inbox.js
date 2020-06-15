@@ -1,7 +1,7 @@
 function updateScroll(){
-    const element = document.querySelector(".messages");
-    if (element) {
-        element.scrollTop = element.scrollHeight;
+    const msgBox = document.querySelector(".messages");
+    if (msgBox) {
+        msgBox.scrollTop = element.scrollHeight;
     }
 }
 

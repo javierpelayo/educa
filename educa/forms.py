@@ -5,7 +5,8 @@ from wtforms import (StringField, PasswordField,
                     RadioField, TextAreaField,
                     IntegerField, DateField,
                     SelectField, FieldList,
-                    HiddenField)
+                    HiddenField, FormField,
+                    FieldList)
 from flask_login import current_user
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError, NumberRange
 from educa.models import User_Account
@@ -151,6 +152,6 @@ class NewLectureForm(FlaskForm):
 
 class NewConversationForm(FlaskForm):
     title = StringField('Conversation Title', validators=[DataRequired()])
-    recipient = HiddenField()
+    recipients = FieldList(HiddenField('Recipient', validators=[DataRequired()]), min_entries=1)
     message = TextAreaField('Message', validators=[DataRequired()])
     submit = SubmitField('Submit')

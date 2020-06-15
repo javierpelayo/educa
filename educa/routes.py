@@ -24,7 +24,6 @@ from flask_login import (login_user,
 from functools import wraps
 from educa.filters import autoversion, course_auth, teacher_auth
 from educa.email import *
-from flask_mail import Message
 from PIL import Image
 from datetime import datetime
 from time import time
@@ -1291,6 +1290,7 @@ def inbox_info():
 
     return convos
 
+# NO CSRF
 @app.route('/dashboard/inbox', methods=['GET', 'POST'])
 @login_required
 def inbox():
@@ -1298,55 +1298,62 @@ def inbox():
     delete = request.form.get("delete")
 
     if request.method == "POST" and delete:
-        convos_del = request.form.to_dict()
+        request_form = request.form.to_dict()
+        convos_del = [Conversation.query.filter_by(id=int(value)).first() for key, value in request_form.items() if "convo_" in key]
 
-        db.session.delete(conversations)
+        for convo in convos_del:
+            db.session.delete(convo)
+        
+        db.session.commit()
+
+        return redirect(url_for("inbox"))
 
     return render_template("conversation.html",
                             conversations=conversations,
                             title="Inbox")
 
+def searched_users(search):
+    search_results = User_Account.query.filter(User_Account.first_name.startswith(search)).all()
+
+
 @app.route('/dashboard/inbox/conversation/new', methods=['GET', 'POST'])
 @login_required
 def new_conversation():
     conversations = inbox_info()
-    # user that we will msg
     recipient = request.args.get("recipient_id")
     if recipient:
         recipient = User_Account.query.filter_by(id=int(recipient)).first()
+    
+    print(current_user.classes)
 
     form = NewConversationForm()
+    request_form = request.form.to_dict()
 
-    if request.method == "POST" and form.validate_on_submit():
+    if "ajax" in request_form and request.method == "GET":
+        return searched_users(request_form['search'], request_form['course'])
+    if request.method == "POST":
+        recipients = [{key: value} for key, value in request_form.items() if "recipient_" in key]
 
-        return redirect(url_for("inbox"))
+        form = NewConversationForm(recipients=recipients)
 
-        message = request.form.get("message")
-        conversation_id = request.form.get("convo_id")
+        if form.validate_on_submit():
+            title = form.title.data
+            message = form.message.data
 
-        for convo in current_user.conversations:
-            convo_recipient = conversation_user.query.filter_by(conversation_id=convo.id).first()
-            if convo_recipient:
-                break
-
-        # if no convo with recipient, create one
-        if not conversation_id and not convo_recipient:
-            title = request.form.get("title")
-            recipient = request.form.get("recipient")
             conversation = Conversation(title=title)
-
             db.session.add(conversation)
             db.session.commit()
 
             conversation_user = conversation_user(user_id=current_user.id, conversation_id=conversation.id)
-            conversation_recipient = conversation_user(user_id=int(recipient), conversation_id=conversation.id)
+            for key, recipient in recipients.items():
+                conversation_recipient = conversation_user(user_id=int(recipient), conversation_id=conversation.id)
+                db.session.add(conversation_recipient)
 
             message = Message(conversation_id=conversation.id,
                                 user_id=current_user.id,
                                 content=message)
             
             db.session.add(conversation_user)
-            db.session.add(conversation_recipient)
             db.session.add(message)
             db.session.commit()
 

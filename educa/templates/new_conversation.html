@@ -13,17 +13,46 @@
             <div class="convo-inputs">
                 <div class="col-6">
                     <!-- SEARCH ICON -->
-                    <input type="text" class="form-control" placeholder="Type to search for a user.">
-                </div>
-                <div class="col-1">
-                    <h5 class="m-0">To:</h5>
+                    <div class="search-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="" width="1em" height="1em" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z"/>
+                            <circle cx="10" cy="10" r="7" />
+                            <line x1="21" y1="21" x2="15" y2="15" />
+                        </svg>
+                    </div>
+                    <input id="search" type="text" class="form-control search" name="search" placeholder="Type to search for a user.">
                 </div>
                 <div class="col-6">
-                    <div id="recipients">
-                        {% if recipient %}
-                            <h5 class="recipients">{{ recipient.first_name }} {{ recipient.last_name }} #{{ recipient.id }}</h5>
-                        {% endif %}
-                    </div>
+                    <select class="custom-select" name="course" id="course">
+                        {% for course_user in current_user.classes %}
+                            <option value="{{ course_user.course_id }}">{{ course_user.course.title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="convo-recipients">
+                <div id="recipients">
+                    {% if recipient %}
+                        <h5 id="first-recipient" class="recipients">{{ recipient.first_name }} {{ recipient.last_name }} #{{ recipient.id }}</h5>
+                    {% endif %}
+                        <!-- Insert recipient bubbles here after ajax request/click -->
+                    <span class="recipient-bubble">
+                        Javier Perez
+                        <button class="x-mini-close">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        </button>
+                    </span>
+                    <span class="recipient-bubble">Carlos Montoya</span>
+                    <span class="recipient-bubble">David Sanchez</span>
+                    <span class="recipient-bubble">Tom Smith</span>
+                    <span class="recipient-bubble">Jane Doe</span>
+                    <span class="recipient-bubble">Richard White</span>
+                </div>
+            </div>
+            <div class="search-results">
+                <div class="search-item">
+                    <p class="m-0">Javier Perez</p>
+                    <p class="m-0">Math 106</p>
                 </div>
             </div>
             <div class="inbox-empty">
@@ -34,13 +63,13 @@
             <form id="new_convo" class="msg-field" action="{{ url_for('new_conversation') }}" method="POST">
                 {{ form.csrf_token }}
                 <div class="msg-container">
-                    {{ form.recipient(value=recipient.id) }}
-                    {{ form.message(class="msg-input", placeholder="Type your message here.") }}
                     {% if recipient %}
-                        {{ form.submit(class="btn btn-green") }}
-                    {% else %}
-                        <button class="btn btn-red" type="button">Send</button>
+                        <input id="recipient_0" type="hidden" name="recipient_0" value="{{ recipient.id }}">
                     {% endif %}
+                    <!-- Insert hidden fields here for recipients for POST -->
+
+                    {{ form.message(class="msg-input", placeholder="Type your message here.") }}
+                    {{ form.submit(class="btn btn-green") }}
                 </div>
             </form>
         </div>
