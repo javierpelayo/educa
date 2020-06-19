@@ -214,14 +214,13 @@ a {
 
 .x-mini-close {
   padding: 0;
-  margin: 0;
+  margin: 0 0 0 .5rem;
   background-color: transparent;
   border: 0;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  font-size: 1.25rem;
-  color: #ffffff;
+  font-size: 1rem;
 }
 
 .x-close {
@@ -761,7 +760,8 @@ a {
 }
 
 .inbox-check input:checked {
-  background-color: #afb3b6;
+  background-color: #3F88C5;
+  border: none;
 }
 
 .delete-convo {
@@ -792,16 +792,8 @@ a {
   border-bottom: 1px solid #dee2e6;
 }
 
-@keyframes slide-right {
-  0% {
-    transform: translateX(100%);
-  }
-  100% {
-    transform: translateX(0);
-  }
-}
-
 .convo {
+  position: relative;
   display: flex;
   flex-direction: column;
   width: 80%;
@@ -813,7 +805,7 @@ a {
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 93%;
+  height: calc(93% - 7em);
   overflow-y: auto;
   animation: .5s ease-out slide-right;
 }
@@ -840,13 +832,8 @@ a {
   overflow: hidden;
 }
 
-.convo-inputs .search {
+.search {
   padding-left: 2rem;
-}
-
-.convo-inputs .search:focus {
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
 }
 
 .convo-recipients {
@@ -880,13 +867,15 @@ a {
   width: calc(50% - 2.87rem);
   top: 7em;
   left: 1.94em;
-  padding: .5rem;
+  padding: .5rem .5rem 1.5rem .5rem;
   display: flex;
   flex-direction: column;
   background-color: #ffffff;
   border-left: 1px solid #dee2e6;
   border-right: 1px solid #dee2e6;
   border-bottom: 1px solid #dee2e6;
+  border-bottom-left-radius: 1rem;
+  border-bottom-right-radius: 1rem;
 }
 
 .search-item:first-of-type {
@@ -897,15 +886,22 @@ a {
   width: 100%;
   display: flex;
   padding-top: .5rem;
-  justify-content: space-around;
+  justify-content: center;
+}
+
+.search-item p {
+  cursor: default;
 }
 
 .messages {
-  padding: 1rem;
+  position: relative;
   display: flex;
   flex-direction: column;
-  height: 85%;
+  padding: 1rem;
+  width: 100%;
+  height: calc(93% - 7em);
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .inbox-empty {
@@ -915,15 +911,25 @@ a {
   height: calc(100% - 14em);
 }
 
+@keyframes slide-right {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
 .msg {
   width: 100%;
-  padding: 1rem;
+}
+
+.msg:not(:last-child) {
   border-bottom: 1px solid #dee2e6;
 }
 
 .msg-field {
   position: absolute;
-  top: calc(100%);
   bottom: 0;
   display: flex;
   width: 100%;

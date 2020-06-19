@@ -10,11 +10,18 @@
         </div>
         <div class="messages">
             {% if conversation %}
-                {% for message in conversation.messages %}
-                    <div class="msg">
-                        <h5 class="p-0">{{ message.user.first_name }}</h5>
-                        <p class="p-0"></p>{{ message }}</p>
-                        <small>{{ message.created_ctime }}</small>
+                {% for i in range(messages| length) %}
+                    <div class="msg" data-animation-offset="1.{{ i }}">
+                        <div class="d-flex align-items-center m-2">
+                            <img class="profile-img-small" src="{{ url_for('static', filename='profile_images/' + messages[i].user.profile_image) }}" alt="">
+                            {% if messages[i].user.profession == "Student" %}
+                                <h6 class="m-0 ml-1">{{ messages[i].user.first_name }} {{ messages[i].user.last_name }} #{{ messages[i].user.id }}</h6>
+                            {% else %}
+                                <h6 class="m-0 ml-1">{{ messages[i].user.first_name }} {{ messages[i].user.last_name }} - Teacher</h6>
+                            {% endif %}
+                        </div>
+                        <p class="m-2 pl-3">{{ messages[i].content }}</p>
+                        <small class="m-2 pl-3">{{ messages[i].created_ctime }}</small>
                     </div>
                 {% endfor %}
             {% else %}
@@ -24,12 +31,14 @@
             {% endif %}
         </div>
         {% if conversation %}
-            <form class="msg-field" action="">
+            <form class="msg-field" action="{{ url_for('conversation', convo_id=conversation.id) }}" method="POST">
+                {{ form.csrf_token }}
                 <div class="msg-container">
-                    <textarea class="msg-input" placeholder="Type your message here."></textarea>
-                    <button class="btn btn-green red-text" type="submit">Send</button>
+                    {{ form.message(class="msg-input", placeholder="Type your message here.") }}
+                    {{ form.submit(class="btn btn-green") }}
                 </div>
             </form>
         {% endif %}
     </div>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/conversation.js')| autoversion }}"></script>
 {% endblock convo %}

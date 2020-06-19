@@ -14,9 +14,11 @@ def time_readable():
     return datetime.fromtimestamp(time()).strftime("%b %d %Y %I:%M %p")
 
 # Association/Join Tables
-conversation_user = db.Table('conversation_user',
-                    db.Column('user_id', db.Integer, db.ForeignKey('user_account.id'), primary_key=True),
-                    db.Column('conversation_id', db.Integer, db.ForeignKey('conversation.id'), primary_key=True))
+class Conversation_User(db.Model):
+    __tablename__ = 'conversation_user'
+    user_id = db.Column(db.Integer, db.ForeignKey('user_account.id'), primary_key=True)
+    conversation_id = db.Column(db.Integer, db.ForeignKey('conversation.id'), primary_key=True)
+    conversation = db.relationship('Conversation', backref=db.backref('conversation_users'))
 
 class Course_User(db.Model):
     # SQLAlchemy creates tablenames by default unless specified inside class
@@ -85,9 +87,7 @@ class User_Account(db.Model, UserMixin):
     password = db.Column(db.String(60), nullable=False)
     confirmed = db.Column(db.Boolean, nullable=False, default=False)
     messages = db.relationship('Message', backref='user')
-    conversations = db.relationship('Conversation',
-                        secondary=conversation_user,
-                        backref='users')
+    conversations = db.relationship('Conversation_User', backref='user')
     courses = db.relationship('Course', backref='teacher')
     classes = db.relationship('Course_User')
     assignments = db.relationship('User_Assignment', backref='student')
@@ -101,7 +101,7 @@ class Conversation(db.Model):
     __tablename__ = 'conversation'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(120), nullable=False)
-    messages = db.relationship('Message')
+    messages = db.relationship('Message', backref='conversation')
 
     def __repr__(self):
         return f"Conversation('{self.id}', '{self.title}')"

@@ -15,7 +15,8 @@ from educa.forms import (RegistrationForm,
                         UpdateSyllabusForm,
                         AssignmentForm,
                         NewLectureForm,
-                        NewConversationForm)
+                        NewConversationForm,
+                        NewMessageForm)
 from educa.models import *
 from flask_login import (login_user,
                         current_user,
@@ -23,7 +24,7 @@ from flask_login import (login_user,
                         login_required)
 from functools import wraps
 from educa.filters import autoversion, course_auth, teacher_auth
-from educa.email import *
+from educa.email import send_email, send_email_confirmation, send_password_reset
 from PIL import Image
 from datetime import datetime
 from time import time
@@ -1273,20 +1274,22 @@ def deadlines():
                             title="Deadlines")
 
 def inbox_info():
-    conversations = current_user.conversations.sort(key=lambda c:c.created_time)
+    conversations = current_user.conversations
+    conversations.sort(key=lambda c:c.conversation_id)
     convos = []
 
     if conversations:
+        # fix here
         for i in range(len(conversations)):
-            users = conversation_user.query.filter_by(conversation_id=conversations[i].conversation_id).with_entities(conversation_user.user).all()
-            convos[i]["names"] = ", ".join([user.first_name for user in users])
+            users = []
 
+            for convo_user in conversations[i].conversation.conversation_users:
+                users.append(convo_user.user)
+
+            users = ", ".join([user.first_name for user in users])
             msg = Message.query.filter_by(conversation_id=conversations[i].conversation_id).order_by(Message.created_time).all()[-1]
-            convos[i]["msg"] = msg
-            convos[i]["date"] = msg.created_ctime
-            convos[i]["conversation_id"] = conversations[i].conversation_id
-    
-    convos = [{"names": "Javier, Carlos, Stacy", "msg": "Hi there, I'm contacting you to join the school club.", "date": "May 20th 1999", "conversation_id": "1"}]
+
+            convos.append({"names": users, "msg": msg.content, "date": msg.created_ctime, "conversation_id": conversations[i].conversation_id})
 
     return convos
 
@@ -1294,78 +1297,126 @@ def inbox_info():
 @app.route('/dashboard/inbox', methods=['GET', 'POST'])
 @login_required
 def inbox():
-    conversations = inbox_info()
+    conversation_snippets = inbox_info()
     delete = request.form.get("delete")
 
     if request.method == "POST" and delete:
+        print("DELETE")
         request_form = request.form.to_dict()
-        convos_del = [Conversation.query.filter_by(id=int(value)).first() for key, value in request_form.items() if "convo_" in key]
+        convos_del = [Conversation_User.query.filter_by(user_id=current_user.id, conversation_id=int(value)).first() for key, value in request_form.items() if "convo_" in key]
 
         for convo in convos_del:
             db.session.delete(convo)
-        
+
         db.session.commit()
 
         return redirect(url_for("inbox"))
 
     return render_template("conversation.html",
-                            conversations=conversations,
+                            conversation_snippets=conversation_snippets,
                             title="Inbox")
 
-def searched_users(search):
-    search_results = User_Account.query.filter(User_Account.first_name.startswith(search)).all()
+def searched_users(name, course_id):
+    name = name.title().split(" ")
+    first_name = name[0]
+    if len(name) > 1:
+        last_name = name[1]
+    search_match = []
+    results_parsed = {}
 
+    search_all = User_Account.query.filter(User_Account.first_name.startswith(first_name)).all()
+
+    for user in search_all:
+        if user.profession == "Student":
+            search_match += [user for c in user.classes if c.course_id == int(course_id)]
+        else:
+            search_match += [user for c in user.courses if c.id == int(course_id)]
+
+    for user in search_match:
+        if current_user.id != user.id:
+            if user.profession == "Student":
+                results_parsed[f"{user.first_name} {user.last_name} #{user.id}"] = str(user.id)
+            else:
+                results_parsed[f"{user.first_name} {user.last_name} - Teacher"] = str(user.id)
+
+    return results_parsed
+
+@app.route('/dashboard/inbox/conversation/new/search', methods=['GET'])
+@login_required
+@limiter.exempt
+def get_recipients():
+    request_args = request.args.to_dict()
+
+    print(request_args)
+    if request.method == "GET":
+        return searched_users(request_args['name'], request_args['course_id'])
 
 @app.route('/dashboard/inbox/conversation/new', methods=['GET', 'POST'])
 @login_required
 def new_conversation():
-    conversations = inbox_info()
+    conversation_snippets = inbox_info()
     recipient = request.args.get("recipient_id")
     if recipient:
         recipient = User_Account.query.filter_by(id=int(recipient)).first()
-    
-    print(current_user.classes)
-
-    form = NewConversationForm()
     request_form = request.form.to_dict()
 
-    if "ajax" in request_form and request.method == "GET":
-        return searched_users(request_form['search'], request_form['course'])
     if request.method == "POST":
         recipients = [{key: value} for key, value in request_form.items() if "recipient_" in key]
-
         form = NewConversationForm(recipients=recipients)
 
         if form.validate_on_submit():
-            title = form.title.data
-            message = form.message.data
-
-            conversation = Conversation(title=title)
+            conversation = Conversation(title=form.title.data)
             db.session.add(conversation)
             db.session.commit()
 
-            conversation_user = conversation_user(user_id=current_user.id, conversation_id=conversation.id)
-            for key, recipient in recipients.items():
-                conversation_recipient = conversation_user(user_id=int(recipient), conversation_id=conversation.id)
-                db.session.add(conversation_recipient)
+            conversation_user = Conversation_User(user_id=current_user.id, conversation_id=conversation.id)
 
-            message = Message(conversation_id=conversation.id,
+            for recipient_id in set(form.recipients.data):
+                if current_user.id != int(recipient_id):
+                    conversation_recipient = Conversation_User(user_id=int(recipient_id), conversation_id=conversation.id)
+                    db.session.add(conversation_recipient)
+            
+            print(form.message.data)
+
+            msg = Message(conversation_id=conversation.id,
                                 user_id=current_user.id,
-                                content=message)
+                                content=form.message.data)
             
             db.session.add(conversation_user)
-            db.session.add(message)
+            db.session.add(msg)
             db.session.commit()
 
             return redirect(url_for("conversation", convo_id=conversation.id))
-
-    return render_template("new_conversation.html",
-                        conversations=conversations,
-                        recipient=recipient,
-                        form=form,
-                        title="New Conversation")
+        else:
+            return redirect(url_for('new_conversation'))
+    elif request.method == "GET":
+        form = NewConversationForm()
+        return render_template("new_conversation.html",
+                            conversation_snippets=conversation_snippets,
+                            recipient=recipient,
+                            form=form,
+                            title="New Conversation")
 
 @app.route('/dashboard/inbox/conversation/<int:convo_id>', methods=['GET', 'POST'])
 @login_required
+@limiter.exempt
 def conversation(convo_id):
-    pass
+    conversation_snippets = inbox_info()
+    conversation = Conversation.query.filter_by(id=convo_id).first()
+    messages = conversation.messages
+    form = NewMessageForm()
+
+    if request.method == "POST" and form.validate_on_submit():
+        message = Message(conversation_id=convo_id,
+                            user_id=current_user.id,
+                            content=form.message.data)
+        db.session.add(message)
+        db.session.commit()
+
+        return redirect(url_for('conversation', convo_id=convo_id))
+    return render_template("conversation.html",
+                            conversation=conversation,
+                            messages=messages,
+                            conversation_snippets=conversation_snippets,
+                            form=form,
+                            title="Conversation")
