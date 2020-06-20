@@ -479,17 +479,14 @@ a {
   display: flex;
   justify-content: center;
   align-items: center;
-  top: .6rem;
-  right: .5rem;
-  min-height: 1.5rem;
-  max-height: 1.5rem;
-  min-width: 1.5rem;
-  max-width: 1.5rem;
+  top: .7rem;
+  right: .75rem;
+  padding: .5rem;
   color: #ffffff;
   font-weight: 700;
   background-color: #3B7DB4;
   border: 3px solid #022B43;
-  border-radius: .5rem;
+  border-radius: 50%;
   overflow: hidden;
 }
 
@@ -775,7 +772,7 @@ a {
 .convo-unread-mail {
   position: absolute;
   top: .5rem;
-  right: .5rem;
+  right: .75rem;
   border-radius: 50%;
   padding: .35rem;
   background-color: #3978AC;

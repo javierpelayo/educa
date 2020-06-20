@@ -214,12 +214,19 @@ def grades_edit_error_handler(request_form, course):
     return errors
 
 @app.context_processor
-def inject_pf_image():
+def inject_default():
     try:
         profile_image = url_for('static', filename="profile_images/" + current_user.profile_image)
     except:
         profile_image = url_for('static', filename="profile_images/default.png")
-    return dict(profile_image=profile_image)
+
+    msg_notif = False
+    for convo in current_user.conversations:
+        if not convo.read:
+            msg_notif = True
+            break
+
+    return dict(profile_image=profile_image, msg_notif=msg_notif)
 
 @app.errorhandler(429)
 def too_many_requests(e):
