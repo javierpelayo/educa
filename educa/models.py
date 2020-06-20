@@ -18,6 +18,7 @@ class Conversation_User(db.Model):
     __tablename__ = 'conversation_user'
     user_id = db.Column(db.Integer, db.ForeignKey('user_account.id'), primary_key=True)
     conversation_id = db.Column(db.Integer, db.ForeignKey('conversation.id'), primary_key=True)
+    read = db.Column(db.Boolean, default=False)
     conversation = db.relationship('Conversation', backref=db.backref('conversation_users'))
 
 class Course_User(db.Model):
@@ -112,6 +113,8 @@ class Message(db.Model):
     conversation_id = db.Column(db.Integer, db.ForeignKey('conversation.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user_account.id'), nullable=False)
     content = db.Column(db.Text, nullable=False)
+    # Other type is "left"
+    msg_type = db.Column(db.String(40), default="regular")
     created_time = db.Column(db.Float, nullable=False, default=time)
     created_ctime = db.Column(db.String(120), nullable=False, default=time_readable)
 

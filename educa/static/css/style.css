@@ -474,6 +474,31 @@ a {
   font-size: 2rem;
 }
 
+#new-msg-notif {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: .6rem;
+  right: .5rem;
+  min-height: 1.5rem;
+  max-height: 1.5rem;
+  min-width: 1.5rem;
+  max-width: 1.5rem;
+  color: #ffffff;
+  font-weight: 700;
+  background-color: #3B7DB4;
+  border: 3px solid #022B43;
+  border-radius: .5rem;
+  overflow: hidden;
+}
+
+#new-msg-notif p {
+  padding-left: .15rem;
+  font-size: .24rem;
+  margin: auto;
+}
+
 .sidenav-text {
   font-size: .75rem;
 }
@@ -491,6 +516,7 @@ a {
 }
 
 .sidenav-item {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -639,15 +665,14 @@ a {
 }
 
 .profile-img-small {
-  min-height: 35px;
-  max-height: 35px;
-  min-width: 35px;
-  max-width: 35px;
+  min-height: 2rem;
+  max-height: 2rem;
+  min-width: 2rem;
+  max-width: 2rem;
   border-radius: 50% !important;
-
+  background-size: 2rem 2rem;
   background-color: #fff;
-  border-radius: .25rem;
-  max-width: 100%;
+  border-radius: 50%;
 }
 
 /* -STUDENT-PROFILE */
@@ -747,21 +772,14 @@ a {
   left: .25rem;
 }
 
-.inbox-check input {
-  width: 1em;
-  height: 1em;
-  background-color: white;
+.convo-unread-mail {
+  position: absolute;
+  top: .5rem;
+  right: .5rem;
   border-radius: 50%;
-  vertical-align: middle;
-  border: 1px solid #ddd;
-  -webkit-appearance: none;
-  outline: none;
-  cursor: pointer;
-}
-
-.inbox-check input:checked {
-  background-color: #3F88C5;
-  border: none;
+  padding: .35rem;
+  background-color: #3978AC;
+  overflow: hidden;
 }
 
 .delete-convo {
@@ -957,6 +975,16 @@ a {
   border-bottom-left-radius: 1rem;
   border: 1px solid #dee2e6;
   box-sizing: border-box;
+}
+
+.teacher-msg-name {
+  color: #0E584F;
+  font-weight: 600px;
+}
+
+.left-msg {
+  font-style: italic;
+  margin: 1.5rem;
 }
 
 @media (min-width: 768px) {

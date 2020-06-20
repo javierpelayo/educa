@@ -22,16 +22,22 @@
             <!-- Form is for deletion -->
                 <form class="delete-convo" id="convo_id" action="{{ url_for('inbox') }}" method="POST">
                     {% for i in range(conversation_snippets| length) %}
-                        <a class="inbox-convos-content" href="{{ url_for('conversation', convo_id=conversation_snippets[i]['conversation_id']) }}">
-                            <div>
-                                <div class="inbox-check">
-                                    <input type="checkbox" name="convo_{{ i }}" value="{{ conversation_snippets[i]['conversation_id'] }}">
+                            <a class="inbox-convos-content" href="{{ url_for('conversation', convo_id=conversation_snippets[i]['conversation_id']) }}">
+                                <div>        
+                                {% if not conversation_snippets[i]['read'] %}                                
+                                    <div class="convo-unread-mail">
+                                    </div>
+                                    <h5 class="inbox-snip-header text-truncate mt-2 font-weight-bold">{{ conversation_snippets[i]["names"] }}</h5>        
+                                {% else %}
+                                    <h5 class="inbox-snip-header text-truncate mt-2">{{ conversation_snippets[i]["names"] }}</h5>
+                                {% endif %}
+                                    <div class="inbox-check">
+                                        <input type="checkbox" name="convo_{{ i }}" value="{{ conversation_snippets[i]['conversation_id'] }}">
+                                    </div>
+                                    <p class="text-truncate">{{ conversation_snippets[i]["msg"] }}</p>
+                                    <small class="mb-2">{{ conversation_snippets[i]["date"] }}</small>
                                 </div>
-                                <h5 class="inbox-snip-header text-truncate mt-2">{{ conversation_snippets[i]["names"] }}</h5>
-                                <p class="text-truncate">{{ conversation_snippets[i]["msg"] }}</p>
-                                <small class="mb-2">{{ conversation_snippets[i]["date"] }}</small>
-                            </div>
-                        </a>
+                            </a>
                     {% endfor %}
                 </form>
             {% else %}

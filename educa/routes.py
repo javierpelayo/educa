@@ -1289,7 +1289,7 @@ def inbox_info():
             users = ", ".join([user.first_name for user in users])
             msg = Message.query.filter_by(conversation_id=conversations[i].conversation_id).order_by(Message.created_time).all()[-1]
 
-            convos.append({"names": users, "msg": msg.content, "date": msg.created_ctime, "conversation_id": conversations[i].conversation_id})
+            convos.append({"names": users, "msg": msg.content, "date": msg.created_ctime, "conversation_id": conversations[i].conversation_id, "read": conversations[i].read})
 
     return convos
 
@@ -1298,12 +1298,19 @@ def inbox_info():
 @login_required
 def inbox():
     conversation_snippets = inbox_info()
+
     delete = request.form.get("delete")
 
     if request.method == "POST" and delete:
-        print("DELETE")
         request_form = request.form.to_dict()
         convos_del = [Conversation_User.query.filter_by(user_id=current_user.id, conversation_id=int(value)).first() for key, value in request_form.items() if "convo_" in key]
+
+        for convo_user in convos_del:
+            message = Message(conversation_id=convo_user.conversation_id,
+                        user_id=current_user.id,
+                        content=f"{current_user.first_name} {current_user.last_name} has left this conversation.",
+                        msg_type="left")
+            db.session.add(message)
 
         for convo in convos_del:
             db.session.delete(convo)
@@ -1346,8 +1353,6 @@ def searched_users(name, course_id):
 @limiter.exempt
 def get_recipients():
     request_args = request.args.to_dict()
-
-    print(request_args)
     if request.method == "GET":
         return searched_users(request_args['name'], request_args['course_id'])
 
@@ -1369,14 +1374,12 @@ def new_conversation():
             db.session.add(conversation)
             db.session.commit()
 
-            conversation_user = Conversation_User(user_id=current_user.id, conversation_id=conversation.id)
+            conversation_user = Conversation_User(user_id=current_user.id, conversation_id=conversation.id, read=True)
 
             for recipient_id in set(form.recipients.data):
                 if current_user.id != int(recipient_id):
                     conversation_recipient = Conversation_User(user_id=int(recipient_id), conversation_id=conversation.id)
                     db.session.add(conversation_recipient)
-            
-            print(form.message.data)
 
             msg = Message(conversation_id=conversation.id,
                                 user_id=current_user.id,
@@ -1401,8 +1404,14 @@ def new_conversation():
 @login_required
 @limiter.exempt
 def conversation(convo_id):
+
+    user_convo = Conversation_User.query.filter_by(user_id=current_user.id, conversation_id=convo_id).first()
+    user_convo.read = True
+    db.session.commit()
+
     conversation_snippets = inbox_info()
     conversation = Conversation.query.filter_by(id=convo_id).first()
+
     messages = conversation.messages
     form = NewMessageForm()
 
@@ -1410,6 +1419,12 @@ def conversation(convo_id):
         message = Message(conversation_id=convo_id,
                             user_id=current_user.id,
                             content=form.message.data)
+
+        conversation_users = Conversation_User.query.filter_by(conversation_id=convo_id).all()
+        for convo_user in conversation_users:
+            if convo_user.user_id != current_user.id:
+                convo_user.read = False
+
         db.session.add(message)
         db.session.commit()
 

@@ -24,9 +24,15 @@
                 </div>
                 <div class="col-6">
                     <select class="custom-select" name="course_id" id="course-id">
-                        {% for course_user in current_user.classes %}
-                            <option value="{{ course_user.course_id }}">{{ course_user.course.title }}</option>
-                        {% endfor %}
+                        {% if current_user.profession == "Teacher" %}
+                            {% for course in current_user.courses %}
+                                <option value="{{ course.id }}">{{ course.title }}</option>
+                            {% endfor %}
+                        {% else %}
+                            {% for course_user in current_user.classes %}
+                                <option value="{{ course_user.course_id }}">{{ course_user.course.title }}</option>
+                            {% endfor %}
+                        {% endif %}
                     </select>
                 </div>
             </div>
