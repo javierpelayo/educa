@@ -481,7 +481,7 @@ a {
   align-items: center;
   top: .7rem;
   right: .75rem;
-  padding: .5rem;
+  padding: .4rem;
   color: #ffffff;
   font-weight: 700;
   background-color: #3B7DB4;
@@ -781,6 +781,7 @@ a {
 
 .delete-convo {
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .inbox-convos-content {
@@ -826,6 +827,7 @@ a {
 }
 
 .convo-header {
+  position: relative;
   width: 100%;
   height: 7%;
   display: flex;
@@ -833,6 +835,11 @@ a {
   align-items: center;
   padding: 1.25rem;
   border-bottom: 1px solid #dee2e6;
+}
+
+.return-inbox {
+  position: absolute;
+  left: .5rem;
 }
 
 .convo-inputs {
@@ -949,6 +956,7 @@ a {
   display: flex;
   width: 100%;
   border-top: 1px solid #dee2e6;
+  background-color: #ffffff;
   min-height: 6em;
   max-height: 6em;
 }

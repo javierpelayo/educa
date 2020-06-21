@@ -35,7 +35,7 @@
                                         <input type="checkbox" name="convo_{{ i }}" value="{{ conversation_snippets[i]['conversation_id'] }}">
                                     </div>
                                     <p class="text-truncate">{{ conversation_snippets[i]["msg"] }}</p>
-                                    <small class="mb-2">{{ conversation_snippets[i]["date"] }}</small>
+                                    <small class="mb-2 text-truncate">{{ conversation_snippets[i]["date"] }}</small>
                                 </div>
                             </a>
                     {% endfor %}
@@ -52,4 +52,5 @@
         </div>
         {% block convo %}{% endblock convo %}
     </div>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/inbox.js')| autoversion }}"></script>
 {% endblock content_dash %}

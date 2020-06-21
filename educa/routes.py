@@ -215,16 +215,15 @@ def grades_edit_error_handler(request_form, course):
 
 @app.context_processor
 def inject_default():
+    msg_notif = False
     try:
         profile_image = url_for('static', filename="profile_images/" + current_user.profile_image)
+        for convo in current_user.conversations:
+            if not convo.read:
+                msg_notif = True
+                break
     except:
         profile_image = url_for('static', filename="profile_images/default.png")
-
-    msg_notif = False
-    for convo in current_user.conversations:
-        if not convo.read:
-            msg_notif = True
-            break
 
     return dict(profile_image=profile_image, msg_notif=msg_notif)
 
@@ -1282,7 +1281,7 @@ def deadlines():
 
 def inbox_info():
     conversations = current_user.conversations
-    conversations.sort(key=lambda c:c.conversation_id)
+    conversations.sort(key=lambda c:c.conversation_id, reverse=True)
     convos = []
 
     if conversations:
