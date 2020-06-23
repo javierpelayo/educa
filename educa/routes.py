@@ -1406,6 +1406,28 @@ def new_conversation():
                             form=form,
                             title="New Conversation")
 
+@app.route('/dashboard/inbox/conversation/<int:convo_id>/update', methods=['GET'])
+@login_required
+@limiter.exempt
+def update_messages(convo_id):
+    conversation = Conversation.query.filter_by(id=convo_id).first()
+    messages = conversation.messages
+    update_msg = []
+    msg_timestamp = float(request.args.get('timestamp'))
+    top = request.args.get('top')
+    print(msg_timestamp)
+    for msg in messages:
+        if top == "true":
+            if msg.created_time < msg_timestamp and len(update_msg) < 10:
+                update_msg.append(msg.rendering_dict())
+        else:
+            if msg.created_time > msg_timestamp:
+                update_msg.append(msg.rendering_dict())
+
+    update_msg = sorted(update_msg, key= lambda d: d.get("timestamp"), reverse=True)
+    
+    return json.dumps(update_msg)
+
 @app.route('/dashboard/inbox/conversation/<int:convo_id>', methods=['GET', 'POST'])
 @login_required
 @limiter.exempt
@@ -1418,7 +1440,10 @@ def conversation(convo_id):
     conversation_snippets = inbox_info()
     conversation = Conversation.query.filter_by(id=convo_id).first()
 
-    messages = conversation.messages
+    messages = conversation.messages[0:3]
+    # if len(messages) > 10:
+    #     messages = messages[-10:]
+
     form = NewMessageForm()
 
     if request.method == "POST" and form.validate_on_submit():

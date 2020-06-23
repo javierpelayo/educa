@@ -121,6 +121,17 @@ class Message(db.Model):
     def __repr__(self):
         return f"Message('{self.id}', '{self.conversation_id}', '{self.user_id}', '{self.content}')"
 
+    def rendering_dict(self):
+        return {"id": f"{self.id}",
+                "user_id": f"{self.user.id}",
+                "name": f"{self.user.first_name} {self.user.last_name}",
+                "profession": self.user.profession,
+                "profile_img": self.user.profile_image,
+                "message": self.content,
+                "created_ctime": self.created_ctime,
+                "timestamp": self.created_time,
+                "type": self.msg_type}
+
 
 # SECTION 3. Course Schema
 class Course(db.Model):

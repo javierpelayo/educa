@@ -27,13 +27,15 @@
                             <div class="d-flex align-items-center m-2">
                                 <img class="profile-img-small" src="{{ url_for('static', filename='profile_images/' + messages[i].user.profile_image) }}" alt="">
                                 {% if messages[i].user.profession == "Student" %}
-                                    <h6 class="m-0 ml-1">{{ messages[i].user.first_name }} {{ messages[i].user.last_name }} #{{ messages[i].user.id }}</h6>
+                                    <h6 class="m-0 ml-3">{{ messages[i].user.first_name }} {{ messages[i].user.last_name }} #{{ messages[i].user.id }}</h6>
                                 {% else %}
-                                    <h6 class="teacher-msg-name m-0 ml-1">{{ messages[i].user.first_name }} {{ messages[i].user.last_name }} - Teacher</h6>
+                                    <h6 class="teacher-msg-name m-0 ml-3">{{ messages[i].user.first_name }} {{ messages[i].user.last_name }} - Teacher</h6>
                                 {% endif %}
                             </div>
                             <p class="m-2 pl-3">{{ messages[i].content }}</p>
                             <small class="m-2 pl-3">{{ messages[i].created_ctime }}</small>
+                            <input type="hidden" name="timestamp_{{ messages[i].id }}" value="{{ messages[i].created_time }}">
+                            <!-- New Msgs notif -->
                         </div>
                     {% elif messages[i].msg_type == "left" %}
                         <div class="msg">
