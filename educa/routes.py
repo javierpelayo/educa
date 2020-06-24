@@ -1416,6 +1416,7 @@ def update_messages(convo_id):
     msg_timestamp = float(request.args.get('timestamp'))
     top = request.args.get('top')
     print(msg_timestamp)
+    print("")
     for msg in messages:
         if top == "true":
             if msg.created_time < msg_timestamp and len(update_msg) < 10:
@@ -1424,7 +1425,10 @@ def update_messages(convo_id):
             if msg.created_time > msg_timestamp:
                 update_msg.append(msg.rendering_dict())
 
-    update_msg = sorted(update_msg, key= lambda d: d.get("timestamp"), reverse=True)
+    if top == "true":
+        update_msg = sorted(update_msg, key= lambda d: d.get("timestamp"))
+    else:
+        update_msg = sorted(update_msg, key= lambda d: d.get("timestamp"), reverse=True)
     
     return json.dumps(update_msg)
 
@@ -1440,9 +1444,9 @@ def conversation(convo_id):
     conversation_snippets = inbox_info()
     conversation = Conversation.query.filter_by(id=convo_id).first()
 
-    messages = conversation.messages[0:3]
-    # if len(messages) > 10:
-    #     messages = messages[-10:]
+    messages = conversation.messages
+    if len(messages) > 10:
+        messages = messages[-10:]
 
     form = NewMessageForm()
 

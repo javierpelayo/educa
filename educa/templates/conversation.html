@@ -20,6 +20,11 @@
             {% endif %}
         </div>
         <div class="messages">
+            <div id="loading" class="border-0 d-none">
+                <div class="d-flex justify-content-center align-items-center">
+                    <div class="loader"></div>
+                </div>
+            </div>
             {% if conversation %}
                 {% for i in range(messages| length) %}
                     {% if messages[i].msg_type == "regular" %}
