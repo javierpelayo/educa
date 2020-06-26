@@ -8,51 +8,56 @@ function updateScroll() {
 
 function insertNewMsg(msgs, msgTime, top) {
     let msgPoint = document.querySelector(`input[value='${msgTime}']`).parentNode;
+    // check msg is not equal to renderedMSG
     msgs.forEach((msg) => {
-        let profileImg = `<img class="profile-img-small" src="${window.location.href.split("dashboard")[0]}static/profile_images/${msg.profile_img}">`;
+        // check if this msg has already been inserted in the DOM
+        let domMsg = document.querySelector(`input[value='${msg.timestamp}']`);
+        if (!domMsg) {
+            let profileImg = `<img class="profile-img-small" src="${window.location.href.split("dashboard")[0]}static/profile_images/${msg.profile_img}">`;
         
-        if (msg.profession == "Student") {
-            var name = `<h6 class="m-0 ml-3">${msg.name} #${msg.user_id}</h6>`;
-        } else {
-            var name = `<h6 class="teacher-msg-name m-0 ml-3">${msg.name} - Teacher</h6>`;
-        }
-
-        let content = `<p class="m-2 pl-3">${msg.message}</p>`
-        let time = `<small class="m-2 pl-3">${msg.created_ctime}</small>`;
-        let hidden = `<input type="hidden" name="timestamp_${msg.id}" value="${msg.timestamp}">`;
-
-        if (msg.type == "left") {
-            var fullMsg = `<div class="msg">
-                                <div class="d-flex justify-content-center align-items-center m-2">
-                                    <p class="left-msg">${msg.message}</p>
-                                </div>
-                            </div>`
-        } else {
-            var fullMsg = `<div class="msg">
-                                <div class="d-flex align-items-center m-2">
-                                    ${profileImg}
-                                    ${name}
-                                </div>
-                                ${content}
-                                ${time}
-                                ${hidden}
-                            </div`;
-        }
-        
-        // reverse is dependant on the vantage point of the message
-        if (top) {
-            // no reverse needed
-            msgPoint.insertAdjacentHTML('beforebegin', fullMsg);
-        } else {
-            // reversed list here
-            msgPoint.insertAdjacentHTML('afterend', fullMsg);
+            if (msg.profession == "Student") {
+                var name = `<h6 class="m-0 ml-3">${msg.name} #${msg.user_id}</h6>`;
+            } else {
+                var name = `<h6 class="teacher-msg-name m-0 ml-3">${msg.name} - Teacher</h6>`;
+            }
+    
+            let content = `<p class="m-2 pl-3">${msg.message}</p>`
+            let time = `<small class="m-2 pl-3">${msg.created_ctime}</small>`;
+            let hidden = `<input type="hidden" name="timestamp_${msg.id}" value="${msg.timestamp}">`;
+    
+            if (msg.type == "left") {
+                var fullMsg = `<div class="msg">
+                                    <div class="d-flex justify-content-center align-items-center m-2">
+                                        <p class="left-msg">${msg.message}</p>
+                                    </div>
+                                </div>`
+            } else {
+                var fullMsg = `<div class="msg">
+                                    <div class="d-flex align-items-center m-2">
+                                        ${profileImg}
+                                        ${name}
+                                    </div>
+                                    ${content}
+                                    ${time}
+                                    ${hidden}
+                                </div`;
+            }
+            
+            // reverse is dependant on the vantage point of the message
+            if (top) {
+                // no reverse needed
+                msgPoint.insertAdjacentHTML('beforebegin', fullMsg);
+            } else {
+                // reversed list here
+                msgPoint.insertAdjacentHTML('afterend', fullMsg);
+            }
         }
     });
-    
+
     if (top) {
         setTimeout(() => {
             loader.classList.add("d-none");
-        }, 2000);
+        }, 1000);
     }
 }
 
