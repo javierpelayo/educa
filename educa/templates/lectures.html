@@ -13,7 +13,7 @@
                     {% for lecture in lectures %}
                         <tr>
                             <td><a class="fancy-link" href="{{ url_for('lecture', course_id=course.id, lecture_id=lecture.id) }}">{{ lecture.title }}</a></td>
-                            <td>{{ lecture.created_ctime }}</td>
+                            <td>{{ moment(lecture.created_ctime).format('LLL') }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>

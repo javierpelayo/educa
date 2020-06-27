@@ -318,7 +318,7 @@ def logout():
 @app.route('/verify_email_message/<string:email>', methods=["GET"])
 def verify_email_message(email):
     if current_user.is_authenticated and current_user.confirmed:
-        return redirect(url_for('courses'))
+        return redirect(url_for('dashboard'))
     if request.method == "GET":
         user = User_Account.query.filter_by(email=email).first()
         if user:
@@ -335,7 +335,7 @@ def verify_email_message(email):
 @app.route('/resend_email_message/<string:email>', methods=["GET"])
 def resend_email_message(email):
     if current_user.is_authenticated and current_user.confirmed:
-        return redirect(url_for('courses'))
+        return redirect(url_for('dashboard'))
 
     # Not following DRY incase of flash message pile up
     if request.method == "GET":
@@ -721,7 +721,7 @@ def new_assignment(course_id):
         datetime_object = datetime(year, month, day, hour, minute)
 
         duedate_time = datetime.timestamp(datetime_object)
-        duedate_ctime = datetime_object.strftime("%b %d %Y %I:%M %p")
+        duedate_ctime = datetime.fromtimestamp(duedate_time).isoformat() + "Z"
 
         assignment = Assignment(course_id=course.id,
                                 points=assignmentform.points.data,
@@ -1415,8 +1415,7 @@ def update_messages(convo_id):
     update_msg = []
     msg_timestamp = float(request.args.get('timestamp'))
     top = request.args.get('top')
-    print(msg_timestamp)
-    print("")
+
     for msg in messages:
         if top == "true":
             if msg.created_time < msg_timestamp and len(update_msg) < 10:

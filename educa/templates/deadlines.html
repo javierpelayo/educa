@@ -26,7 +26,7 @@
                                 <a class="fancy-link" href="{{ url_for('assignment', course_id=assignment.course.id, assignment_id=assignment.id) }}">{{ assignment.title }}</a>
                             </td>
                             <td>
-                                {{ assignment.duedate_ctime }}
+                                {{ moment(assignment.duedate_ctime).format('LLL') }}
                             </td>
                             <td>
                                 {{ assignment.course.title }}

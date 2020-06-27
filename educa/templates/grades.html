@@ -70,7 +70,7 @@
           {% for i in range(assignments| length) %}
             <tr>
               <td class="assignment-link"><a href="{{ url_for('assignment', course_id=course.id, assignment_id=assignments[i].id) }}">{{ assignments[i].title }}</a></td>
-              <td>{{ assignments[i].duedate_ctime }}</td>
+              <td>{{ moment(assignments[i].duedate_ctime).format('LLL') }}</td>
               {% if user_latest_assignments[i] != 0 %}
                 <td>{{ user_latest_assignments[i].points }}</td>
               {% else %}

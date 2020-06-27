@@ -19,7 +19,7 @@
           <tr>
             {% if student_assignments[i] != 0 %}
               <td><a class="fancy-link" href="{{ url_for('student_assignment', course_id=course.id, student_id=student.id, user_assignment_id=student_assignments[i].id) }}">{{ assignments[i].title }}</a></td>
-              <td>{{ student_assignments[i].created_ctime }}</td>
+              <td>{{ moment(student_assignments[i].created_ctime).format('LLL') }}</td>
               <td>{{ student_assignments[i].points }}</td>
             {% else %}
               <td>{{ assignments[i].title }}</td>

@@ -9,9 +9,9 @@ import jwt
 def load_user(user_id):
     return User_Account.query.get(int(user_id))
 
-# time in readable format
+# time in readable format UTC
 def time_readable():
-    return datetime.fromtimestamp(time()).strftime("%b %d %Y %I:%M %p")
+    return datetime.fromtimestamp(time()).isoformat() + "Z"
 
 # Association/Join Tables
 class Conversation_User(db.Model):
@@ -51,7 +51,7 @@ class User_Assignment(db.Model):
     type = type = db.Column(db.String(120), nullable=False)
     # used incase student resubmits / latest is the one that is graded
     created_time = db.Column(db.Float, nullable=False, default=time)
-    created_ctime = db.Column(db.String(120), nullable=False, default=time_readable)
+    created_ctime = db.Column(db.DateTime, nullable=False, default=time_readable)
     assignment = db.relationship('Assignment', backref=db.backref('user_assignments', passive_deletes=True))
 
     def __repr__(self):
@@ -116,7 +116,7 @@ class Message(db.Model):
     # Other type is "left"
     msg_type = db.Column(db.String(40), default="regular")
     created_time = db.Column(db.Float, nullable=False, default=time)
-    created_ctime = db.Column(db.String(120), nullable=False, default=time_readable)
+    created_ctime = db.Column(db.DateTime, nullable=False, default=time_readable)
 
     def __repr__(self):
         return f"Message('{self.id}', '{self.conversation_id}', '{self.user_id}', '{self.content}')"
@@ -128,7 +128,7 @@ class Message(db.Model):
                 "profession": self.user.profession,
                 "profile_img": self.user.profile_image,
                 "message": self.content,
-                "created_ctime": self.created_ctime,
+                "created_ctime": f'{self.created_ctime}',
                 "timestamp": self.created_time,
                 "type": self.msg_type}
 
@@ -161,9 +161,9 @@ class Assignment(db.Model):
     type = db.Column(db.String(120), nullable=False)
     tries = db.Column(db.Integer, nullable=False)
     created_time = db.Column(db.Float, nullable=False, default=time)
-    created_ctime = db.Column(db.String(120), nullable=False, default=time_readable)
+    created_ctime = db.Column(db.DateTime, nullable=False, default=time_readable)
     duedate_time = db.Column(db.Float)
-    duedate_ctime = db.Column(db.String(120))
+    duedate_ctime = db.Column(db.DateTime)
     questions = db.relationship('Question', backref='assignment', passive_deletes=True)
 
     def __repr__(self):
@@ -202,7 +202,7 @@ class Lecture(db.Model):
     url = db.Column(db.Text, nullable=False)
     description = db.Column(db.Text)
     created_time = db.Column(db.Float, nullable=False, default=time)
-    created_ctime = db.Column(db.String(120), nullable=False, default=time_readable)
+    created_ctime = db.Column(db.DateTime, nullable=False, default=time_readable)
 
     def __repr__(self):
         return f"Lecture('{self.id}', '{self.course_id}', '{self.title}', '{self.description}', '{self.url}')"

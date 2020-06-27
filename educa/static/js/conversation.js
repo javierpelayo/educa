@@ -22,7 +22,7 @@ function insertNewMsg(msgs, msgTime, top) {
             }
     
             let content = `<p class="m-2 pl-3">${msg.message}</p>`
-            let time = `<small class="m-2 pl-3">${msg.created_ctime}</small>`;
+            let time = `<small class="m-2 pl-3">${moment(msg.created_ctime).format('LLL')}</small>`;
             let hidden = `<input type="hidden" name="timestamp_${msg.id}" value="${msg.timestamp}">`;
     
             if (msg.type == "left") {

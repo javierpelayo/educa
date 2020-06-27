@@ -7,6 +7,7 @@ from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_mail import Mail
+from flask_moment import Moment
 import configparser
 import os
 
@@ -27,6 +28,7 @@ app.config['MAX_CONTENT_LENGTH'] = 500 * 1024
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 bcrypt = Bcrypt(app)
+moment = Moment(app)
 
 login_manager = LoginManager(app)
 login_manager.login_message = ""

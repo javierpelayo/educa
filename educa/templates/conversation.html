@@ -38,7 +38,7 @@
                                 {% endif %}
                             </div>
                             <p class="m-2 pl-3">{{ messages[i].content }}</p>
-                            <small class="m-2 pl-3">{{ messages[i].created_ctime }}</small>
+                            <small class="m-2 pl-3">{{ moment(messages[i].created_ctime).format('LLL') }}</small>
                             <input type="hidden" name="timestamp_{{ messages[i].id }}" value="{{ messages[i].created_time }}">
                             <!-- New Msgs notif -->
                         </div>

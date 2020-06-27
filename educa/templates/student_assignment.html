@@ -6,7 +6,7 @@
       <h3>{{ assignment.title }} - {{ student.first_name }} {{ student.last_name }} ID#{{ student.id }}</h3>
     </div>
     <div class="assignment-info">
-      <h5>Due: {{ assignment.duedate_ctime }}</h5>
+      <h5>Due: {{ moment(assignment.duedate_ctime).format('LLL') }}</h5>
       <h5 class="ml-1">Points: {{ assignment.points }}</h5>
       <h5 class="ml-1">Questions: {{ questions| length }}</h5>
     </div>
