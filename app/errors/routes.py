@@ -1,4 +1,6 @@
-from flask import Blueprint
+from flask import Blueprint, render_template
+from app import db
+from app.filters import autoversion
 
 errors = Blueprint("errors", __name__)
 

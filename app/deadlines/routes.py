@@ -1,8 +1,12 @@
-from flask import Blueprint
+from flask import Blueprint, render_template
+from flask_login import login_required, current_user
+from app.models import (Course_User, User_Assignment,
+                        Assignment)
+from app.filters import autoversion
 
-deadlines = Blueprint("deadlines", __name__)
+deadlines_ = Blueprint("deadlines", __name__)
 
-@deadlines.route('/dashboard/deadlines', methods=['GET'])
+@deadlines_.route('/dashboard/deadlines', methods=['GET'])
 @login_required
 def deadlines():
     courses = Course_User.query.filter_by(user_id=current_user.id).all()

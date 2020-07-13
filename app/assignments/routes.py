@@ -1,8 +1,21 @@
-from flask import Blueprint
+from flask import (Blueprint, render_template, request,
+                    redirect, url_for, flash)
+from app import db
+from flask_login import current_user, login_required
+from app.models import (Course, Assignment, User_Assignment,
+                        Question, Course_User, Option)
+from app.assignments.forms import AssignmentForm
+from app.assignments.utils import (assignment_error_handler, new_assignment_error_handler,
+                                    save_assignment, delete_assignment)
+from app.students.utils import calculate_grade
+from datetime import datetime
+from app.filters import autoversion, course_auth, teacher_auth
+from time import time
+import json
 
-assignments = Blueprint("assignments", __name__)
+assignments_ = Blueprint("assignments", __name__)
 
-@assignments.route('/dashboard/courses/<int:course_id>/assignments', methods=['GET'])
+@assignments_.route('/dashboard/courses/<int:course_id>/assignments', methods=['GET'])
 @login_required
 @course_auth
 def assignments(course_id):
@@ -27,7 +40,7 @@ def assignments(course_id):
                                 current_time=time(),
                                 title=str(course.title) + " - Assignments")
 
-@assignments.route('/dashboard/courses/<int:course_id>/assignments/new', methods=["GET", "POST"])
+@assignments_.route('/dashboard/courses/<int:course_id>/assignments/new', methods=["GET", "POST"])
 @login_required
 @course_auth
 @teacher_auth
@@ -130,7 +143,7 @@ def new_assignment(course_id):
                                 title=str(course.title) + " - New Assignment")
 
 # NO CSRF
-@assignments.route('/dashboard/courses/<int:course_id>/assignments/<int:assignment_id>', methods=['GET', 'POST'])
+@assignments_.route('/dashboard/courses/<int:course_id>/assignments/<int:assignment_id>', methods=['GET', 'POST'])
 @login_required
 @course_auth
 def assignment(course_id, assignment_id):

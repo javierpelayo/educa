@@ -1,19 +1,27 @@
-from flask import Blueprint
+from flask import (Blueprint, send_file, current_app, url_for,
+                    redirect, flash, request, render_template)
+from flask_login import login_required, current_user
+from app.courses.forms import (NewCourseForm, AddCourseForm, UpdateCourseForm,
+                                UpdateSyllabusForm)
+from app.models import (Course, Course_User)
+from app.filters import autoversion, course_auth, teacher_auth
+from app import db
+import os
 
-courses = Blueprint("courses", __name__)
+courses_ = Blueprint("courses", __name__)
 
-@courses.route('/download/<string:filename>', methods=['GET'])
+@courses_.route('/download/<string:filename>', methods=['GET'])
 @login_required
 def download_file(filename):
-    file_path = os.path.join(app.root_path, 'static/assignments', filename)
+    file_path = os.path.join(current_app.root_path, 'static/assignments', filename)
     return send_file(file_path, as_attachment=True)
 
-@courses.route('/dashboard')
+@courses_.route('/dashboard')
 @login_required
 def dashboard():
     return redirect(url_for('courses'))
 
-@courses.route('/dashboard/courses', methods=['GET', 'POST'])
+@courses_.route('/dashboard/courses', methods=['GET', 'POST'])
 @login_required
 def courses():
     teacher_courses = Course.query.filter_by(teacher_id=current_user.id).all()
@@ -91,7 +99,7 @@ def courses():
                                 add_course=add_course,
                                 title="Courses")
 
-@courses.route('/dashboard/courses/<int:course_id>', methods=['GET', 'POST'])
+@courses_.route('/dashboard/courses/<int:course_id>', methods=['GET', 'POST'])
 @login_required
 @course_auth
 def course(course_id):
@@ -154,7 +162,7 @@ def course(course_id):
         flash(f"Could not update course due to a form error.", "danger")
         return redirect(url_for("course", course_id=course.id))
 
-@courses.route('/dashboard/courses/<int:course_id>/edit_syllabus', methods=['GET', 'POST'])
+@courses_.route('/dashboard/courses/<int:course_id>/edit_syllabus', methods=['GET', 'POST'])
 @login_required
 @course_auth
 @teacher_auth

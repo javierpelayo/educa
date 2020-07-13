@@ -1,8 +1,9 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, url_for
+from app.filters import autoversion
 
-home = Blueprint("home", __name__)
+home_ = Blueprint("home", __name__)
 
-@home.app_context_processor
+@home_.app_context_processor
 def inject_default():
     msg_notif = False
     try:
@@ -16,15 +17,15 @@ def inject_default():
 
     return dict(profile_image=profile_image, msg_notif=msg_notif)
 
-@home.route('/')
-@home.route('/home')
+@home_.route('/')
+@home_.route('/home')
 def home():
     return render_template("home.html", title="Home")
 
-@home.route('/about')
+@home_.route('/about')
 def about():
     return render_template("about.html", title="About")
 
-@home.route('/packages')
+@home_.route('/packages')
 def packages():
     return render_template("packages.html", title="Packages")

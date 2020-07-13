@@ -1,8 +1,12 @@
-from flask import Blueprint
+from flask import (Blueprint, request, render_template,
+                    redirect, url_for, flash)
+from flask_login import login_required
+from app.lectures.forms import NewLectureForm
+from app.filters import course_auth, teacher_auth
+from app.models import (Course, Lecture)
+lectures_ = Blueprint("lectures", __name__)
 
-lectures = Blueprint("lectures", __name__)
-
-@lectures.route('/dashboard/courses/<int:course_id>/lectures', methods=['GET', 'POST'])
+@lectures_.route('/dashboard/courses/<int:course_id>/lectures', methods=['GET', 'POST'])
 @login_required
 @course_auth
 def lectures(course_id):
@@ -15,10 +19,10 @@ def lectures(course_id):
                                 course=course,
                                 lectures=lectures,
                                 title=f"{course.title} - Lectures",
-                                header=" \ Lectures")
+                                header=" \\ Lectures")
 
 
-@lectures.route('/dashboard/courses/<int:course_id>/lectures/new', methods=['GET', 'POST'])
+@lectures_.route('/dashboard/courses/<int:course_id>/lectures/new', methods=['GET', 'POST'])
 @login_required
 @course_auth
 @teacher_auth
@@ -48,9 +52,9 @@ def new_lecture(course_id):
                                 course=course,
                                 form=form,
                                 title=f"{course.title} - New Lecture",
-                                header=" \ New Lecture")
+                                header=" \\ New Lecture")
 
-@lectures.route('/dashboard/courses/<int:course_id>/lectures/<int:lecture_id>', methods=['GET', 'POST'])
+@lectures_.route('/dashboard/courses/<int:course_id>/lectures/<int:lecture_id>', methods=['GET', 'POST'])
 @login_required
 @course_auth
 def lecture(course_id, lecture_id):
@@ -62,4 +66,4 @@ def lecture(course_id, lecture_id):
                                 course=course,
                                 lecture=lecture,
                                 title=f"{course.title} - Lecture",
-                                header=" \ " + lecture.title)
+                                header=" \\ " + lecture.title)

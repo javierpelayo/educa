@@ -1,8 +1,18 @@
-from flask import Blueprint
+from flask import (Blueprint, redirect, url_for, request,
+                    render_template, flash)
+from flask_login import login_required, current_user
+from app.students.utils import (grades_edit_error_handler, calculate_grade,
+                                user_grades)
+from app.models import (Course, User_Account, Assignment,
+                        Course_User, User_Assignment)
+from app.filters import autoversion, course_auth, teacher_auth
+from app.assignments.utils import delete_assignment
+from app import db
+import json
 
-students = Blueprint("students", __name__)
+students_ = Blueprint("students", __name__)
 
-@students.route('/dashboard/courses/<int:course_id>/grades', methods=['GET'])
+@students_.route('/dashboard/courses/<int:course_id>/grades', methods=['GET'])
 @login_required
 @course_auth
 def grades(course_id):
@@ -26,7 +36,7 @@ def grades(course_id):
                                 current_assignment_points=current_assignment_points,
                                 title=course.title + " - Grades")
 
-@students.route('/dashboard/courses/<int:course_id>/students', methods=['GET', 'POST'])
+@students_.route('/dashboard/courses/<int:course_id>/students', methods=['GET', 'POST'])
 @login_required
 @course_auth
 def students(course_id):
@@ -90,7 +100,7 @@ def student(course_id, student_id):
                                 profile_image=profile_image,
                                 title=course.title + " - " + user.first_name + " " + user.last_name)
 
-@students.route('/dashboard/courses/<int:course_id>/students/<int:student_id>/grades', methods=['GET', 'POST'])
+@students_.route('/dashboard/courses/<int:course_id>/students/<int:student_id>/grades', methods=['GET', 'POST'])
 @login_required
 @course_auth
 @teacher_auth
@@ -115,7 +125,7 @@ def student_grades(course_id, student_id):
                                 student=student,
                                 title=f"Grades - {student.first_name} {student.last_name}")
 
-@students.route('/dashboard/courses/<int:course_id>/students/<int:student_id>/grades/edit', methods=['GET', 'POST'])
+@students_.route('/dashboard/courses/<int:course_id>/students/<int:student_id>/grades/edit', methods=['GET', 'POST'])
 @login_required
 @course_auth
 @teacher_auth
@@ -221,7 +231,7 @@ def student_grades_edit(course_id, student_id):
                                 title=f"Grades - {student.first_name} {student.last_name}")
 
 # view assignments that the user has turned in
-@students.route('/dashboard/courses/<int:course_id>/students/<int:student_id>/assignments', methods=['GET'])
+@students_.route('/dashboard/courses/<int:course_id>/students/<int:student_id>/assignments', methods=['GET'])
 @login_required
 @course_auth
 @teacher_auth
@@ -251,7 +261,7 @@ def student_assignments(course_id, student_id):
 
 
 # view an individual student assignment
-@students.route('/dashboard/courses/<int:course_id>/students/<int:student_id>/assignments/<int:user_assignment_id>', methods=['GET'])
+@students_.route('/dashboard/courses/<int:course_id>/students/<int:student_id>/assignments/<int:user_assignment_id>', methods=['GET'])
 @login_required
 @course_auth
 @teacher_auth

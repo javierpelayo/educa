@@ -1,8 +1,16 @@
-from flask import Blueprint
+from flask import (Blueprint, request, render_template,
+                    url_for, redirect)
+from flask_login import login_required, current_user
+from app.profile.utils import (save_picture, delete_picture)
+from app.profile.forms import UpdateProfileForm
+from app.models import (Course_User, User_Assignment, Course,
+                        Assignment)
+from app.filters import autoversion
+from app import db
 
-profile = Blueprint("profile", __name__)
+profile_ = Blueprint("profile", __name__)
 
-@profile.route('/dashboard/profile', methods=['GET', 'POST'])
+@profile_.route('/dashboard/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
     form = UpdateProfileForm()

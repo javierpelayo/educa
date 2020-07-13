@@ -1,3 +1,8 @@
+from flask import current_app
+import magic
+import secrets
+import os
+
 def assignment_error_handler(request_form):
     errors = {}
     for key, value in request_form.items():
@@ -43,7 +48,7 @@ def save_assignment(file):
     random_hex = secrets.token_hex(8)
     _, f_ext = os.path.splitext(file.filename)
     fn = random_hex + f_ext
-    file_path = os.path.join(app.root_path,
+    file_path = os.path.join(current_app.root_path,
                                 'static/assignments',
                                 fn)
     file.save(file_path)
@@ -58,7 +63,7 @@ def save_assignment(file):
     return
 
 def delete_assignment(fn):
-    file_path = os.path.join(app.root_path,
+    file_path = os.path.join(current_app.root_path,
                                 'static/assignments',
                                 fn)
     os.remove(file_path)

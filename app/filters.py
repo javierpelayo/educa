@@ -1,13 +1,13 @@
-from flask import request, redirect, url_for, flash
-from . import app, db, routes
+from flask import (request, redirect, url_for,
+                    flash, current_app)
 from flask_login import current_user
-from educa.models import *
+from app.models import Course, Course_User
 from functools import wraps
 import os
 
 # Queries the browser to force the
 # download of an updated CSS/JS file
-@app.template_filter()
+@current_app.template_filter()
 def autoversion(filename):
   fullpath = os.path.join('./educa/', filename[1:])
   timestamp = str(os.path.getmtime(fullpath))

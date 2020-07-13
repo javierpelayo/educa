@@ -1,4 +1,7 @@
 
+from app.models import Message, User_Account
+from flask_login import current_user
+
 def inbox_info():
     conversations = current_user.conversations
     conversations.sort(key=lambda c:c.conversation_id, reverse=True)
@@ -22,8 +25,6 @@ def inbox_info():
 def searched_users(name, course_id):
     name = name.title().split(" ")
     first_name = name[0]
-    if len(name) > 1:
-        last_name = name[1]
     search_match = []
     results_parsed = {}
 

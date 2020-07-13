@@ -1,9 +1,18 @@
-from flask import Blueprint
+from flask import (Blueprint, request, redirect, render_template,
+                    url_for)
+from flask_login import login_required, current_user
+from app.inbox.utils import inbox_info, searched_users
+from app.inbox.forms import NewConversationForm, NewMessageForm
+from app.models import (Conversation_User, Message, User_Account,
+                        Conversation)
+from app.filters import autoversion
+from app import db, limiter
+import json
 
-inbox = Blueprint("inbox", __name__)
+inbox_ = Blueprint("inbox", __name__)
 
 # NO CSRF
-@inbox.route('/dashboard/inbox', methods=['GET', 'POST'])
+@inbox_.route('/dashboard/inbox', methods=['GET', 'POST'])
 @login_required
 def inbox():
     conversation_snippets = inbox_info()
@@ -32,7 +41,7 @@ def inbox():
                             conversation_snippets=conversation_snippets,
                             title="Inbox")
 
-@inbox.route('/dashboard/inbox/conversation/new/search', methods=['GET'])
+@inbox_.route('/dashboard/inbox/conversation/new/search', methods=['GET'])
 @login_required
 @limiter.exempt
 def get_recipients():
@@ -40,7 +49,7 @@ def get_recipients():
     if request.method == "GET":
         return searched_users(request_args['name'], request_args['course_id'])
 
-@inbox.route('/dashboard/inbox/conversation/new', methods=['GET', 'POST'])
+@inbox_.route('/dashboard/inbox/conversation/new', methods=['GET', 'POST'])
 @login_required
 def new_conversation():
     conversation_snippets = inbox_info()
@@ -84,7 +93,7 @@ def new_conversation():
                             form=form,
                             title="New Conversation")
 
-@inbox.route('/dashboard/inbox/conversation/<int:convo_id>/update', methods=['GET'])
+@inbox_.route('/dashboard/inbox/conversation/<int:convo_id>/update', methods=['GET'])
 @login_required
 @limiter.exempt
 def update_messages(convo_id):
@@ -109,7 +118,7 @@ def update_messages(convo_id):
     
     return json.dumps(update_msg)
 
-@inbox.route('/dashboard/inbox/conversation/<int:convo_id>', methods=['GET', 'POST'])
+@inbox_.route('/dashboard/inbox/conversation/<int:convo_id>', methods=['GET', 'POST'])
 @login_required
 @limiter.exempt
 def conversation(convo_id):

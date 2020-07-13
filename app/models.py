@@ -1,6 +1,7 @@
+from flask import current_app
 from datetime import datetime
 from time import time
-from . import app, db, login_manager
+from app import db, login_manager
 from flask_login import UserMixin
 import jwt
 
@@ -67,13 +68,13 @@ class User_Account(db.Model, UserMixin):
         if expires_in:
             payload['exp'] = time() + expires_in
         return jwt.encode(payload,
-                        app.config["SECRET_KEY"],
+                        current_app.config["SECRET_KEY"],
                         algorithm='HS256').decode('utf-8')
     
     @staticmethod
     def verify_token(token):
         try:
-            id = jwt.decode(token, app.config["SECRET_KEY"], algorithms=['HS256'])['user']
+            id = jwt.decode(token, current_app.config["SECRET_KEY"], algorithms=['HS256'])['user']
         except:
             return
         return User_Account.query.get(id)
@@ -206,6 +207,3 @@ class Lecture(db.Model):
 
     def __repr__(self):
         return f"Lecture('{self.id}', '{self.course_id}', '{self.title}', '{self.description}', '{self.url}')"
-
-# fix circular import with filters.py
-from educa.filters import autoversion

@@ -1,7 +1,7 @@
 import configparser
 
 config = configparser.ConfigParser()
-config.read('educa/config.ini')
+config.read('app/config.ini')
 
 class Config:
     SECRET_KEY = config['DEFAULT']['SECRET_KEY']
