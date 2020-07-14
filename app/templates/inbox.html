@@ -6,7 +6,7 @@
     <div class="inbox">
         <div class="inbox-convos">
             <div class="inbox-tools">
-                <a class="inbox-link" href="{{ url_for('new_conversation') }}">
+                <a class="inbox-link" href="{{ url_for('inbox.new_conversation') }}">
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-edit" width="1.5em" height="1.5em" viewBox="0 0 24 24" stroke-width="2" stroke="#3B7DB4" fill="none" stroke-linecap="round" stroke-linejoin="round">
                         <path stroke="none" d="M0 0h24v24H0z"/>
                         <path d="M9 7 h-3a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-3" />
@@ -20,9 +20,9 @@
             </div>
             {% if conversation_snippets %}
             <!-- Form is for deletion -->
-                <form class="delete-convo" id="convo_id" action="{{ url_for('inbox') }}" method="POST">
+                <form class="delete-convo" id="convo_id" action="{{ url_for('inbox.inbox') }}" method="POST">
                     {% for i in range(conversation_snippets| length) %}
-                            <a class="inbox-convos-content" href="{{ url_for('conversation', convo_id=conversation_snippets[i]['conversation_id']) }}">
+                            <a class="inbox-convos-content" href="{{ url_for('inbox.conversation', convo_id=conversation_snippets[i]['conversation_id']) }}">
                                 <div>        
                                 {% if not conversation_snippets[i]['read'] %}                                
                                     <div class="convo-unread-mail">

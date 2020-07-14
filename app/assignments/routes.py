@@ -9,7 +9,8 @@ from app.assignments.utils import (assignment_error_handler, new_assignment_erro
                                     save_assignment, delete_assignment)
 from app.students.utils import calculate_grade
 from datetime import datetime
-from app.filters import autoversion, course_auth, teacher_auth
+from app.filters import autoversion
+from app.middleware import course_auth, teacher_auth
 from time import time
 import json
 
@@ -57,7 +58,7 @@ def new_assignment(course_id):
         errors = new_assignment_error_handler(assignmentform, request_form)
         if errors:
             flash("There was an error in creating that assignment.", "danger")
-            return redirect(url_for('new_assignment', course_id=course.id))
+            return redirect(url_for('assignments.new_assignment', course_id=course.id))
 
         questions = {}
         options = {}
@@ -134,7 +135,7 @@ def new_assignment(course_id):
                     db.session.commit()
 
         flash("Assignment was created successfully!", "success")
-        return redirect(url_for("assignments", course_id=course.id))
+        return redirect(url_for("assignments.assignments", course_id=course.id))
 
     elif request.method == "GET":
         return render_template('new_assignment.html',
@@ -197,16 +198,16 @@ def assignment(course_id, assignment_id):
                 db.session.add(user_assignment)
                 db.session.commit()
                 flash("Assignment has been successfully submitted.", "success")
-                return redirect(url_for('assignment', course_id=course.id, assignment_id=assignment.id))
+                return redirect(url_for('assignments.assignment', course_id=course.id, assignment_id=assignment.id))
             else:
                 flash("That file type is not allowed.", "warning")
-                return redirect(url_for('assignment', course_id=course.id, assignment_id=assignment.id))
+                return redirect(url_for('assignments.assignment', course_id=course.id, assignment_id=assignment.id))
         else:
             flash("You have already reached your max tries.", "warning")
-            return redirect(url_for('assignments', course_id=course.id))
+            return redirect(url_for('assignments.assignments', course_id=course.id))
 
 
-        return redirect(url_for("assignment", course_id=course.id, assignment_id=assignment.id))
+        return redirect(url_for("assignments.assignment", course_id=course.id, assignment_id=assignment.id))
     elif current_user.id == course.teacher_id and request.method == "POST" and delete:
         course_assignments = Assignment.query.filter_by(course_id=course.id).all()
         course_users = Course_User.query.filter_by(course_id=course.id).all()
@@ -244,7 +245,7 @@ def assignment(course_id, assignment_id):
         db.session.commit()
 
         flash('Assignment was deleted successfully!', 'success')
-        return redirect(url_for("assignments", course_id=course.id))
+        return redirect(url_for("assignments.assignments", course_id=course.id))
     if "ajax" in request_form and request.method == "POST":
         return assignment_error_handler(request_form)
     elif request.method == "POST" and current_user.profession == "Student" and tries < assignment.tries:
@@ -252,7 +253,7 @@ def assignment(course_id, assignment_id):
         errors = assignment_error_handler(request_form)
         if errors:
             flash("There was an error in submitting this assignment.", "danger")
-            return redirect(url_for('assignment', course_id=course.id, assignment_id=assignment.id))
+            return redirect(url_for('assignments.assignment', course_id=course.id, assignment_id=assignment.id))
 
         course_user = Course_User.query.filter_by(user_id=current_user.id, course_id=course.id).first()
         total_assignment_points = 0
@@ -286,10 +287,10 @@ def assignment(course_id, assignment_id):
         db.session.commit()
 
         flash("Assignment turned in!", "success")
-        return redirect(url_for("assignment", course_id=course.id, assignment_id=assignment.id))
+        return redirect(url_for("assignments.assignment", course_id=course.id, assignment_id=assignment.id))
     elif request.method == "POST":
         flash("You can no longer redo this assignment.", "danger")
-        return redirect(url_for("assignment", course_id=course.id, assignment_id=assignment.id))
+        return redirect(url_for("assignments.assignment", course_id=course.id, assignment_id=assignment.id))
     elif request.method == "GET":
         return render_template('assignment.html',
                                 course=course,

@@ -1,5 +1,4 @@
 from flask import Blueprint, render_template, url_for
-from app.filters import autoversion
 
 home_ = Blueprint("home", __name__)
 
@@ -29,3 +28,5 @@ def about():
 @home_.route('/packages')
 def packages():
     return render_template("packages.html", title="Packages")
+
+from app.filters import autoversion

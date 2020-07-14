@@ -3,7 +3,7 @@
     <div class="convo">
         <div class="convo-header">
             <span class="return-inbox d-none">
-                <a class="fancy-link" href="{{ url_for('inbox') }}">
+                <a class="fancy-link" href="{{ url_for('inbox.inbox') }}">
                     <svg xmlns="http://www.w3.org/2000/svg" class="" width="1em" height="1em" viewBox="0 2.5 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                         <path stroke="none" d="M0 0h24v24H0z"/>
                         <line x1="5" y1="12" x2="19" y2="12" />
@@ -57,7 +57,7 @@
             {% endif %}
         </div>
         {% if conversation %}
-            <form class="msg-field" action="{{ url_for('conversation', convo_id=conversation.id) }}" method="POST">
+            <form class="msg-field" action="{{ url_for('inbox.conversation', convo_id=conversation.id) }}" method="POST">
                 {{ form.csrf_token }}
                 <div class="msg-container">
                     {{ form.message(class="msg-input", placeholder="Type your message here.") }}

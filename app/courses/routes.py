@@ -4,7 +4,7 @@ from flask_login import login_required, current_user
 from app.courses.forms import (NewCourseForm, AddCourseForm, UpdateCourseForm,
                                 UpdateSyllabusForm)
 from app.models import (Course, Course_User)
-from app.filters import autoversion, course_auth, teacher_auth
+from app.middleware import course_auth, teacher_auth
 from app import db
 import os
 
@@ -19,7 +19,7 @@ def download_file(filename):
 @courses_.route('/dashboard')
 @login_required
 def dashboard():
-    return redirect(url_for('courses'))
+    return redirect(url_for('courses.courses'))
 
 @courses_.route('/dashboard/courses', methods=['GET', 'POST'])
 @login_required
@@ -53,20 +53,20 @@ def courses():
                         join=(new_course.join.data == "True"))
         db.session.add(course)
         db.session.commit()
-        return redirect(url_for('courses'))
+        return redirect(url_for("courses.courses"))
     elif add_course.validate_on_submit():
         course = Course.query.filter_by(id=add_course.course_id.data, code=add_course.code.data).first()
         if course:
             if str(current_user.id) in list(course.dropped):
                 flash("You were dropped from this course and can no longer join.", "warning")
-                return redirect(url_for("courses"))
+                return redirect(url_for("courses.courses"))
 
             if course.join:
                 course_user = Course_User.query.filter_by(user_id=current_user.id, course_id=course.id).first()
 
                 if course_user:
                     flash("You are already in this course", "primary")
-                    return redirect(url_for("courses"))
+                    return redirect(url_for("courses.courses"))
                 else:
                     course_user = Course_User(user_id=current_user.id,
                                             course_id=add_course.course_id.data)
@@ -74,19 +74,19 @@ def courses():
                     db.session.commit()
 
                     flash(f"Successfully added course: {course.title}!", "success")
-                    return redirect(url_for('courses'))
+                    return redirect(url_for("courses.courses"))
             else:
                 flash("Course is not open to new students.", "primary")
-                return redirect(url_for('courses'))
+                return redirect(url_for("courses.courses"))
         else:
             flash(f"That course does not exist.", "warning")
-            return redirect(url_for('courses'))
+            return redirect(url_for("courses.courses"))
     elif new_course.errors or add_course.errors:
         #
         # ERROR TESTING
         #
         flash("There was an error in adding that course.", "danger")
-        return redirect(url_for('courses'))
+        return redirect(url_for("courses.courses"))
 
     if request.method == "GET" and current_user.profession == "Teacher":
         return render_template('courses.html',
@@ -121,7 +121,7 @@ def course(course_id):
         db.session.commit()
 
         flash("You have dropped the course.", "success")
-        return redirect(url_for("courses"))
+        return redirect(url_for("courses.courses"))
 
     delete = request.form.get('delete')
     edit_course_form = UpdateCourseForm()
@@ -146,7 +146,7 @@ def course(course_id):
         db.session.commit()
 
         flash("Course has been successfully deleted.", "success")
-        return redirect(url_for("courses"))
+        return redirect(url_for("courses.courses"))
     elif teacher and edit_course_form.validate_on_submit():
         course.title = edit_course_form.title.data
         course.subject = edit_course_form.subject.data
@@ -157,10 +157,10 @@ def course(course_id):
         db.session.commit()
 
         flash("Course was updated successfully.", "success")
-        return redirect(url_for("course", course_id=course.id))
+        return redirect(url_for("courses.course", course_id=course.id))
     elif teacher and edit_course_form.errors:
         flash(f"Could not update course due to a form error.", "danger")
-        return redirect(url_for("course", course_id=course.id))
+        return redirect(url_for("courses.course", course_id=course.id))
 
 @courses_.route('/dashboard/courses/<int:course_id>/edit_syllabus', methods=['GET', 'POST'])
 @login_required
@@ -175,7 +175,7 @@ def course_syllabus(course_id):
         db.session.commit()
 
         flash("Course syllabus was updated successfully!", "success")
-        return redirect(url_for("course", course_id=course.id))
+        return redirect(url_for("courses.course", course_id=course.id))
     elif request.method == "GET":
         syllabusform.syllabus.data = course.syllabus
         return render_template('course_syllabus.html',

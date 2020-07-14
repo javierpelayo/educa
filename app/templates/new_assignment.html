@@ -1,7 +1,7 @@
 {% extends "course_layout.html" %}
 {% block course_content %}
 <div class="dashboard-content">
-  <form id="assignment" class="needs-validation" action="{{ url_for('new_assignment', course_id=course.id) }}" method="POST" novalidate>
+  <form id="assignment" class="needs-validation" action="{{ url_for('assignments.new_assignment', course_id=course.id) }}" method="POST" novalidate>
     {{ assignmentform.hidden_tag() }}
     <!-- Assignment -->
     <div class="form-group d-flex flex-column align-items-center">

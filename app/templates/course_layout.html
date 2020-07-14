@@ -26,18 +26,18 @@
     </button>
   </div>
   <div class="collapse navdrop d-md-none" id="courseNavDropdown">
-    <a href="{{ url_for('course', course_id=course.id) }}">About</a>
-    <a href="{{ url_for('assignments', course_id=course.id) }}">Assignments</a>
-    <a href="{{ url_for('grades', course_id=course.id) }}">Grades</a>
-    <a href="{{ url_for('lectures', course_id=course.id) }}">Lectures</a>
-    <a href="{{ url_for('students', course_id=course.id) }}">Students</a>
+    <a href="{{ url_for('courses.course', course_id=course.id) }}">About</a>
+    <a href="{{ url_for('assignments.assignments', course_id=course.id) }}">Assignments</a>
+    <a href="{{ url_for('students.grades', course_id=course.id) }}">Grades</a>
+    <a href="{{ url_for('lectures.lectures', course_id=course.id) }}">Lectures</a>
+    <a href="{{ url_for('students.students', course_id=course.id) }}">Students</a>
   </div>
   <div class="d-none d-md-flex coursenav pt-2">
-    <a href="{{ url_for('course', course_id=course.id) }}">About</a>
-    <a href="{{ url_for('assignments', course_id=course.id) }}">Assignments</a>
-    <a href="{{ url_for('grades', course_id=course.id) }}">Grades</a>
-    <a href="{{ url_for('lectures', course_id=course.id) }}">Lectures</a>
-    <a href="{{ url_for('students', course_id=course.id) }}">Students</a>
+    <a href="{{ url_for('courses.course', course_id=course.id) }}">About</a>
+    <a href="{{ url_for('assignments.assignments', course_id=course.id) }}">Assignments</a>
+    <a href="{{ url_for('students.grades', course_id=course.id) }}">Grades</a>
+    <a href="{{ url_for('lectures.lectures', course_id=course.id) }}">Lectures</a>
+    <a href="{{ url_for('students.students', course_id=course.id) }}">Students</a>
   </div>
   <script type="text/javascript">
     tinymce.init({

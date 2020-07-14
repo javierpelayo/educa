@@ -19,36 +19,36 @@
     <div>
       <nav>
         <div class="d-flex d-md-none justify-content-between">
-          <a class="navbar-brand ml-3" href="{{ url_for("home") }}"><i class="fas fa-book"></i> EDUCA</a>
+          <a class="navbar-brand ml-3" href="{{ url_for('home.home') }}"><i class="fas fa-book"></i> EDUCA</a>
           <button class="navbar-toggler navbar-light" type="button" data-toggle="collapse" data-target="#navDropdown">
             <span class="navbar-toggler-icon"></span>
           </button>
         </div>
         <div class="collapse navdrop d-md-none" id="navDropdown">
-          <a class="d-flex align-items-center" href="{{ url_for('profile') }}">Profile</a>
-          <a href="{{ url_for('courses') }}">Courses</a>
+          <a class="d-flex align-items-center" href="{{ url_for('profile.profile') }}">Profile</a>
+          <a href="{{ url_for('courses.courses') }}">Courses</a>
           <a href="#">Deadline</a>
           <a href="#">Inbox</a>
         </div>
         <div class="sidenav">
-          <a class="sidenav-brand" href="{{ url_for('home') }}">
+          <a class="sidenav-brand" href="{{ url_for('home.home') }}">
             <svg height="1em" width="1em" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path class="icons" d="M448 360V24c0-13.3-10.7-24-24-24H96C43 0 0 43 0 96v320c0 53 43 96 96 96h328c13.3 0 24-10.7 24-24v-16c0-7.5-3.5-14.3-8.9-18.7-4.2-15.4-4.2-59.3 0-74.7 5.4-4.3 8.9-11.1 8.9-18.6zM128 134c0-3.3 2.7-6 6-6h212c3.3 0 6 2.7 6 6v20c0 3.3-2.7 6-6 6H134c-3.3 0-6-2.7-6-6v-20zm0 64c0-3.3 2.7-6 6-6h212c3.3 0 6 2.7 6 6v20c0 3.3-2.7 6-6 6H134c-3.3 0-6-2.7-6-6v-20zm253.4 250H96c-17.7 0-32-14.3-32-32 0-17.6 14.4-32 32-32h285.4c-1.9 17.1-1.9 46.9 0 64z"/></svg>
             <span class="sidenav-text">EDUCA</span>
           </a>
-          <a class="sidenav-item" href="{{ url_for('profile') }}">
+          <a class="sidenav-item" href="{{ url_for('profile.profile') }}">
             <!-- <svg height="1em" width="1em" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path class="icons" d="M256 288c79.5 0 144-64.5 144-144S335.5 0 256 0 112 64.5 112 144s64.5 144 144 144zm128 32h-55.1c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16H128C57.3 320 0 377.3 0 448v16c0 26.5 21.5 48 48 48h416c26.5 0 48-21.5 48-48v-16c0-70.7-57.3-128-128-128z"/></svg> -->
             <div class="profile-img-sidenav" style="background-image: url({{ profile_image }});"></div>
             <span class="sidenav-text">Profile</span>
           </a>
-          <a class="sidenav-item" href="{{ url_for('courses') }}">
+          <a class="sidenav-item" href="{{ url_for('courses.courses') }}">
             <svg height="1em" width="1em" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path class="icons" d="M497.9 142.1l-46.1 46.1c-4.7 4.7-12.3 4.7-17 0l-111-111c-4.7-4.7-4.7-12.3 0-17l46.1-46.1c18.7-18.7 49.1-18.7 67.9 0l60.1 60.1c18.8 18.7 18.8 49.1 0 67.9zM284.2 99.8L21.6 362.4.4 483.9c-2.9 16.4 11.4 30.6 27.8 27.8l121.5-21.3 262.6-262.6c4.7-4.7 4.7-12.3 0-17l-111-111c-4.8-4.7-12.4-4.7-17.1 0zM124.1 339.9c-5.5-5.5-5.5-14.3 0-19.8l154-154c5.5-5.5 14.3-5.5 19.8 0s5.5 14.3 0 19.8l-154 154c-5.5 5.5-14.3 5.5-19.8 0zM88 424h48v36.3l-64.5 11.3-31.1-31.1L51.7 376H88v48z"/></svg>
             <span class="sidenav-text">Courses</span>
           </a>
-          <a class="sidenav-item" href="{{ url_for('deadlines') }}">
+          <a class="sidenav-item" href="{{ url_for('deadlines.deadlines') }}">
             <svg height="1em" width="1em" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path class="icons" d="M148 288h-40c-6.6 0-12-5.4-12-12v-40c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12zm108-12v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm-96 96v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm-96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm192 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96-260v352c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V112c0-26.5 21.5-48 48-48h48V12c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v52h128V12c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v52h48c26.5 0 48 21.5 48 48zm-48 346V160H48v298c0 3.3 2.7 6 6 6h340c3.3 0 6-2.7 6-6z"/></svg>
             <span class="sidenav-text">Deadlines</span>
           </a>
-          <a class="sidenav-item" href="{{ url_for('inbox') }}">
+          <a class="sidenav-item" href="{{ url_for('inbox.inbox') }}">
             <svg height="1em" width="1em" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path class="icons" d="M567.938 243.908L462.25 85.374A48.003 48.003 0 0 0 422.311 64H153.689a48 48 0 0 0-39.938 21.374L8.062 243.908A47.994 47.994 0 0 0 0 270.533V400c0 26.51 21.49 48 48 48h480c26.51 0 48-21.49 48-48V270.533a47.994 47.994 0 0 0-8.062-26.625zM162.252 128h251.497l85.333 128H376l-32 64H232l-32-64H76.918l85.334-128z"/></svg>
             <span class="sidenav-text">Inbox</span>
             {% if msg_notif %}

@@ -18,7 +18,7 @@
         {% for i in range(assignments| length) %}
           <tr>
             {% if student_assignments[i] != 0 %}
-              <td><a class="fancy-link" href="{{ url_for('student_assignment', course_id=course.id, student_id=student.id, user_assignment_id=student_assignments[i].id) }}">{{ assignments[i].title }}</a></td>
+              <td><a class="fancy-link" href="{{ url_for('students.student_assignment', course_id=course.id, student_id=student.id, user_assignment_id=student_assignments[i].id) }}">{{ assignments[i].title }}</a></td>
               <td>{{ moment(student_assignments[i].created_ctime).format('LLL') }}</td>
               <td>{{ student_assignments[i].points }}</td>
             {% else %}

@@ -28,7 +28,7 @@ mail = Mail()
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(Config)
-    print("inside")
+
     limiter.init_app(app)
     db.init_app(app)
     bcrypt.init_app(app)
@@ -36,22 +36,22 @@ def create_app(config_class=Config):
     login_manager.init_app(app)
     mail.init_app(app)
 
+    from app.home.routes import home_
     from app.assignments.routes import assignments_
     from app.courses.routes import courses_
     from app.deadlines.routes import deadlines_
     from app.errors.routes import errors
-    from app.home.routes import home_
     from app.inbox.routes import inbox_
     from app.lectures.routes import lectures_
     from app.profile.routes import profile_
     from app.students.routes import students_
     from app.users.routes import users
 
+    app.register_blueprint(home_)
     app.register_blueprint(assignments_)
     app.register_blueprint(courses_)
     app.register_blueprint(deadlines_)
     app.register_blueprint(errors)
-    app.register_blueprint(home_)
     app.register_blueprint(inbox_)
     app.register_blueprint(lectures_)
     app.register_blueprint(profile_)

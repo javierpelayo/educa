@@ -57,7 +57,7 @@ def profile():
         current_user.biography = form.biography.data
         db.session.commit()
 
-        return redirect(url_for('profile'))
+        return redirect(url_for("profile.profile"))
     elif form.errors:
         return render_template('profile.html',
                                 title='Profile',

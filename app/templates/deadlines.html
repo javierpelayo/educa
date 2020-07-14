@@ -23,7 +23,7 @@
                     {% for assignment in assignments %}
                         <tr>
                             <td>
-                                <a class="fancy-link" href="{{ url_for('assignment', course_id=assignment.course.id, assignment_id=assignment.id) }}">{{ assignment.title }}</a>
+                                <a class="fancy-link" href="{{ url_for('assignments.assignment', course_id=assignment.course.id, assignment_id=assignment.id) }}">{{ assignment.title }}</a>
                             </td>
                             <td>
                                 {{ moment(assignment.duedate_ctime).format('LLL') }}

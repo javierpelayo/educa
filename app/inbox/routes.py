@@ -35,7 +35,7 @@ def inbox():
 
         db.session.commit()
 
-        return redirect(url_for("inbox"))
+        return redirect(url_for("inbox.inbox"))
 
     return render_template("conversation.html",
                             conversation_snippets=conversation_snippets,
@@ -82,9 +82,9 @@ def new_conversation():
             db.session.add(msg)
             db.session.commit()
 
-            return redirect(url_for("conversation", convo_id=conversation.id))
+            return redirect(url_for("inbox.conversation", convo_id=conversation.id))
         else:
-            return redirect(url_for('new_conversation'))
+            return redirect(url_for("inbox.new_conversation"))
     elif request.method == "GET":
         form = NewConversationForm()
         return render_template("new_conversation.html",
@@ -149,7 +149,7 @@ def conversation(convo_id):
         db.session.add(message)
         db.session.commit()
 
-        return redirect(url_for('conversation', convo_id=convo_id))
+        return redirect(url_for("inbox.conversation", convo_id=convo_id))
     return render_template("conversation.html",
                             conversation=conversation,
                             messages=messages,

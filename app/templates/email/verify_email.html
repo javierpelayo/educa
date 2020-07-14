@@ -20,12 +20,12 @@
                     <p>Dear {{ user.first_name }} {{ user.last_name }},</p>
                     <p>
                         To verify your email
-                        <a href="{{ url_for('verify_email', token=token, _external=True) }}">
+                        <a href="{{ url_for('users.verify_email', token=token, _external=True) }}">
                             click here
                         </a>. Link will expire in 1 hour.
                     </p>
                     <p>Alternatively, you can paste the following link in your browser's address bar:</p>
-                    <p>{{ url_for('verify_email', token=token, _external=True) }}</p>
+                    <p>{{ url_for('users.verify_email', token=token, _external=True) }}</p>
                 </td>
             </tr>
             <tr style="font-size: 1.5rem; color: #ffffff; background-color: #022B43; border-top: 5px solid #FEBA2C; text-align: center;">

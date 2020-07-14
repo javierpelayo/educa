@@ -12,7 +12,7 @@
                 <tbody>
                     {% for lecture in lectures %}
                         <tr>
-                            <td><a class="fancy-link" href="{{ url_for('lecture', course_id=course.id, lecture_id=lecture.id) }}">{{ lecture.title }}</a></td>
+                            <td><a class="fancy-link" href="{{ url_for('lectures.lecture', course_id=course.id, lecture_id=lecture.id) }}">{{ lecture.title }}</a></td>
                             <td>{{ moment(lecture.created_ctime).format('LLL') }}</td>
                         </tr>
                     {% endfor %}
@@ -35,7 +35,7 @@
         {% endif %}
         {% if current_user.id == course.teacher_id %}
             <div class="d-flex justify-content-center my-5">
-                <a class="btn btn-green" href="{{ url_for('new_lecture', course_id=course.id) }}">
+                <a class="btn btn-green" href="{{ url_for('lectures.new_lecture', course_id=course.id) }}">
                     <svg xmlns="http://www.w3.org/2000/svg" class="icons-vis" width="1em" height="1em" viewBox="-1 3 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                         <path stroke="none" d="M0 0h24v24H0z"/>
                         <rect x="4" y="4" width="16" height="16" rx="2" />

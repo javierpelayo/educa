@@ -69,7 +69,7 @@
         <tbody>
           {% for i in range(assignments| length) %}
             <tr>
-              <td class="assignment-link"><a href="{{ url_for('assignment', course_id=course.id, assignment_id=assignments[i].id) }}">{{ assignments[i].title }}</a></td>
+              <td class="assignment-link"><a href="{{ url_for('assignments.assignment', course_id=course.id, assignment_id=assignments[i].id) }}">{{ assignments[i].title }}</a></td>
               <td>{{ moment(assignments[i].duedate_ctime).format('LLL') }}</td>
               {% if user_latest_assignments[i] != 0 %}
                 <td>{{ user_latest_assignments[i].points }}</td>
@@ -84,7 +84,7 @@
     </div>
     {% if current_user.id == course.teacher_id %}
       <div class="d-flex justify-content-center">
-        <a class="btn btn-blue" href="{{ url_for('student_grades_edit', course_id=course.id, student_id=course_user.user_id) }}">
+        <a class="btn btn-blue" href="{{ url_for('students.student_grades_edit', course_id=course.id, student_id=course_user.user_id) }}">
           <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-edit" width="1em" height="1em" viewBox="0 2 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <path stroke="none" d="M0 0h24v24H0z"/>
             <path d="M9 7 h-3a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-3" />

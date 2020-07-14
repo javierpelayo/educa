@@ -1,8 +1,9 @@
 from flask_wtf import FlaskForm
 from flask_login import current_user
 from wtforms import (StringField, TextAreaField,
-                    FileField, BooleanField, SubmitField)
-from wtforms.validators import DataRequired, Length, Email, FileAllowed, ValidationError
+                        BooleanField, SubmitField)
+from wtforms.validators import DataRequired, Length, Email, ValidationError
+from flask_wtf.file import FileField, FileAllowed
 from app.models import User_Account
 
 class UpdateProfileForm(FlaskForm):

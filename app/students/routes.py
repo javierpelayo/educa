@@ -5,7 +5,8 @@ from app.students.utils import (grades_edit_error_handler, calculate_grade,
                                 user_grades)
 from app.models import (Course, User_Account, Assignment,
                         Course_User, User_Assignment)
-from app.filters import autoversion, course_auth, teacher_auth
+from app.filters import autoversion
+from app.middleware import course_auth, teacher_auth
 from app.assignments.utils import delete_assignment
 from app import db
 import json
@@ -18,7 +19,7 @@ students_ = Blueprint("students", __name__)
 def grades(course_id):
     course = Course.query.filter_by(id=course_id).first()
     if current_user.id == course.teacher_id:
-        return redirect(url_for("students", course_id=course.id))
+        return redirect(url_for("students.students", course_id=course.id))
 
     (course_user, assignments,
     user_latest_assignments,
@@ -66,7 +67,7 @@ def students(course_id):
 
         db.session.commit()
         flash("User has been dropped from course.", "success")
-        return redirect(url_for("students", course_id=course.id))
+        return redirect(url_for("students.students", course_id=course.id))
     elif request.method == "GET":
         return render_template("students.html",
                                 course=course,
@@ -75,7 +76,7 @@ def students(course_id):
                                 teacher=teacher,
                                 title=course.title + " - Students")
 
-@students.route('/dashboard/courses/<int:course_id>/students/<int:student_id>', methods=['GET'])
+@students_.route('/dashboard/courses/<int:course_id>/students/<int:student_id>', methods=['GET'])
 @login_required
 @course_auth
 def student(course_id, student_id):
@@ -87,7 +88,7 @@ def student(course_id, student_id):
     user = User_Account.query.filter_by(id=student_id).first()
 
     if current_user.id == user.id:
-        return redirect(url_for("profile"))
+        return redirect(url_for("profile.profile"))
 
     profile_image = url_for('static', filename="profile_images/" + user.profile_image)
 
@@ -148,7 +149,7 @@ def student_grades_edit(course_id, student_id):
         # used if user bypasses ajax
         if errors:
             flash("Student grades could not be updated.", "danger")
-            return redirect(url_for("student_grades", course_id=course.id, student_id=student.id))
+            return redirect(url_for("students.student_grades", course_id=course.id, student_id=student.id))
 
         assignments_form = {}
         a_points = 0
@@ -217,7 +218,7 @@ def student_grades_edit(course_id, student_id):
         db.session.commit()
 
         flash(f"Grades for {student.first_name} {student.last_name} have been updated.", "success")
-        return redirect(url_for("student_grades", course_id=course.id, student_id=student.id))
+        return redirect(url_for("students.student_grades", course_id=course.id, student_id=student.id))
     elif request.method == "GET":
         return render_template("grades_edit.html",
                                 course=course,

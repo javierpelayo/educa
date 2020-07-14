@@ -51,9 +51,9 @@
       </div>
   </form>
   <div class="border-top pt-3 row justify-content-center">
-    <small class="text-muted">Forgot Your Password? <a href="{{ url_for('reset_password_request') }}">Reset</a></small>
+    <small class="text-muted">Forgot Your Password? <a href="{{ url_for('users.reset_password_request') }}">Reset</a></small>
   </div>
   <div class="row justify-content-center">
-    <small class="text-muted mb-5">Don't Have An Account? <a href="{{ url_for('register') }}">Register</a></small>
+    <small class="text-muted mb-5">Don't Have An Account? <a href="{{ url_for('users.register') }}">Register</a></small>
   </div>
 {% endblock content %}

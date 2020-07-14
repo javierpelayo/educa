@@ -2,7 +2,8 @@ from flask import (Blueprint, request, render_template,
                     redirect, url_for, flash)
 from flask_login import login_required
 from app.lectures.forms import NewLectureForm
-from app.filters import course_auth, teacher_auth
+from app.filters import autoversion
+from app.middleware import course_auth, teacher_auth
 from app.models import (Course, Lecture)
 lectures_ = Blueprint("lectures", __name__)
 
@@ -46,7 +47,7 @@ def new_lecture(course_id):
         db.session.commit()
 
         flash("Lecture was successfully uploaded.", "success")
-        return redirect(url_for("lectures", course_id=course.id))
+        return redirect(url_for("lectures.lectures", course_id=course.id))
     else:
         return render_template("new_lecture.html",
                                 course=course,
