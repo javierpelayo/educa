@@ -7,8 +7,7 @@ import os
 
 @home_.app_template_filter()
 def autoversion(filename):
-    fullpath = os.path.join('./app//', filename[1:])
+    fullpath = os.path.join('./app/', filename[1:])
     timestamp = str(os.path.getmtime(fullpath))
-    shortpath = fullpath[7:]
-    print(f"{shortpath}?v={timestamp}")
+    shortpath = fullpath[5:]
     return f"{shortpath}?v={timestamp}"

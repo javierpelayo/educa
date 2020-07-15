@@ -8,7 +8,7 @@ from app.middleware import course_auth, teacher_auth
 from app import db
 import os
 
-courses_ = Blueprint("courses", __name__)
+courses_ = Blueprint("courses", __name__, static_url_path='static')
 
 @courses_.route('/download/<string:filename>', methods=['GET'])
 @login_required
