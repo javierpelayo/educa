@@ -1,4 +1,5 @@
-# Educa is a simple learning management system (LMS) that is built via the Flask Framework.
+# Educa 
+Educa is a simple learning management system (LMS) that is built via the Flask Framework.
 
 # For Students
 It features a dashboard where students can add courses via a course code sent by them from an instructor. Each student is free to do assignments, take exams/quizzes and turn in assignments via the upload feature. Each course also contains a page where all lectures are posted. Students may also view their grades for any recent assignments that they have done. Most assignments that have questions added to them via the field form are graded right away. Whereas a file upload will be graded when an instructor gets to it.
