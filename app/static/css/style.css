@@ -915,10 +915,21 @@ a {
   cursor: default;
 }
 
+@keyframes heightResize {
+  0% {
+    transform: translateY(-100%);
+    padding: 0;
+  }
+  100% {
+    transform: translateY(0);
+    padding: 2rem;
+  }
+}
+
 #loading {
   width: 100%;
   position: relative;
-  padding: 2rem;
+  animation: 1s ease-out heightResize;
 }
 
 .loader,
@@ -1039,7 +1050,4 @@ a {
 .left-msg {
   font-style: italic;
   margin: 1.5rem;
-}
-
-@media (min-width: 768px) {
 }
