@@ -17,6 +17,7 @@ students_ = Blueprint("students", __name__)
 @login_required
 @course_auth
 def grades(course_id):
+    profile_image = url_for('static', filename="profile_images/" + current_user.profile_image)
     course = Course.query.filter_by(id=course_id).first()
     if current_user.id == course.teacher_id:
         return redirect(url_for("students.students", course_id=course.id))
@@ -28,6 +29,7 @@ def grades(course_id):
 
     if request.method == "GET":
         return render_template('grades.html',
+                                profile_image=profile_image,
                                 course=course,
                                 course_user=course_user,
                                 assignments=assignments,
@@ -41,6 +43,7 @@ def grades(course_id):
 @login_required
 @course_auth
 def students(course_id):
+    profile_image = url_for('static', filename="profile_images/" + current_user.profile_image)
     course = Course.query.filter_by(id=course_id).first()
     course_students = Course_User.query.filter_by(course_id=course.id).all()
     teacher = User_Account.query.filter_by(id=course.teacher_id).first()
@@ -70,6 +73,7 @@ def students(course_id):
         return redirect(url_for("students.students", course_id=course.id))
     elif request.method == "GET":
         return render_template("students.html",
+                                profile_image=profile_image,
                                 course=course,
                                 course_students=course_students,
                                 students_list=students_list,
@@ -106,6 +110,7 @@ def student(course_id, student_id):
 @course_auth
 @teacher_auth
 def student_grades(course_id, student_id):
+    profile_image = url_for('static', filename="profile_images/" + current_user.profile_image)
     course = Course.query.filter_by(id=course_id).first()
     student = User_Account.query.filter_by(id=student_id).first()
 
@@ -116,6 +121,7 @@ def student_grades(course_id, student_id):
 
     if request.method == "GET":
         return render_template("grades.html",
+                                profile_image=profile_image,
                                 course=course,
                                 course_user=course_user,
                                 assignments=assignments,
@@ -131,6 +137,7 @@ def student_grades(course_id, student_id):
 @course_auth
 @teacher_auth
 def student_grades_edit(course_id, student_id):
+    profile_image = url_for('static', filename="profile_images/" + current_user.profile_image)
     course = Course.query.filter_by(id=course_id).first()
     student = User_Account.query.filter_by(id=student_id).first()
 
@@ -221,6 +228,7 @@ def student_grades_edit(course_id, student_id):
         return redirect(url_for("students.student_grades", course_id=course.id, student_id=student.id))
     elif request.method == "GET":
         return render_template("grades_edit.html",
+                                profile_image=profile_image,
                                 course=course,
                                 course_user=course_user,
                                 assignments=assignments,
@@ -237,6 +245,7 @@ def student_grades_edit(course_id, student_id):
 @course_auth
 @teacher_auth
 def student_assignments(course_id, student_id):
+    profile_image = url_for('static', filename="profile_images/" + current_user.profile_image)
     course = Course.query.filter_by(id=course_id).first()
     student = User_Account.query.filter_by(id=student_id).first()
     assignments = course.assignments
@@ -254,6 +263,7 @@ def student_assignments(course_id, student_id):
 
     if request.method == "GET":
         return render_template("student_assignments.html",
+                                profile_image=profile_image,
                                 course=course,
                                 student=student,
                                 assignments=assignments,
@@ -267,6 +277,7 @@ def student_assignments(course_id, student_id):
 @course_auth
 @teacher_auth
 def student_assignment(course_id, student_id, user_assignment_id):
+    profile_image = url_for('static', filename="profile_images/" + current_user.profile_image)
     course = Course.query.filter_by(id=course_id).first()
     student = User_Account.query.filter_by(id=student_id).first()
     user_assignment = User_Assignment.query.filter_by(id=user_assignment_id).first()
@@ -282,6 +293,7 @@ def student_assignment(course_id, student_id, user_assignment_id):
 
     if request.method == "GET":
         return render_template("student_assignment.html",
+                                profile_image=profile_image,
                                 course=course,
                                 student=student,
                                 user_assignment=user_assignment,

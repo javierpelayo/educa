@@ -24,6 +24,7 @@ def dashboard():
 @courses_.route('/dashboard/courses', methods=['GET', 'POST'])
 @login_required
 def courses():
+    profile_image = url_for('static', filename="profile_images/" + current_user.profile_image)
     teacher_courses = Course.query.filter_by(teacher_id=current_user.id).all()
 
     # Get the student courses
@@ -90,11 +91,13 @@ def courses():
 
     if request.method == "GET" and current_user.profession == "Teacher":
         return render_template('courses.html',
+                                profile_image=profile_image,
                                 courses=teacher_courses,
                                 new_course=new_course,
                                 title="Courses")
     elif request.method == "GET" and current_user.profession == "Student":
         return render_template('courses.html',
+                                profile_image=profile_image,
                                 courses=student_courses,
                                 add_course=add_course,
                                 title="Courses")
@@ -103,6 +106,7 @@ def courses():
 @login_required
 @course_auth
 def course(course_id):
+    profile_image = url_for('static', filename="profile_images/" + current_user.profile_image)
     course = Course.query.filter_by(id=course_id).first()
     teacher = (course.teacher_id == current_user.id)
 
@@ -110,6 +114,7 @@ def course(course_id):
 
     if not teacher and request.method == "GET":
         return render_template('course.html',
+                                profile_image=profile_image,
                                 course=course,
                                 title="Course - " + str(course.title))
 
@@ -134,6 +139,7 @@ def course(course_id):
         edit_course_form.join.data = str(course.join)
 
         return render_template('course.html',
+                                profile_image=profile_image,
                                 course=course,
                                 edit_course_form=edit_course_form,
                                 title="Course - " + str(course.title))
@@ -167,6 +173,7 @@ def course(course_id):
 @course_auth
 @teacher_auth
 def course_syllabus(course_id):
+    profile_image = url_for('static', filename="profile_images/" + current_user.profile_image)
     course = Course.query.filter_by(id=course_id).first()
     syllabusform = UpdateSyllabusForm()
 
@@ -179,6 +186,7 @@ def course_syllabus(course_id):
     elif request.method == "GET":
         syllabusform.syllabus.data = course.syllabus
         return render_template('course_syllabus.html',
+                                profile_image=profile_image,
                                 course=course,
                                 syllabusform=syllabusform,
                                 title=str(course.title) + " - Syllabus")

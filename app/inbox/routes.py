@@ -1,3 +1,4 @@
+import profile
 from flask import (Blueprint, request, redirect, render_template,
                     url_for)
 from flask_login import login_required, current_user
@@ -15,6 +16,7 @@ inbox_ = Blueprint("inbox", __name__)
 @inbox_.route('/dashboard/inbox', methods=['GET', 'POST'])
 @login_required
 def inbox():
+    profile_image = url_for('static', filename="profile_images/" + current_user.profile_image)
     conversation_snippets = inbox_info()
 
     delete = request.form.get("delete")
@@ -38,6 +40,7 @@ def inbox():
         return redirect(url_for("inbox.inbox"))
 
     return render_template("conversation.html",
+                            profile_image=profile_image,
                             conversation_snippets=conversation_snippets,
                             title="Inbox")
 
@@ -52,6 +55,7 @@ def get_recipients():
 @inbox_.route('/dashboard/inbox/conversation/new', methods=['GET', 'POST'])
 @login_required
 def new_conversation():
+    profile_image = url_for('static', filename="profile_images/" + current_user.profile_image)
     conversation_snippets = inbox_info()
     recipient = request.args.get("recipient_id")
     if recipient:
@@ -88,6 +92,7 @@ def new_conversation():
     elif request.method == "GET":
         form = NewConversationForm()
         return render_template("new_conversation.html",
+                            profile_image=profile_image,
                             conversation_snippets=conversation_snippets,
                             recipient=recipient,
                             form=form,
@@ -122,7 +127,7 @@ def update_messages(convo_id):
 @login_required
 @limiter.exempt
 def conversation(convo_id):
-
+    profile_image = url_for('static', filename="profile_images/" + current_user.profile_image)
     user_convo = Conversation_User.query.filter_by(user_id=current_user.id, conversation_id=convo_id).first()
     user_convo.read = True
     db.session.commit()
@@ -151,6 +156,7 @@ def conversation(convo_id):
 
         return redirect(url_for("inbox.conversation", convo_id=convo_id))
     return render_template("conversation.html",
+                            profile_image=profile_image,
                             conversation=conversation,
                             messages=messages,
                             conversation_snippets=conversation_snippets,

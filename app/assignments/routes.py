@@ -20,6 +20,7 @@ assignments_ = Blueprint("assignments", __name__)
 @login_required
 @course_auth
 def assignments(course_id):
+    profile_image = url_for('static', filename="profile_images/" + current_user.profile_image)
     course = Course.query.filter_by(id=course_id).first()
     assignments = Assignment.query.filter_by(course_id=course_id).all()
     assignments = sorted(assignments, key=lambda a: a.duedate_time)
@@ -35,6 +36,7 @@ def assignments(course_id):
 
     if request.method == "GET":
         return render_template('assignments.html',
+                                profile_image=profile_image,
                                 course=course,
                                 assignments=assignments,
                                 user_assignments=user_assignments,
@@ -46,6 +48,7 @@ def assignments(course_id):
 @course_auth
 @teacher_auth
 def new_assignment(course_id):
+    profile_image = url_for('static', filename="profile_images/" + current_user.profile_image)
     course = Course.query.filter_by(id=course_id).first()
     assignmentform = AssignmentForm()
     errors = {}
@@ -139,6 +142,7 @@ def new_assignment(course_id):
 
     elif request.method == "GET":
         return render_template('new_assignment.html',
+                                profile_image=profile_image,
                                 course=course,
                                 assignmentform=assignmentform,
                                 title=str(course.title) + " - New Assignment")
@@ -148,7 +152,7 @@ def new_assignment(course_id):
 @login_required
 @course_auth
 def assignment(course_id, assignment_id):
-
+    profile_image = url_for('static', filename="profile_images/" + current_user.profile_image)
     file = request.files.get("file")
     upload = request.form.get("upload")
 
@@ -293,6 +297,7 @@ def assignment(course_id, assignment_id):
         return redirect(url_for("assignments.assignment", course_id=course.id, assignment_id=assignment.id))
     elif request.method == "GET":
         return render_template('assignment.html',
+                                profile_image=profile_image,
                                 course=course,
                                 assignment=assignment,
                                 current_time=time(),

@@ -1,0 +1,7 @@
+Clyde Freedman, clydefreeman@educa.com,"Teacher"
+Irma Morales, irmamorales@educa.com, "Student"
+Kevin Estrada, kevinestrada@educa.com,"Student"
+Juan Chavez, juanchavez@educa.com,"Student"
+Louis Abbott, louisabbott@educa.com,"Student"
+
+Password: 12345678

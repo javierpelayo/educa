@@ -69,7 +69,7 @@ class User_Account(db.Model, UserMixin):
             payload['exp'] = time() + expires_in
         return jwt.encode(payload,
                         current_app.config["SECRET_KEY"],
-                        algorithm='HS256').decode('utf-8')
+                        algorithm='HS256')
     
     @staticmethod
     def verify_token(token):

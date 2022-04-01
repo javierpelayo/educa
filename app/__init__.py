@@ -13,7 +13,7 @@ import os
 app = Flask(__name__)
 # toolbar = DebugToolbarExtension()
 limiter = Limiter(key_func=get_remote_address,
-                default_limits=['200 per day', '50 per hour'])
+                default_limits=['1000 per day', '200 per hour'])
 db = SQLAlchemy()
 bcrypt = Bcrypt()
 moment = Moment()
@@ -28,8 +28,11 @@ mail = Mail()
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(Config)
+    app.config["TEMPLATES_AUTO_RELOAD"] = True
+    app.config['MAX_CONTENT_LENGTH'] = 400000000
 
     limiter.init_app(app)
+    app.app_context().push()
     db.init_app(app)
     bcrypt.init_app(app)
     moment.init_app(app)
