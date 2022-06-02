@@ -32,6 +32,7 @@ function editor(){
       selector: "textarea",
   });
 }
+
 function change(type, add, remove, index) {
   // selfRemove.onclick = function() {
   //   // to be continued
@@ -149,6 +150,7 @@ function fn(){
     dataQuery += "&ajax=true";
 
     // pass data as a query string(flask converts it into an immutable multi_dict)
+    console.log(dataQuery);
     request.send(dataQuery);
 
     // prevent request from being sent through HTML Form
@@ -257,6 +259,10 @@ function fn(){
 }
 
 function ready(fn) {
+  // $('.datepicker').datepicker({
+  //   format: 'mm/dd/yyyy',
+  //   startDate: '-3d'
+  // });
   if (document.readyState !== "loading"){
     fn();
   } else {

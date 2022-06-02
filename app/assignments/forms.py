@@ -28,6 +28,6 @@ class AssignmentForm(FlaskForm):
     tries = IntegerField('Tries',
                             validators=[NumberRange(max=10)])
 
-    date_input = DateField('Due Date', format='%m/%d/%Y')
+    date_input = DateField('Due Date', format='%Y-%m-%d')
     hour = SelectField('Hour', choices=due_hour)
     minute = SelectField('Minute', choices=due_minute)

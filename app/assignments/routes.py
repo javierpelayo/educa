@@ -58,6 +58,7 @@ def new_assignment(course_id):
     if "ajax" in request_form and request.method == "POST":
         return new_assignment_error_handler(assignmentform, request_form)
     if request.method == "POST":
+        print(request_form)
         errors = new_assignment_error_handler(assignmentform, request_form)
         if errors:
             flash("There was an error in creating that assignment.", "danger")
@@ -94,12 +95,12 @@ def new_assignment(course_id):
         q_ids.sort()
         question_amt = len(q_ids)
 
-        date_input = assignmentform.date_input.data.strftime('%m/%d/%Y').split("/")
+        date_input = assignmentform.date_input.data.strftime('%Y-%m-%d').split("-")
         hour = int(assignmentform.hour.data)
         minute = int(assignmentform.minute.data)
-        month = int(date_input[0])
-        day = int(date_input[1])
-        year = int(date_input[2])
+        month = int(date_input[1])
+        day = int(date_input[2])
+        year = int(date_input[0])
 
         datetime_object = datetime(year, month, day, hour, minute)
 

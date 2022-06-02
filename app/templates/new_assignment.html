@@ -1,5 +1,9 @@
 {% extends "course_layout.html" %}
 {% block course_content %}
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+
 <div class="dashboard-content">
   <form id="assignment" class="needs-validation" action="{{ url_for('assignments.new_assignment', course_id=course.id) }}" method="POST" novalidate>
     {{ assignmentform.hidden_tag() }}
@@ -77,8 +81,8 @@
       <h5>{{ assignmentform.date_input.label }}</h5>
     </div>
     <div class="form-row justify-content-center">
-      <div class="form-group col-3">
-        {{ assignmentform.date_input(class="form-control", placeholder="M/D/Y") }}
+      <div class="form-group col-3" id="datefield">
+        {{ assignmentform.date_input(class="form-control datepicker", placeholder="M/D/Y", **{'data-date-format':'mm/dd/yyyy'})}}
         <div class="invalid-feedback">
             <small id="assignment_date_input_error"></small>
         </div>
@@ -97,5 +101,6 @@
 
   </form>
 </div>
-<script type="text/javascript" src="{{ url_for('static', filename='js/new_assignment.js')|autoversion }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/new_assignment.js')|autoversion }}">
+</script>
 {% endblock course_content %}
