@@ -30,7 +30,8 @@
                     {% if messages[i].msg_type == "regular" %}
                         <div class="msg">
                             <div class="d-flex align-items-center m-2">
-                                <img class="profile-img-small" src="{{ url_for('static', filename='profile_images/' + messages[i].user.profile_image) }}" alt="">
+                                <!-- <img class="profile-img-small" src="{{ url_for('static', filename='profile_images/' + messages[i].user.profile_image) }}" alt=""> -->
+                                <div class="profile-img-small" style="background-image: url({{ url_for('static', filename='profile_images/' + messages[i].user.profile_image) }});"></div>
                                 {% if messages[i].user.profession == "Student" %}
                                     <h6 class="m-0 ml-3">{{ messages[i].user.first_name }} {{ messages[i].user.last_name }} #{{ messages[i].user.id }}</h6>
                                 {% else %}

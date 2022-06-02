@@ -302,6 +302,9 @@ a {
   min-width: 125px;
   max-width: 125px;
   background-size: 125px 125px;
+  background-size: cover; 
+  background-position: center; 
+  background-repeat:no-repeat;
   border-radius: 50% !important;
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.075) !important;
   margin-left: 3rem;
@@ -533,6 +536,9 @@ a {
   min-width: 1em;
   max-width: 1em;
   background-size: 1em 1em;
+  background-size: cover; 
+  background-position: center; 
+  background-repeat:no-repeat;
   border-radius: 50% !important;
   border-radius: .25rem;
 }
@@ -669,6 +675,9 @@ a {
   border-radius: 50% !important;
   background-size: 2rem 2rem;
   background-color: #fff;
+  background-size: cover; 
+  background-position: center; 
+  background-repeat:no-repeat;
   border-radius: 50%;
 }
 

@@ -40,7 +40,8 @@
             <tr class="">
               <td class="row border-top-0 border-bottom-green mx-0">
                 <div class="col-6 d-flex justify-content-start align-items-center">
-                  <img class="profile-img-small" src="{{ url_for('static', filename='profile_images/' + students_list[i].profile_image) }}" alt="">
+                  <!-- <img class="profile-img-small" src="{{ url_for('static', filename='profile_images/' + students_list[i].profile_image) }}" alt=""> -->
+                  <div class="profile-img-small" style="background-image: url({{ url_for('static', filename='profile_images/' + students_list[i].profile_image) }});"></div>
                   <a class="fancy-link text-nowrap mx-2" href="{{ url_for('students.student', course_id=course.id, student_id=students_list[i].id) }}">{{ students_list[i].first_name }} {{ students_list[i].last_name }} ID#{{ students_list[i].id }}</a>
                 </div>
                 <div class="col-6 d-flex justify-content-end align-items-center">
@@ -66,7 +67,8 @@
             <tr>
               <td class="row border-0 mx-0">
                 <div class="col-6 d-flex justify-content-start align-items-center">
-                  <img class="profile-img-small" src="{{ url_for('static', filename='profile_images/' + teacher.profile_image) }}">
+                  <!-- <img class="profile-img-small" src="{{ url_for('static', filename='profile_images/' + teacher.profile_image) }}"> -->
+                  <div class="profile-img-small" style="background-image: url({{ url_for('static', filename='profile_images/' + teacher.profile_image) }});"></div>
                   <a class="fancy-link mx-2" href="{{ url_for('students.student', course_id=course.id, student_id=teacher.id) }}">{{ teacher.first_name }} {{ teacher.last_name }}</a>
                 </div>
                 <div class="col-6 d-flex justify-content-end align-items-center">
