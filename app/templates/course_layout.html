@@ -25,7 +25,7 @@
       <span><i class="fas fa-chevron-down"></i></span>
     </button>
   </div>
-  <div class="collapse navdrop d-md-none" id="courseNavDropdown">
+  <div class="navdrop d-md-none" id="courseNavDropdown">
     <a href="{{ url_for('courses.course', course_id=course.id) }}">About</a>
     <a href="{{ url_for('assignments.assignments', course_id=course.id) }}">Assignments</a>
     <a href="{{ url_for('students.grades', course_id=course.id) }}">Grades</a>
