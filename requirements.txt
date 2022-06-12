@@ -40,7 +40,6 @@ pep517==0.12.0
 Pillow==9.0.1
 pip-tools==6.5.1
 pip-upgrader==1.4.15
-pipenv==2022.6.7
 platformdirs==2.5.1
 psycopg2==2.9.3
 psycopg2-binary==2.9.3
