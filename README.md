@@ -5,6 +5,8 @@ Educa gives instructors the ability to create courses which allows them to keep 
 
 Demo: https://educa-lms.herokuapp.com
 
+An account must be registered to access the dashboard.
+
 Note that instructor accounts are limited to creating four courses and twenty assignments per course. File upload for instruction assignments is also disabled.
 
 # Student
