@@ -49,15 +49,18 @@ def assignments(course_id):
 @teacher_auth
 def new_assignment(course_id):
     profile_image = url_for('static', filename="profile_images/" + current_user.profile_image)
+    assignments = Assignment.query.filter_by(course_id=course_id).all()
     course = Course.query.filter_by(id=course_id).first()
     assignmentform = AssignmentForm()
     errors = {}
+
+    assignments.sort(key=lambda c:c.id)
 
     request_form = request.form.to_dict()
 
     if "ajax" in request_form and request.method == "POST":
         return new_assignment_error_handler(assignmentform, request_form)
-    if request.method == "POST":
+    if request.method == "POST" and len(assignments) < 20:
         print(request_form)
         errors = new_assignment_error_handler(assignmentform, request_form)
         if errors:
@@ -141,6 +144,9 @@ def new_assignment(course_id):
         flash("Assignment was created successfully!", "success")
         return redirect(url_for("assignments.assignments", course_id=course.id))
 
+    elif request.method == "POST" and len(assignments) >= 20:
+        flash("Max number of assignments allowed is 20", "danger")
+        return redirect(url_for("assignments.assignments", course_id=course.id))
     elif request.method == "GET":
         return render_template('new_assignment.html',
                                 profile_image=profile_image,
@@ -205,7 +211,7 @@ def assignment(course_id, assignment_id):
                 flash("Assignment has been successfully submitted.", "success")
                 return redirect(url_for('assignments.assignment', course_id=course.id, assignment_id=assignment.id))
             else:
-                flash("That file type is not allowed.", "warning")
+                flash("That file type is not allowed or file uploading has been disabled.", "warning")
                 return redirect(url_for('assignments.assignment', course_id=course.id, assignment_id=assignment.id))
         else:
             flash("You have already reached your max tries.", "warning")

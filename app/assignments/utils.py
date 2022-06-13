@@ -45,22 +45,23 @@ def new_assignment_error_handler(assignmentform, request_form):
     return errors
 
 def save_assignment(file):
-    random_hex = secrets.token_hex(8)
-    _, f_ext = os.path.splitext(file.filename)
-    fn = random_hex + f_ext
-    file_path = os.path.join(current_app.root_path,
-                                'static/assignments',
-                                fn)
-    file.save(file_path)
+    # random_hex = secrets.token_hex(8)
+    # _, f_ext = os.path.splitext(file.filename)
+    # fn = random_hex + f_ext
+    # file_path = os.path.join(current_app.root_path,
+    #                             'static/assignments',
+    #                             fn)
+    # file.save(file_path)
 
-    accepted_types = ["PDF", "PNG", "JPG", "JPEG"]
-    with open(file_path, 'rb') as f:
-        type = magic.from_buffer(f.read(2048))
-    if any(at in type for at in accepted_types):
-        return fn
+    # accepted_types = ["PDF", "PNG", "JPG", "JPEG"]
+    # with open(file_path, 'rb') as f:
+    #     type = magic.from_buffer(f.read(2048))
+    # if any(at in type for at in accepted_types):
+    #   return fn
 
-    os.remove(file_path)
-    return
+    # os.remove(file_path)
+    # return
+    return False
 
 def delete_assignment(fn):
     file_path = os.path.join(current_app.root_path,

@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, url_for
+from flask import Blueprint, render_template, url_for, redirect
 
 home_ = Blueprint("home", __name__)
 
@@ -19,7 +19,7 @@ def inject_default():
 @home_.route('/')
 @home_.route('/home')
 def home():
-    return render_template("home.html", title="Home")
+    return redirect(url_for('users.login'))
 
 @home_.route('/about')
 def about():

@@ -14,7 +14,7 @@ users = Blueprint("users", __name__)
 @users.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
-        return redirect(url_for('home.home'))
+        return redirect(url_for('users.login'))
     form = RegistrationForm()
     # if the form is validated on submit
     if request.method == 'POST' and form.validate_on_submit():
@@ -35,7 +35,7 @@ def register():
 @users.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('home.home'))
+        return redirect(url_for('courses.courses'))
     form = LoginForm()
     if request.method == 'POST' and form.validate_on_submit():
         user = User_Account.query.filter_by(email=form.email.data).first()
@@ -44,7 +44,7 @@ def login():
                 login_user(user, remember=form.remember.data)
                 next_page = request.args.get('next')
                 # if next_page query parameter exists redirect to that page
-                return redirect(next_page) if next_page else redirect(url_for('home.home'))
+                return redirect(next_page) if next_page else redirect(url_for('courses.courses'))
             else:
                 return redirect(url_for('users.verify_email_message', email=user.email))
         else:
@@ -60,12 +60,12 @@ def login():
 @users.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('home.home'))
+    return redirect(url_for('users.login'))
 
 @users.route('/verify_email_message/<string:email>', methods=["GET"])
 def verify_email_message(email):
     if current_user.is_authenticated and current_user.confirmed:
-        return redirect(url_for('courses.dashboard'))
+        return redirect(url_for('courses.courses'))
     if request.method == "GET":
         user = User_Account.query.filter_by(email=email).first()
         if user:
@@ -82,7 +82,7 @@ def verify_email_message(email):
 @users.route('/resend_email_message/<string:email>', methods=["GET"])
 def resend_email_message(email):
     if current_user.is_authenticated and current_user.confirmed:
-        return redirect(url_for('courses.dashboard'))
+        return redirect(url_for('courses.courses'))
 
     # Not following DRY incase of flash message pile up
     if request.method == "GET":

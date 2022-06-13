@@ -45,8 +45,8 @@ def courses():
     new_course = NewCourseForm()
 
     # POST
-    # if teacher has <= 2 courses than prevent creation of more courses
-    if new_course.validate_on_submit():
+    # if teacher has <= 4 courses than prevent creation of more courses
+    if request.method == "POST" and new_course.validate_on_submit() and len(teacher_courses) < 4:
         course = Course(teacher_id=current_user.id,
                         title=new_course.title.data,
                         subject=new_course.subject.data,
@@ -56,7 +56,7 @@ def courses():
         db.session.add(course)
         db.session.commit()
         return redirect(url_for("courses.courses"))
-    elif add_course.validate_on_submit():
+    elif request.method == "POST" and add_course.validate_on_submit():
         course = Course.query.filter_by(id=add_course.course_id.data, code=add_course.code.data).first()
         if course:
             if str(current_user.id) in list(course.dropped):
@@ -83,7 +83,10 @@ def courses():
         else:
             flash(f"That course does not exist.", "warning")
             return redirect(url_for("courses.courses"))
-    elif new_course.errors or add_course.errors:
+    elif request.method == "POST" and len(teacher_courses) >= 4:
+        flash("You can only create up to four courses.", "danger")
+        return redirect(url_for("courses.courses"))
+    elif request.method == "POST" and new_course.errors or add_course.errors:
         #
         # ERROR TESTING
         #
