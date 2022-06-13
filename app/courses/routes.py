@@ -45,6 +45,7 @@ def courses():
     new_course = NewCourseForm()
 
     # POST
+    # if teacher has <= 2 courses than prevent creation of more courses
     if new_course.validate_on_submit():
         course = Course(teacher_id=current_user.id,
                         title=new_course.title.data,
