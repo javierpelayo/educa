@@ -11,7 +11,7 @@ def send_email(subject, sender, recipients, text_body, html_body):
 def send_email_confirmation(user):
     token = user.get_token(expires_in=60)
     send_email(subject="EDUCA - Email Confirmation",
-                sender="contact@javierperez.dev",
+                sender="other@javierperez.dev",
                 recipients=[user.email],
                text_body=render_template('email/verify_email.txt',
                                          user=user, token=token),
@@ -21,7 +21,7 @@ def send_email_confirmation(user):
 def send_password_reset(user):
     token = user.get_token(expires_in=600)
     send_email(subject="EDUCA - Password Reset",
-                sender="contact@javierperez.dev",
+                sender="other@javierperez.dev",
                 recipients=[user.email],
                text_body=render_template('email/reset_password.txt',
                                          user=user, token=token),
