@@ -41,11 +41,11 @@ def profile():
                                 edit=edit)
     elif request.method == "POST" and form.validate_on_submit():
         if not form.removepic.data and form.picture.data:
-            delete_picture()
-            picture_file = save_picture(form.picture.data)
-            current_user.profile_image = picture_file
+            # delete_picture()
+            # picture_file = save_picture(form.picture.data)
+            # current_user.profile_image = picture_file
         elif form.removepic.data:
-            delete_picture()
+            # delete_picture()
             current_user.profile_image = "default.png"
 
         fullname = form.fullname.data.split(" ")
