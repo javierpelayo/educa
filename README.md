@@ -7,7 +7,7 @@ Demo: https://educa-lms.herokuapp.com
 
 An account must be registered to access the dashboard.
 
-Note that instructor accounts are limited to creating four courses and twenty assignments per course. File upload for instruction assignments is also disabled.
+Note that instructor accounts are limited to creating four courses and twenty assignments per course. File upload for instruction assignments & for profile pictures is also disabled as this is a demo.
 
 # Student
 When logging in as a student, there will be a tab to access the dashboard. Clicking this tab gives access to the profile, courses, deadlines and inbox features for the student account. When accessing the profile page, a student can update their name, email, biography and as well as their profile picture. The profile page also shows a list of assignments that the student has completed as well as the courses that they are in. The courses tab is the most important feature since it keeps track of all of the courses that a student is in. In order to join a course a passcode as well as the course id or CRN(Course Registration Number) will be needed, these will be emailed to them by their instructor or given to them in a physical or online lecture. Once the course has been added, a student will have access to the syllabus, assignments, their grades and a list of students that are also in the course. Going over the deadline tab gives the student access to a list of assignments that have yet to be completed for all of their courses. Lastly, the inbox feature allows students to start a conversation with either another student in their course or the instructor for said course, it is also possible to create a group chat with multiple people, which can help in order to create study sessions.

@@ -44,6 +44,7 @@ def profile():
             # delete_picture()
             # picture_file = save_picture(form.picture.data)
             # current_user.profile_image = picture_file
+            current_user.profile_image = "default.png" # ONLY FOR DEMO, REMOVE IF IN PRODUCTION
         elif form.removepic.data:
             # delete_picture()
             current_user.profile_image = "default.png"
