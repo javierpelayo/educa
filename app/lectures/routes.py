@@ -66,6 +66,7 @@ def lecture(course_id, lecture_id):
     profile_image = url_for('static', filename="profile_images/" + current_user.profile_image)
     course = Course.query.filter_by(id=course_id).first()
     lecture = Lecture.query.filter_by(id=lecture_id).first()
+    teacher = (course.teacher_id == current_user.id)
 
     if request.method == "GET":
         return render_template("lecture.html",
@@ -74,3 +75,8 @@ def lecture(course_id, lecture_id):
                                 lecture=lecture,
                                 title=f"{course.title} - Lecture",
                                 header=" \\ " + lecture.title)
+    elif request.method == "POST" and teacher:
+        db.session.delete(lecture)
+        db.session.commit()
+        flash("You have deleted the lecture.", "success")
+        return redirect(url_for("lectures.lectures", course_id=course.id))
