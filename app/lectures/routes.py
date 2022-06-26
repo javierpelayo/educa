@@ -75,7 +75,7 @@ def lecture(course_id, lecture_id):
                                 lecture=lecture,
                                 title=f"{course.title} - Lecture",
                                 header=" \\ " + lecture.title)
-    elif request.method == "POST" and teacher:
+    elif request.method == "POST":
         db.session.delete(lecture)
         db.session.commit()
         flash("You have deleted the lecture.", "success")
