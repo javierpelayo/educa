@@ -5,6 +5,7 @@ from app.lectures.forms import NewLectureForm
 from app.filters import autoversion
 from app.middleware import course_auth, teacher_auth
 from app.models import (Course, Lecture)
+from app import db
 lectures_ = Blueprint("lectures", __name__)
 
 @lectures_.route('/dashboard/courses/<int:course_id>/lectures', methods=['GET', 'POST'])
