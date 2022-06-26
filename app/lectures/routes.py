@@ -21,8 +21,7 @@ def lectures(course_id):
                                 profile_image=profile_image,
                                 course=course,
                                 lectures=lectures,
-                                title=f"{course.title} - Lectures",
-                                header=" \\ Lectures")
+                                title=f"{course.title} - Lectures")
 
 
 @lectures_.route('/dashboard/courses/<int:course_id>/lectures/new', methods=['GET', 'POST'])
