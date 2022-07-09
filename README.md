@@ -3,16 +3,22 @@ Simple learning management system (LMS) built via the Flask Framework.
 
 Educa gives instructors the ability to create courses which allows them to keep track of grades & assignments for their students as well as keep an open communication channel with them using the inbox feature.
 
+## Try it out
+
 Demo: https://educa-lms.herokuapp.com
 
 An account must be registered to access the dashboard.
 
 Note that instructor accounts are limited to creating four courses and twenty assignments per course. File upload for instruction assignments & for profile pictures is also disabled as this is a demo.
 
-# Student
+#### Join an example course after creating a student account:
+Course ID: 1
+Course PW: 1234
+
+## Student
 When logging in as a student, there will be a tab to access the dashboard. Clicking this tab gives access to the profile, courses, deadlines and inbox features for the student account. When accessing the profile page, a student can update their name, email, biography and as well as their profile picture. The profile page also shows a list of assignments that the student has completed as well as the courses that they are in. The courses tab is the most important feature since it keeps track of all of the courses that a student is in. In order to join a course a passcode as well as the course id or CRN(Course Registration Number) will be needed, these will be emailed to them by their instructor or given to them in a physical or online lecture. Once the course has been added, a student will have access to the syllabus, assignments, their grades and a list of students that are also in the course. Going over the deadline tab gives the student access to a list of assignments that have yet to be completed for all of their courses. Lastly, the inbox feature allows students to start a conversation with either another student in their course or the instructor for said course, it is also possible to create a group chat with multiple people, which can help in order to create study sessions.
 
-# How to add a course as a student:
+## How to add a course as a student:
 
 Look for the blue add icon on the courses page
 
@@ -22,11 +28,11 @@ Enter the course ID and passcode given by your instructor.
 
 <img width="480" alt="adding a course" src="https://user-images.githubusercontent.com/48416882/172786378-7ddf9514-f407-4145-bd4e-4b5b62ebf8df.png">
 
-# Instructors
+## Instructors
 
 Similarly to a student account, instructors are given access to the dashboard, along with the same features that a student has. The only difference is that instructors have the ability to create new courses, create new assignments and grade the students that have joined their course. Instructors are given ful reign over the course and can update their syllabus accordingly as well as edit grades as they see fit even long after a certain assignment has been submitted. They have the ability to drop students from the course and can also delete the course itself.
 
-# How to create a course:
+## How to create a course:
 
 Clicking the same blue plus icon on the courses page similarly to a student account, you will be met with a new course pop up.
 
@@ -34,7 +40,7 @@ Clicking the same blue plus icon on the courses page similarly to a student acco
 
 The max points corresponds to the max number of points that a student can get, for example if the max points is 800, then if a student completes all assignments totalling to the max points then they would have 100% which is an A in the course. 
 
-# How to create an assignment:
+## How to create an assignment:
 
 Click on the new assignment button
 
@@ -52,7 +58,7 @@ You are also given the choice of the question being answered as an input, multip
 
 <img width="480" alt="Screen Shot 2022-06-11 at 4 54 54 PM" src="https://user-images.githubusercontent.com/48416882/173208650-5787ca51-9937-4ab7-95d2-ee7b436b87ff.png">
 
-# How to initiate a conversation using the inbox feature
+## How to initiate a conversation using the inbox feature
 
 Click the pencil draft icon and a new conversation prompt will appear.
 
@@ -66,9 +72,9 @@ After you have finished the message you can hit send and you will be redirected 
 
 <img width="480" alt="Screen Shot 2022-04-01 at 12 14 20 PM" src="https://user-images.githubusercontent.com/48416882/173217763-9c104704-c6c5-48f7-8f1d-6fead973de95.png">
 
-# Creating your own instance
+## Creating your own instance
 
-Open your terminal and change to the directory that you wish to create the project then type:
+Open your terminal and change to the directory that you wish to create the project in then type:
 
 `git clone https://github.com/javierpelayo/educa.git`
 
@@ -110,6 +116,6 @@ After doing all this, save and run the following command:
 
 `python3 -m flask run`
 
-After doing this you should see new tables pop up under your specific database in pgadmin4 and should be good to go.
+You should now see new tables pop up under your specific database in pgadmin4 and should be good to go.
 
 ----
