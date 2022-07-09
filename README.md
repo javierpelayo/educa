@@ -66,6 +66,6 @@ After you have finished the message you can hit send and you will be redirected 
 
 <img width="480" alt="Screen Shot 2022-04-01 at 12 14 20 PM" src="https://user-images.githubusercontent.com/48416882/173217763-9c104704-c6c5-48f7-8f1d-6fead973de95.png">
 
-# I want to create my own instance of this application
+# Creating your own instance
 
 ----
