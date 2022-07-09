@@ -68,4 +68,48 @@ After you have finished the message you can hit send and you will be redirected 
 
 # Creating your own instance
 
+Open your terminal and change to the directory that you wish to create the project then type:
+
+`git clone https://github.com/javierpelayo/educa.git`
+
+`cd educa`
+
+`python3 -m venv <env_name>`
+
+`. <envname>/bin/activate`
+
+`pip3 install -r requirements.txt`
+
+After doing this go to the root directory and open up your bash profile (ex: .zprofile on mac) and copy and paste the following:
+
+```
+export FLASK_APP='run'
+export SECRET_KEY=''
+export DATABASE_URI=''
+export EMAIL_USER=''
+export EMAIL_PASSWORD=''
+```
+
+The secret key is needed to keep client sessions on the web server secure, you can generate a random secret key by doing the following in your terminal:
+
+`import os`
+
+`os.urandom(24)`
+
+Copy and paste that key into the SECRET_KEY variable in your bash profile.
+
+If you haven't, download postgresql from: https://www.pgadmin.org/download/
+
+Once you have setup the database, the DATABASE_URI in your bash profile will have the following format:
+
+`postgresql://postgres:<user_password>@localhost/<db_name>`
+
+The EMAIL_USER and EMAIL_PASSWORD are obvious, these are used to send confirmation emails to users that create new accounts.
+
+After doing all this, save and run the following command:
+
+`python3 -m flask run`
+
+After doing this you should see new tables pop up under your specific database in pgadmin4 and should be good to go.
+
 ----
