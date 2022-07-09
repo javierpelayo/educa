@@ -13,7 +13,56 @@ Note that instructor accounts are limited to creating four courses and twenty as
 
 #### Join an example course after creating a student account:
 Course ID: 1
+
 Course PW: 1234
+
+## Creating your own instance
+
+Open your terminal and change to the directory that you wish to create the project in then type:
+
+`git clone https://github.com/javierpelayo/educa.git`
+
+`cd educa`
+
+`python3 -m venv <env_name>`
+
+`. <envname>/bin/activate`
+
+`pip3 install -r requirements.txt`
+
+After doing this go to the root directory and open up your bash profile (ex: .zprofile on mac) and copy and paste the following:
+
+```
+export FLASK_APP='run'
+export SECRET_KEY=''
+export DATABASE_URI=''
+export EMAIL_USER=''
+export EMAIL_PASSWORD=''
+```
+
+The secret key is needed to keep client sessions on the web server secure, you can generate a random secret key by doing the following in your terminal:
+
+`import os`
+
+`os.urandom(24)`
+
+Copy and paste that key into the SECRET_KEY variable in your bash profile.
+
+If you haven't, download postgresql from: https://www.pgadmin.org/download/
+
+Once you have setup the database, the DATABASE_URI in your bash profile will have the following format:
+
+`postgresql://postgres:<user_password>@localhost/<db_name>`
+
+The EMAIL_USER and EMAIL_PASSWORD are obvious, these are used to send confirmation emails to users that create new accounts.
+
+After doing all this, save and run the following command:
+
+`python3 -m flask run`
+
+You should now see new tables pop up under your specific database in pgadmin4 and should be good to go.
+
+To stop the web application do ctrl + c in the terminal, then type `deactivate` to deactivate the virtual environment.
 
 ## Student
 When logging in as a student, there will be a tab to access the dashboard. Clicking this tab gives access to the profile, courses, deadlines and inbox features for the student account. When accessing the profile page, a student can update their name, email, biography and as well as their profile picture. The profile page also shows a list of assignments that the student has completed as well as the courses that they are in. The courses tab is the most important feature since it keeps track of all of the courses that a student is in. In order to join a course a passcode as well as the course id or CRN(Course Registration Number) will be needed, these will be emailed to them by their instructor or given to them in a physical or online lecture. Once the course has been added, a student will have access to the syllabus, assignments, their grades and a list of students that are also in the course. Going over the deadline tab gives the student access to a list of assignments that have yet to be completed for all of their courses. Lastly, the inbox feature allows students to start a conversation with either another student in their course or the instructor for said course, it is also possible to create a group chat with multiple people, which can help in order to create study sessions.
@@ -71,51 +120,5 @@ Write a title for the conversation and use the search feature to find classmates
 After you have finished the message you can hit send and you will be redirected to the conversation.
 
 <img width="480" alt="Screen Shot 2022-04-01 at 12 14 20 PM" src="https://user-images.githubusercontent.com/48416882/173217763-9c104704-c6c5-48f7-8f1d-6fead973de95.png">
-
-## Creating your own instance
-
-Open your terminal and change to the directory that you wish to create the project in then type:
-
-`git clone https://github.com/javierpelayo/educa.git`
-
-`cd educa`
-
-`python3 -m venv <env_name>`
-
-`. <envname>/bin/activate`
-
-`pip3 install -r requirements.txt`
-
-After doing this go to the root directory and open up your bash profile (ex: .zprofile on mac) and copy and paste the following:
-
-```
-export FLASK_APP='run'
-export SECRET_KEY=''
-export DATABASE_URI=''
-export EMAIL_USER=''
-export EMAIL_PASSWORD=''
-```
-
-The secret key is needed to keep client sessions on the web server secure, you can generate a random secret key by doing the following in your terminal:
-
-`import os`
-
-`os.urandom(24)`
-
-Copy and paste that key into the SECRET_KEY variable in your bash profile.
-
-If you haven't, download postgresql from: https://www.pgadmin.org/download/
-
-Once you have setup the database, the DATABASE_URI in your bash profile will have the following format:
-
-`postgresql://postgres:<user_password>@localhost/<db_name>`
-
-The EMAIL_USER and EMAIL_PASSWORD are obvious, these are used to send confirmation emails to users that create new accounts.
-
-After doing all this, save and run the following command:
-
-`python3 -m flask run`
-
-You should now see new tables pop up under your specific database in pgadmin4 and should be good to go.
 
 ----
